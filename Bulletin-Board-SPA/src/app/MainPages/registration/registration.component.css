@@ -1,0 +1,12 @@
+mat-list-item{
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+
+mat-form-field{
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    width: 100%;
+    
+}

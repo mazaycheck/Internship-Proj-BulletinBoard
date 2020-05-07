@@ -1,0 +1,55 @@
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <p  class="m-0">Conversation with <b>{{data.name}}</b></p>
+  </mat-toolbar-row>
+</mat-toolbar>
+<br>
+
+<ng-container>
+<!-- <cdk-virtual-scroll-viewport itemSize="3" class="example-viewport" ngx-auto-scroll lock-y-offset="10" observe-attributes> -->
+<cdk-virtual-scroll-viewport itemSize="3" class="example-viewport">
+  <div *cdkVirtualFor="let message of messages" class="example-item w-100" >
+    <div [class]="message.senderName == data.name ? 'messageFromContainer' : 'messageToContainer'">
+
+      <div *ngIf="message.senderName == data.name" class="message-time d-block mx-2">
+        {{message.dateTimeSent | date}}
+      </div>
+
+      <div [class]="message.senderName == data.name ? 'messageFromBox' : 'messageToBox'">
+        {{message.text}}
+      </div>
+
+      <div *ngIf="!(message.senderName == data.name)" class="message-time d-block mx-2">
+        {{message.dateTimeSent | date}}
+      </div>
+
+
+    </div>
+  </div>
+  <div *ngIf="otherUserIsTyping" class="messageFromContainer">
+    <p class="usertypingdot messageFromBox">
+      <span></span> 
+      <span></span> 
+      <span></span> 
+  </div>
+</cdk-virtual-scroll-viewport>
+</ng-container>
+
+
+
+<mat-divider></mat-divider>
+  <div class="d-flex messageBox mt-1 justify-content-between" style="width: 100%">
+    <div class="d-inline-block mt-1" style="width: calc(100% - 75px);">
+      <mat-form-field appearance="outline" class="mt-3" style="width: 100%" >
+        <textarea (keypress)="keyPress($event)" class="textarea-message" matInput  rows="3"  [(ngModel)]="newMessage.text" placeholder="your message..."></textarea>
+      </mat-form-field>
+    </div>
+    <div  class="d-inline-block d-flex align-items-center" style="width:65px">
+      <div class="d-block">
+        <button mat-raised-button color="primary"  (click)="sendMessage()" class="d-inline-block mb-1"><mat-icon>send</mat-icon> </button>    
+        <button mat-raised-button color="accent"  (click)="resetMessage()" class="d-inline-block"> <mat-icon>cancel</mat-icon> </button>       
+      </div>
+    </div>
+  </div>
+

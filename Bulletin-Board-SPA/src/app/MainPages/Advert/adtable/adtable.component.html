@@ -1,0 +1,50 @@
+<div class="mat-elevation-z0 mt-3">
+  <div>
+    <mat-card class="mat-elevation-z0 d-block w-100">
+      <div class="d-flex align-items-center">
+        <div class="d-block ml-3">
+          <mat-form-field class="mr-3 d-inline-block">
+            <mat-label>Filter</mat-label>            
+              <input matInput name="searchQuery"  [formControl]="filter">            
+          </mat-form-field>
+
+          <mat-form-field class="d-inline-block"> 
+            <mat-label>Category</mat-label>
+            <mat-select name="option" [(ngModel)]="optionSelected" (ngModelChange)="queryChanged($event)">
+              <mat-option value="">
+                All
+              </mat-option>      
+              <mat-option  *ngFor="let cat of categories" [value]="cat.title">
+                {{ cat.title }}              
+              </mat-option>            
+            </mat-select>
+          </mat-form-field>
+      </div>
+      <div class="d-block ml-auto mr-3">
+        <button class="mr-2" color="primary" mat-raised-button (click)="switchPresentationMode('table')"><mat-icon [ngClass]="presentationMode == 'table' ? 'color-red' : 'color-white'">table_chart</mat-icon></button>
+        <button color="primary" mat-raised-button (click)="switchPresentationMode('tiles')"><mat-icon [ngClass]="presentationMode == 'tiles' ? 'color-red' : 'color-white'">view_comfy</mat-icon></button>
+      </div>
+    </div>
+    </mat-card>
+
+  </div>
+  <mat-divider></mat-divider>
+  <br>
+
+  <app-adtablebody [advertisements]="advertisements" [displayedColumns]="displayedColumns" (delete)="removeAd($event)" (sort)="sortData($event)" *ngIf="presentationMode == 'table'">
+
+  </app-adtablebody>
+
+<app-adtiles [data]="advertisements" *ngIf="presentationMode == 'tiles'">
+
+</app-adtiles>
+<br>
+
+
+
+  <mat-paginator [length]="length"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions"
+                (page)="pageClicked($event)">
+  </mat-paginator>
+</div>

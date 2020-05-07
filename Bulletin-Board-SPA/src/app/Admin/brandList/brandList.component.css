@@ -1,0 +1,23 @@
+
+.title-cell{
+    min-width: 300px;
+}
+
+input.title-cell{
+    padding-top:12px!important;
+    padding-bottom: 6px!important;
+}
+
+.align-center{
+    vertical-align: middle;
+}
+
+.select-option-font{
+    color:blue; 
+    font-size: large!important;
+}
+
+
+.row-edit{
+    background-color: #ffffff;    
+}

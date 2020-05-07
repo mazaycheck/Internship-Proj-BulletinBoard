@@ -1,0 +1,24 @@
+
+
+<mat-toolbar>
+  {{user.userName}}
+</mat-toolbar>
+
+
+
+<div class="categories-checkbox my-2">                   
+  <mat-selection-list #roles [(ngModel)]="temporaryRoles" class="userroles-selection">
+    <mat-list-option *ngFor="let role of allRoles" [value]="role">
+      <p class="select-option-font" >{{role}}</p>
+    </mat-list-option>
+  </mat-selection-list>                
+</div>
+
+
+<div class="d-flex">
+<button mat-raised-button class="mr-3" color="primary" (click)="editSave(user)"> <mat-icon>save</mat-icon></button>
+<button mat-raised-button color="warn" (click)="editCancel(user)"><mat-icon>cancel</mat-icon> </button>
+<mat-chip-list aria-label="Fish selection" class="ml-auto mt-1">
+  <mat-chip [color]="conditionMaxLength() ? 'accent' : 'basic'" selected (click)="toggleCheckBoxes()">{{ conditionMaxLength() ? 'ALL' :temporaryRoles.length }} selected</mat-chip>
+</mat-chip-list>
+</div>

@@ -1,0 +1,79 @@
+<!-- <mat-toolbar color="basic" class="mt-3"> Brands </mat-toolbar> -->
+<mat-card class="my-3 py-2 w-100" style="width: 100%!important;">
+  <mat-form-field appearance="outline" class="mat-no-padding pr-3 d-inline-block align-center" style="width:284px;">
+    <input matInput type="text" class="title-cell " [(ngModel)]="newEntity" placeholder="new entry here...">
+  </mat-form-field>
+  <button mat-raised-button color="primary"  (click)="createNewEntity()" class="d-inline-block align-center"><mat-icon>add</mat-icon> </button>
+<button mat-raised-button color="accent" *ngIf="newEntity" (click)="resetNewEntity()" class="d-inline-block align-center ml-3"> <mat-icon>cancel</mat-icon> </button>
+</mat-card>
+<div class="mat-elevation-z8 d-block w-100 mt-1 mb-3">
+<mat-card class="mat-elevation-z0">
+<mat-form-field class="mr-3 d-inline-block">
+  <mat-label>Filter</mat-label>            
+    <input matInput name="searchQuery"  [formControl]="filter">            
+</mat-form-field>
+</mat-card>
+<mat-divider></mat-divider>
+  <table mat-table [dataSource]="allBrandsFromDb" class="mat-elevation-z0" style="width: 100%;">
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef style="width: 30%">
+         Title
+       </th>
+      <td mat-cell *matCellDef="let brand" [class.row-edit]="brand.edit">           
+            <div *ngIf="!brand.edit">
+             <p>{{ brand.title }}</p>          
+            </div>
+             <div *ngIf="brand.edit" class="">
+                     -->
+            </div> 
+      </td>    
+    </ng-container>
+        
+    <ng-container matColumnDef="categories">
+        <th mat-header-cell *matHeaderCellDef style="width: 400px" style="width: 50%"> Categories </th>
+        <td mat-cell *matCellDef="let brand" [class.row-edit]="brand.edit"> 
+          <div *ngIf="!brand.edit" class="categories-checkbox my-2">     
+              {{brand.categories}}                
+          </div>
+            <!-- <div *ngIf="brand.edit" class="categories-checkbox my-2">                   
+              <mat-selection-list #roles [(ngModel)]="temporaryCategories" class="userroles-selection">
+                <mat-list-option *ngFor="let cat of allCategoriesFromDb" [value]="cat.title">
+                  <p class="select-option-font" >{{cat.title}}</p>
+                </mat-list-option>
+              </mat-selection-list>                
+            </div> -->
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef style="width: 20%"> Action </th>
+      <td mat-cell *matCellDef="let brand" [class.row-edit]="brand.edit"> 
+
+        <div *ngIf="!brand.edit" class="">
+          <button mat-raised-button class="mr-3" (click)="update(brand)"><mat-icon>edit</mat-icon> </button>          
+          <button mat-raised-button (click)="delete(brand)" color="accent"><mat-icon>delete_outline</mat-icon> </button> 
+        </div>
+
+        <div *ngIf="brand.edit" class="">   
+            
+ 
+
+   
+        </div>      
+      </td>
+    </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+
+
+<mat-paginator [length]="totalBrandsEntriesInDb"
+  [pageSize]="currentPageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="pageClicked($event)">
+</mat-paginator>
+
+
+</div>

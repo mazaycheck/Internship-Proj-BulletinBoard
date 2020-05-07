@@ -1,0 +1,46 @@
+.img-preview-container{
+    display : block;
+    width:200px;
+    height:200px;
+    overflow:hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.img-preview{
+    display : inline-block;
+    width:100%;
+    height:100%;
+    object-fit: cover
+}
+
+.w-50{
+    width: 49%;
+}
+
+
+
+mat-card-title{
+    font-family: 'Baloo Thambi 2'!important;
+    font-size: 25px!important;
+    
+}
+
+
+.ads-card-container{
+    align-self: stretch;
+    max-width: 50%;
+    cursor: pointer;
+    flex-basis: 240px;
+}
+
+.tiles-container mat-card{
+    height: 100%!important;
+    cursor: pointer;
+}
+
+
+.tiles-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));   
+}

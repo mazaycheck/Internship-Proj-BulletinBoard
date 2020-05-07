@@ -1,0 +1,43 @@
+<mat-toolbar color="primary" class="justify-content-between p-4" >
+  <ng-content></ng-content>
+  <div class="d-none d-lg-block">
+  <mat-list class="d-flex">
+    <mat-list-item><a [routerLink]="['/newadvert']" routerLinkActive="router-link-active" class="p-1 d-inline-block"><mat-icon>add_to_queue</mat-icon> Create New Advert</a></mat-list-item>
+    <mat-list-item><a [routerLink]="['/ads']" routerLinkActive="router-link-active"><mat-icon>airplay</mat-icon> Advertisements </a></mat-list-item>
+    <mat-list-item><a routerLink="/messages" routerLinkActive="router-link-active"><mat-icon>message</mat-icon> Messages</a></mat-list-item>
+    <ng-container *ngIf="hasRequiredAccess(['Admin', 'Moderator'])">
+      <mat-list-item><a routerLink="/admin" routerLinkActive="router-link-active"><mat-icon>person</mat-icon> Admin</a></mat-list-item>
+    </ng-container>
+  </mat-list>
+</div>
+
+    <form *ngIf="!isLoggedIn()" #loginForm="ngForm" (ngSubmit)="loginForm.valid ? login() : ''" class="d-flex mr-3">    
+        <mat-form-field appearance="outline" class="mr-3" id="loginEmail">
+          <mat-label>Email</mat-label>
+          <input required matInput type="text"  name="email" [(ngModel)]="loginData.email" class="mr-3" >
+        </mat-form-field>
+
+      <mat-form-field appearance="outline" class="" id="loginPassword">
+        <mat-label>Enter your password</mat-label>
+        <input required matInput type="password"  name="password" [(ngModel)]="loginData.password" class="mr-3" [type]="hide ? 'password' : 'text'">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+             
+      <div class="d-flex align-items-center ml-3">
+        <button mat-stroked-button color="accent" type="submit" class="mr-3">Login</button>
+        <!-- <button type="button" mat-raised-button color="warn"  routerLink='/auth/register' routerLinkActive="router-link-active" >Register</button> -->
+         <button type="button" mat-stroked-button color="warn"  (click)="onRegister()">Register</button>
+      </div>
+
+    </form>  
+
+    <div *ngIf="isLoggedIn()" class="mr-3">
+      
+      <h4 class="d-inline-block mr-3">Welcome {{ name | titlecase }}</h4>
+      <button mat-stroked-button color="warn" class="d-inline-block" (click)="logout()">Log Out</button>
+    </div>
+
+</mat-toolbar>
+

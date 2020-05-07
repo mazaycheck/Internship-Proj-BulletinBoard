@@ -1,0 +1,72 @@
+[
+  {
+    "UserName": "Elsa",
+    "RegistrationDate": "11-01-2020",
+    "Email": "parkermathis@genekom.com",
+    "PhoneNumber": "373 85-657-632",
+    "TownId": 1
+  },
+  {
+    "UserName": "Odom",
+    "RegistrationDate": "24-01-2020",
+    "Email": "nelsonmyers@zensure.com",
+    "PhoneNumber": "373 82-844-927",
+    "TownId": 2
+  },
+  {
+    "UserName": "Sue",
+    "RegistrationDate": "15-01-2020",
+    "Email": "cohenlowery@fleetmix.com",
+    "PhoneNumber": "373 96-540-432",
+    "TownId": 3
+  },
+  {
+    "UserName": "Mariana",
+    "RegistrationDate": "24-02-2020",
+    "Email": "clevelandbyers@schoolio.com",
+    "PhoneNumber": "373 88-755-220",
+    "TownId": 4
+  },
+  {
+    "UserName": "Courtney",
+    "RegistrationDate": "17-02-2020",
+    "Email": "hendricksnicholson@gushkool.com",
+    "PhoneNumber": "373 92-141-023",
+    "TownId": 5
+  },
+  {
+    "UserName": "Dorothea",
+    "RegistrationDate": "07-04-2020",
+    "Email": "navarrotrujillo@nexgene.com",
+    "PhoneNumber": "373 85-042-823",
+    "TownId": 6
+  },
+  {
+    "UserName": "Carey",
+    "RegistrationDate": "30-03-2020",
+    "Email": "lavernegillespie@scentric.com",
+    "PhoneNumber": "373 81-942-534",
+    "TownId": 7
+  },
+  {
+    "UserName": "Chelsea",
+    "RegistrationDate": "15-02-2020",
+    "Email": "baxterbarnes@xanide.com",
+    "PhoneNumber": "373 86-155-827",
+    "TownId": 8
+  },
+  {
+    "UserName": "Nolan",
+    "RegistrationDate": "24-01-2020",
+    "Email": "langpruitt@cognicode.com",
+    "PhoneNumber": "373 97-940-937",
+    "TownId": 9
+  },
+  {
+    "UserName": "Bobbie",
+    "RegistrationDate": "29-03-2020",
+    "Email": "feliciakey@coriander.com",
+    "PhoneNumber": "373 96-549-839",
+    "TownId": 10
+  }
+]

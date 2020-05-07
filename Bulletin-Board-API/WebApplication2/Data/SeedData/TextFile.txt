@@ -1,0 +1,10 @@
+﻿[
+  '{{repeat(10)}}',
+  {
+    UserName: '{{firstName()}}',
+    RegistrationDate: '{{date(new Date(2020, 0, 1), new Date(),"dd-MM-YYYY")}}',
+    Email: '{{email([random])}}',
+    PhoneNumber: '{{phone("373 xx-xxx-xxx" )}}',
+    TownId: '{{random(1,2,3)}}'                   
+  }
+]

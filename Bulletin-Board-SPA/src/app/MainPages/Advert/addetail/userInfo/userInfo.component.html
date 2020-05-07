@@ -1,0 +1,50 @@
+<mat-card> 
+  <mat-toolbar color="basic">
+    User Info
+  </mat-toolbar> 
+  <br>
+  <mat-list role="list" *ngIf="user">
+
+    <ng-content select="[header]"></ng-content>
+
+
+    <mat-list-item role="listitem" class="user-description-mat-list-item">
+      <span>User Name</span>
+      <span><b>{{user.userName}}</b></span>
+    </mat-list-item>
+    <mat-list-item role="listitem" class="user-description-mat-list-item">
+      <span>Phone Number</span>
+      <span><b>{{user.phoneNumber}}</b></span>
+    </mat-list-item>
+    <mat-list-item role="listitem" class="user-description-mat-list-item">
+      <span>Registered Since</span>
+      <span><b>{{user.registrationDate | date}}</b></span>
+    </mat-list-item>
+
+    <ng-content select="[footer]"></ng-content>
+
+<!-- <ng-container *ngIf="detailedMode">
+  <mat-list-item role="listitem" class="user-description-mat-list-item">
+    <span>Lives in</span>
+    <span><b>{{user.townName}}</b></span>
+  </mat-list-item>
+  <mat-list-item role="listitem" class="user-description-mat-list-item">
+    <span>Rating</span>
+    <span><b>{{user.rating}}</b></span>
+  </mat-list-item>
+
+</ng-container> -->
+
+  </mat-list>
+<mat-divider></mat-divider>
+<br>
+<ng-container *ngIf="user">
+  <button mat-raised-button color="primary" (click)="onMessageClick()" class="d-inline-block align-center ml-3"> <mat-icon>send </mat-icon> Message</button>
+  <button mat-raised-button color="warn" [routerLink]="['/profile', userId]" class="d-inline-block align-center ml-3"> <mat-icon>web </mat-icon> Profile</button>
+</ng-container>
+
+</mat-card>
+
+
+
+

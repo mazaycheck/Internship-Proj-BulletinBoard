@@ -1,0 +1,41 @@
+
+            
+<mat-sidenav-container class="example-sidenav-container">
+    <mat-sidenav #snav>
+        <mat-nav-list>
+        
+            <mat-list-item><a mat-button color="accent" [routerLink]="['/ads/new']" routerLinkActive="router-link-active" class="p-1 d-inline-block">Create New Advert</a></mat-list-item>
+            <mat-list-item><a [routerLink]="['/ads']" routerLinkActive="router-link-active">Advertisements </a></mat-list-item>
+            <mat-list-item><a routerLink="/categories"><span color="accent">Categories</span></a></mat-list-item>
+            <mat-list-item><a routerLink="/towns">Towns</a></mat-list-item>
+            <mat-list-item><a routerLink="/brands">Brands</a></mat-list-item>
+            <mat-list-item><a routerLink="/messages">Messages</a></mat-list-item>
+        
+        
+        </mat-nav-list>
+    </mat-sidenav>
+    
+
+    
+
+    <mat-sidenav-content style="background-color: #f5f5f5;">
+        
+        <div class="container-fluid mb-3 p-0">
+            <app-nav>
+                <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+            </app-nav>
+                            
+            <div class="row m-0 position-relative">
+             
+                <div class="mx-auto col-md-8 position-relative">
+                    <div id="loadingIndicator" class="position-absolute" *ngIf="loadingStatus">
+                        <mat-spinner></mat-spinner>
+                    </div>
+                    <router-outlet class="p-0 m-0"></router-outlet>
+                </div>          
+            </div>         
+        </div>
+        
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+

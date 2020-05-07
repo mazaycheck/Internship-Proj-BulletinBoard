@@ -1,0 +1,24 @@
+<!-- <mat-toolbar color="primary">User Profile</mat-toolbar> -->
+<div class="row">
+  <div class="col-md-4 mt-3">
+    <app-userInfo [userId]="userId" [detailedMode]="true" #userCard>  
+      <div header class="d-block w-100 mb-2">
+        <img src="\assets\images\random.jpg" alt="" width="200px"  height="200px" class="d-block mx-auto">
+      </div>
+
+      <div footer *ngIf="userCard.user">
+        <mat-list-item role="listitem" class="user-description-mat-list-item">
+          <span>Lives in</span>
+          <span><b>{{userCard.user.townName}}</b></span>
+        </mat-list-item>
+        <mat-list-item role="listitem" class="user-description-mat-list-item">
+          <span>Rating</span>
+          <span><b>{{userCard.user.rating}}</b></span>
+        </mat-list-item>      
+      </div>
+    </app-userInfo>
+  </div>
+  <div class="col-md-8">
+    <app-adtable [displayedColumns]="columns" [userId]="userId"></app-adtable>
+  </div>
+</div>

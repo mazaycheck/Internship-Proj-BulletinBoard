@@ -1,0 +1,69 @@
+
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <p  class="m-0">Register new account</p>
+  </mat-toolbar-row>
+</mat-toolbar>
+<br>
+
+<form #registerForm="ngForm" (ngSubmit)="register()" class="justify-content-between">
+
+<mat-grid-list cols="2" rowHeight="100px">
+  <mat-grid-tile>
+    <mat-form-field appearance="fill">
+      <mat-label>Your Name</mat-label>
+      <input matInput type="text"  name="name" [(ngModel)]="model.userName" >  
+    </mat-form-field>
+  </mat-grid-tile>
+
+<mat-grid-tile>
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput type="email"  name="email" [(ngModel)]="model.email" >
+  </mat-form-field>
+</mat-grid-tile>
+
+
+<mat-grid-tile>
+  <mat-form-field appearance="fill">
+    <mat-label>Phone Number</mat-label>
+    <input matInput type="text"   name ="phonenumber" [(ngModel)]="model.phoneNumber">
+  </mat-form-field>
+</mat-grid-tile>
+
+<mat-grid-tile>
+  <!-- <mat-form-field appearance="fill">
+    <mat-label>HomeTown</mat-label>
+    <input matInput type="number"  name ="townid" [(ngModel)]="model.townid" >
+  </mat-form-field> -->
+  <mat-form-field appearance="fill" class="">
+    <mat-label>Town</mat-label>
+    <mat-select required (selectionChange)="selectedTownChanged($event)" name="townId" [(ngModel)]="model.townId">  
+      <ng-container *ngIf="towns.length">
+        <mat-option *ngFor="let town of towns" [value]="town.townId">
+          {{ town.title }}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+</mat-grid-tile>
+
+
+
+
+
+<mat-grid-tile>
+  <mat-form-field appearance="fill">
+    <mat-label>Password</mat-label>
+    <input matInput type="password"   name="password" [(ngModel)]="model.password">
+  </mat-form-field>     
+</mat-grid-tile>
+
+<mat-grid-tile>
+  <button mat-raised-button color="accent" type="submit" class="mr-3">Register</button>
+  <mat-slide-toggle [(ngModel)]="checkout" name="checkout">Checkout</mat-slide-toggle>
+
+</mat-grid-tile> 
+</mat-grid-list>
+</form>

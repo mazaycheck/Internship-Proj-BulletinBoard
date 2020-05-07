@@ -1,0 +1,9 @@
+.img-border {
+    border: 3px solid #036ffc;
+}
+
+
+.ad-description{
+    white-space: pre-wrap;
+    line-height: 1.6;    
+}

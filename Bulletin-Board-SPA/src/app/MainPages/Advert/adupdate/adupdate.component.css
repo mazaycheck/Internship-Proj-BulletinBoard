@@ -1,0 +1,30 @@
+mat-form-field{
+    display: block;
+    width: 100%;
+}
+
+
+.img-preview-container{
+    display : inline-block;
+    width:200px;
+    height:200px;
+    overflow:hidden;
+}
+
+.img-preview{
+    display : inline-block;
+    width:100%;
+    height:100%;
+    object-fit: cover
+}
+
+.w-50{
+    width: 49%;
+}
+
+
+
+mat-card-title{
+    font-family: 'Baloo Thambi 2'!important;
+    font-size: 25px!important;
+}

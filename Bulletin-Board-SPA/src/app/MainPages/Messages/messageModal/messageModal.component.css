@@ -1,0 +1,145 @@
+:host{
+    width: 100%;
+}
+
+.messageToContainer{
+
+    /* overflow: hidden; */
+    display: flex;
+    justify-content: flex-start;
+}
+
+.messageToBox{
+    word-wrap: break-word;
+    margin-left: 10px;
+    padding: 0.5rem;
+    max-width: 66%;
+    background-color: rgb(181, 221, 240);
+    border-radius: 5px;
+}
+
+
+.messageFromContainer{ 
+    /* overflow: hidden;   */
+    display: flex;
+    justify-content: flex-end;    
+}
+
+.messageFromBox{
+    word-wrap: break-word;
+    margin-right: 10px;
+    padding: 0.5rem;    
+    max-width: 66%;
+    background-color: thistle;
+    
+    border-radius:  5px;
+}
+
+
+.input-message{
+    min-width: 300px;
+}
+
+input.input-message{
+    padding-top:12px!important;
+    padding-bottom: 6px!important;
+}
+
+
+.align-center{
+    vertical-align: middle;
+}
+
+
+.example-viewport {
+    height: 250px;    
+    /* max-width: 535px!important;    */
+  }
+  
+  .example-item {
+    min-height: 30px;
+    margin-bottom: 15px;
+  }
+
+  .textarea-message{
+    padding-top:6px!important;
+    padding-bottom: 6px!important;
+  }
+
+
+  .messageArea{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+  }
+
+  @keyframes typingAnimation {
+
+    20%{
+        background-color: white; bottom: 8px;
+       
+    }
+
+    40%{
+         bottom: 12px;
+    }
+
+    60%{
+         bottom: 16px;
+    }
+
+    80%{
+         bottom: 12px;  
+    }
+
+    100%{
+        background-color: grey; bottom: 8px;  
+    }
+
+
+  }
+
+  .usertypingdot{
+      position: relative;
+      width: 48px;
+      height: 25px;
+  }
+
+
+.usertypingdot span{
+    position: absolute;
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation-name: typingAnimation;
+    animation-duration: 1.2s;    
+    background-color: gray;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+
+}
+
+.usertypingdot span:nth-child(1){  
+    left: 8px;  
+    animation-delay: 0.2s;
+}
+.usertypingdot span:nth-child(2){
+    left: 20px;
+    animation-delay: 0.4s;
+}
+.usertypingdot span:nth-child(3){
+    left: 32px;
+    animation-delay: 0.6s;
+}
+
+.message-time{
+    color: silver;
+    font-size: small;
+    display: none;
+    line-height: 36px;
+}
+
+.message-time :hover{
+    display: inline-block;
+}
