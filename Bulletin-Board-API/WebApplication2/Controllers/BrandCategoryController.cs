@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Data.Repositories;
 using WebApplication2.Models;
+using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
@@ -16,30 +16,17 @@ namespace WebApplication2.Controllers
     [Authorize]
     public class BrandCategoryController : ControllerBase
     {
-        private readonly IGenericRepository<BrandCategory> _repo;
+        private readonly BrandCategoryService _brandCategoryService;
 
-        public BrandCategoryController(IGenericRepository<BrandCategory> repository)
+        public BrandCategoryController(BrandCategoryService brandCategoryService)
         {
-            _repo = repository;
+            _brandCategoryService = brandCategoryService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string category, string brand)
+        public async Task<IActionResult> GetAll([FromQuery] string categoryFilter, string brandFilter)
         {
-            var dataQuery = _repo.GetAll()
-                .Include(x => x.Category).Include(x => x.Brand)
-                .Where(x => x.Category.Title.Contains(category ?? "") && x.Brand.Title.Contains(brand ?? ""));                
-
-            var data = await dataQuery
-                .Select(x => new BrandCategoryForViewDto() 
-                    {
-                        BrandCategoryId = x.BrandCategoryId,
-                        CategoryId = x.CategoryId,
-                        CategoryTitle = x.Category.Title,
-                        BrandId = x.BrandId,
-                        BrandTitle = x.Brand.Title
-                    })
-                .ToListAsync();
+            var data = await _brandCategoryService.GetAll(categoryFilter, brandFilter);
             return Ok(data);
         }
 
@@ -47,7 +34,20 @@ namespace WebApplication2.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var data = await _repo.GetById(id);
+            var dataQuery = _repo.GetAll()
+                    .Include(x => x.Category).Include(x => x.Brand)
+                    .Where(x => x.BrandCategoryId == id);
+
+            var data = await dataQuery
+                .Select(x => new BrandCategoryForViewDto()
+                {
+                    BrandCategoryId = x.BrandCategoryId,
+                    CategoryId = x.CategoryId,
+                    CategoryTitle = x.Category.Title,
+                    BrandId = x.BrandId,
+                    BrandTitle = x.Brand.Title
+                })
+                .SingleOrDefaultAsync();
             return Ok(data);
         }
 

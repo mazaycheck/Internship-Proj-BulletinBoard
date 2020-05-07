@@ -50,7 +50,6 @@ export class MessagesComponent implements OnInit {
     config.minWidth = '380px';
     config.width = '600px';
     config.data = $event;
-    console.log(config);
     this.dialog.open(MessageModalComponent, config);
   }
 }

@@ -15,7 +15,6 @@ export class UserService {
   }
 
   getAll(options: any): Observable<any> {
-    console.log(options);
     const params = new HttpParams({fromObject: options});
     return this.http.get(`${this.baseUrl}?${params}`);
   }

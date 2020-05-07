@@ -38,7 +38,7 @@ namespace WebApplication2.Controllers
             var users =  _repo.GetAll()
                 .ProjectTo<UserForModeratorView>(_mapper.ConfigurationProvider);
             var filtered = users.Where(x => x.Email.Contains(query ?? "") || x.UserName.Contains(query ?? ""));
-            var pageData = await Paged<UserForModeratorView>.Paginate(filtered, paginateParams);
+            var pageData = await PagedData<UserForModeratorView>.Paginate(filtered, paginateParams);
 
             return Ok(pageData);
         }

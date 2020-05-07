@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication2.Data.Dtos
 {
-    public class AnnoucementForUpdateDto
+    public class AnnoucementUpdateDto
     {
         [Required]
         public int AnnoucementId { get; set; }
@@ -21,7 +21,7 @@ namespace WebApplication2.Data.Dtos
         [Required]
         [Range(1, 9999999)]
         public int Price { get; set; }
-
+        
         public virtual List<IFormFile> Photo { get; set; }
        
         [Required]

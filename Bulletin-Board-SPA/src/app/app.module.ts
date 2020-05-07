@@ -52,10 +52,6 @@ export function toketGetter(){
       AdcreateComponent,
       AdupdateComponent,
       RegistrationComponent,
-      // CatlistComponent,
-      // TownListComponent,
-      // BrandListComponent,
-      // GenericEntityComponent,
       UserInfoComponent,
       MessagesComponent,
       MessagesTableComponent,
@@ -97,8 +93,6 @@ export function toketGetter(){
          useClass: JwtTokenInterceptorService,
          multi: true
       }
-
-
    ],
    bootstrap: [
       AppComponent

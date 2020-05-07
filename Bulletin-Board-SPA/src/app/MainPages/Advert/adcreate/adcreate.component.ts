@@ -29,8 +29,7 @@ export class AdcreateComponent implements OnInit {
   brandCategoryIdForCreate: number;
 
   constructor(private advertService: AdvertService, private router: Router, private categoriesService: CatService,
-    private toast: ToastrService, private brandService: BrandService,
-    private brandCatService: BrandCategoryService) { }
+              private toast: ToastrService, private brandCatService: BrandCategoryService) { }
 
   ngOnInit() {
     this.initForm();
@@ -66,9 +65,9 @@ export class AdcreateComponent implements OnInit {
   }
 
   getBrandCategoryId(categoryTitle: string, brandTitle: string) {
-    var brandCatId;
+    let brandCatId;
     this.brandCatService.getBrandCatId(categoryTitle, brandTitle).subscribe(response => {
-      brandCatId = response[0].brandCategoryId;      
+      brandCatId = response[0].brandCategoryId;
       this.formData.set('brandCategoryId', brandCatId);
       this.brandCategoryIdForCreate = brandCatId;
     });
@@ -107,10 +106,7 @@ export class AdcreateComponent implements OnInit {
     const brand = $event.value;
     this.brandCatService.getBrandCatId(this.selectedCategory.title, this.selectedBrand).subscribe(response => {
       this.brandCategoryIdForCreate = response[0].brandCategoryId;
-      
     });
-
-
   }
 
   toFormData() {
@@ -123,7 +119,6 @@ export class AdcreateComponent implements OnInit {
   submit() {
     this.toFormData();
     this.advertService.createAd(this.formData).subscribe(response => {
-      
       this.router.navigateByUrl('/ads');
     }, error => {
       this.toast.error(error);

@@ -44,7 +44,6 @@ export class GenericEntityComponent implements OnInit {
     this.service.getAll().subscribe(
       response => {
         this.entityList = response;
-        console.log(this.entityList);
       },
       error => {
         this.toastr.error(error);

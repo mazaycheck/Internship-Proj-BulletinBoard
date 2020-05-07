@@ -70,11 +70,11 @@ export class AdlistComponent implements OnInit, OnChanges {
 
   subscribeToSearchField() {
     this.filter.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe(x => {this.queryOptions.query = x; this.refresh(); } );
+      .subscribe(x => { this.queryOptions.query = x; this.refresh(); });
   }
 
   ngOnInit() {
-    this.filter =  new FormControl('');
+    this.filter = new FormControl('');
     this.subscribeToSearchField();
     this.presentationMode = this.globals.displayAdvertStyle;
     this.refresh();
@@ -95,7 +95,6 @@ export class AdlistComponent implements OnInit, OnChanges {
     this.router.navigateByUrl(`/ads/details/${id}`);
   }
   selectChanged($event) {
-    console.log($event);
     this.queryOptions.category = $event.target.value;
     this.refresh();
   }
@@ -117,29 +116,27 @@ export class AdlistComponent implements OnInit, OnChanges {
   }
 
   removeAd(id: number) {
-    console.log('Delete');
     this.adservice.deleteAd(id).subscribe(response => {
       this.toast.warning(`Removed advert with id ${id}`);
       this.refresh();
     }, error => {
-      this.toast.error(`Could not delete advert`);
+      this.toast.error(error);
     }
     );
   }
 
-
-  pageClicked($event: PageEvent) {    
+  pageClicked($event: PageEvent) {
     this.queryOptions.pageNumber = $event.pageIndex + 1;
     this.queryOptions.pageSize = $event.pageSize;
     this.globals.pageSize = $event.pageSize;
     this.refresh();
   }
 
-  sortData(sort: Sort) {    
+  sortData(sort: Sort) {
     this.queryOptions.orderBy = sort.active;
     this.queryOptions.direction = sort.direction;
     this.refresh();
-    
+
   }
 
 }

@@ -2,14 +2,12 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Data.Repositories;
@@ -20,37 +18,135 @@ namespace WebApplication2.Services
 {
     public class AnnoucementService : IAnnoucementService
     {
-        private readonly IAnnoucementRepository _repo;
+        private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHost;
+        private readonly IWebHostEnvironment _webHost;        
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
 
-        public AnnoucementService(IAnnoucementRepository repo, IMapper mapper, IWebHostEnvironment webHost)
+        public AnnoucementService(IAnnoucementRepository annoucementRepo, IMapper mapper, IWebHostEnvironment webHost,  IHttpContextAccessor contextAccessor, IGenericRepository<BrandCategory> brandCategoryRepo)
         {
-            _repo = repo;
+            _annoucementRepo = annoucementRepo;
             _mapper = mapper;
-            _webHost = webHost;
+            _webHost = webHost;            
+            _contextAccessor = contextAccessor;
+            _brandCategoryRepo = brandCategoryRepo;
         }
 
-        public async Task<AnnoucementForViewDto> CreateNewAnnoucement(AnnoucementForCreateDto annoucementDto, int userId)
+        public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto)
         {
             Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
-            annoucement.UserId = userId;
-
-            await _repo.Create(annoucement);
-            await _repo.Save();
-            
-            if (annoucementDto.Photo != null)
+            annoucement.UserId = GetUserIdFromClaims();
+            if (! await _brandCategoryRepo.Exists(annoucementDto.BrandCategoryId))
             {
-                string annoucementFolderForImageUpload = GetFolderNameForAnnoucementPhotos(annoucement.AnnoucementId);
-                List<string> generatedImageNames = UploadImages(annoucementDto.Photo, annoucementFolderForImageUpload);
-                AddPhotosToAnnoucement(annoucement, generatedImageNames);
-                await _repo.Save();
+                throw new ArgumentException("No such category / brand combination");
             }
-
-            return _mapper.Map<AnnoucementForViewDto>(annoucement);
+            await _annoucementRepo.Create(annoucement);
+            var images = annoucementDto.Photo;
+            if (images != null)
+            {
+                try
+                {
+                    await SaveAnnoucementImages(annoucement, images);
+                }
+                catch (Exception ex)
+                {
+                    throw new 
+                }
+                
+            }
+            return _mapper.Map<AnnoucementViewDto>(annoucement);
         }
 
-      
+
+
+        public async Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
+        {
+            Annoucement annoucement = await _annoucementRepo.GetById(annoucementDto.AnnoucementId);
+            if(annoucement == null)
+            {
+                throw new NullReferenceException($"No annoucement with such id: {annoucementDto.AnnoucementId}");
+            }
+            if (!await _brandCategoryRepo.Exists(annoucementDto.BrandCategoryId))
+            {
+                throw new ArgumentException("No such category / brand combination");
+            }
+
+
+            if (UserIdFromClaimsEquals(annoucement.UserId)) {
+                _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucement);
+                await _annoucementRepo.Update(annoucement);
+                var images = annoucementDto.Photo;
+                if (images != null)
+                {
+                    await SaveAnnoucementImages(annoucement, images);
+                }
+                return _mapper.Map<AnnoucementViewDto>(annoucement);
+            }
+            else
+            {
+                throw new UnauthorizedAccessException("You cannot edit other user's annoucement");
+            }            
+        }
+
+        public async Task<PagedData<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
+                     PaginateParams paginateParams, OrderParams orderParams)
+        {
+            var annoucements = _annoucementRepo.GetAll();
+            IQueryable<AnnoucementViewDto> annoucementsDto = annoucements.ProjectTo<AnnoucementViewDto>(_mapper.ConfigurationProvider);
+            var filteredAnnoucements = annoucementsDto.ApplySeachQuery(filterOptions);
+            if (filteredAnnoucements.Count() > 0)
+            {
+                var orderedAnnoucements = filteredAnnoucements.OrderAnnoucements(orderParams);
+                var pageData = await PagedData<AnnoucementViewDto>.Paginate(orderedAnnoucements, paginateParams);
+                return pageData;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<AnnoucementViewDto> GetAnnoucementById(int id)
+        {
+            var annoucement = await _annoucementRepo.GetById(id);
+            if (annoucement != null)
+            {
+                return  _mapper.Map<AnnoucementViewDto>(annoucement);
+            }
+            return null;
+        }
+
+        public async Task<bool> DeleteAnnoucementById(int annoucementId)
+        {                                    
+            var annoucement = await _annoucementRepo.GetById(annoucementId);
+
+            if(annoucement == null)
+            {
+                throw new NullReferenceException($"No annoucement with such id: {annoucementId}");
+            }
+
+            if(UserHasRequiredRoles("Admin", "Moderator") || UserIdFromClaimsEquals(annoucementId))
+            {
+                await _annoucementRepo.Delete(annoucement);
+                DeleteFolderWithAnnoucementPhotos(annoucement.AnnoucementId);
+                return true;
+            }
+
+            else
+            {
+                throw new UnauthorizedAccessException("You dont have rights to delete other member's annoucement");
+            }  
+        }
+
+        private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
+        {
+            string annoucementFolderForImageUpload = FolderForImages(annoucement.AnnoucementId);
+            List<string> generatedImageNames = UploadImages(images, annoucementFolderForImageUpload);
+
+            AddPhotosToAnnoucement(annoucement, generatedImageNames);
+            await _annoucementRepo.Save();
+        }
 
         private void AddPhotosToAnnoucement(Annoucement annoucement, List<string> listOfImgUrls)
         {
@@ -63,96 +159,67 @@ namespace WebApplication2.Services
 
         private List<string> UploadImages(List<IFormFile> formImages, string folderName)
         {            
-            var images = ImageFileProcessor.ConvertListIFormFileToListImage(formImages);
-            List<string> listOfImgUrls = ImageFileProcessor.UploadFilesOnServerAndGetListOfFileNames(images, folderName);
+            var images = ImageFileProcessor.ConvertIFormFileToImage(formImages);
+            ImageFileProcessor.DeleteFolder(folderName);
+            List<string> listOfImgUrls = ImageFileProcessor.UploadFilesOnServer(images, folderName);
             return listOfImgUrls;            
-        }
-
-        public async Task<AnnoucementForViewDto> GetAnnoucementById(int id)
-        {
-            var annoucement = await _repo.GetById(id);
-            if (annoucement != null)
-            {
-                var annoucementDto = _mapper.Map<AnnoucementForViewDto>(annoucement);
-            }
-            return null;
-        }
-
-        public async Task<Paged<AnnoucementForViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
-            PaginateParams paginateParams,OrderParams orderParams)
-        {
-            var annoucements = _repo.GetAll();
-            IQueryable<AnnoucementForViewDto> annoucementsDto = annoucements.ProjectTo<AnnoucementForViewDto>(_mapper.ConfigurationProvider);
-            var filteredAnnoucements = annoucementsDto.ApplySeachQuery(filterOptions);
-            if (filteredAnnoucements.Count() > 0)
-            {
-                var orderedAnnoucements = filteredAnnoucements.OrderAnnoucements(orderParams);
-                var pageData = await Paged<AnnoucementForViewDto>.Paginate(orderedAnnoucements, paginateParams);
-                return pageData;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-    
-
-        public async Task<bool> DeleteAnnoucementById(int id)
-        {
-            var annoucement = await _repo.GetById(id);
-            if (annoucement == null)
-            {
-                return false;
-            }
-            await _repo.Delete(annoucement);
-            await _repo.Save();
-            try
-            {
-                DeleteFolderWithAnnoucementPhotos(annoucement.AnnoucementId);
-            }
-            catch (InvalidCredentialException e)
-            {
-
-                throw;
-            }
-            
-            return true;
-        }
+        }    
 
         private void DeleteFolderWithAnnoucementPhotos(int annoucementId)
         {
-            string annoucementIdImageFolder = GetFolderNameForAnnoucementPhotos(annoucementId);
-            ImageFileProcessor.DeleteFolderWithAnnoucementPhotos(annoucementIdImageFolder);
+            string annoucementIdImageFolder = FolderForImages(annoucementId);
+            ImageFileProcessor.DeleteFolder(annoucementIdImageFolder);
         }
 
-        private string GetFolderNameForAnnoucementPhotos(int annoucementId)
+        private string FolderForImages(int annoucementId)
         {
             return Path.Combine(_webHost.WebRootPath, "images", $"{annoucementId}");
         }
 
 
-        public async Task<AnnoucementForViewDto> UpdateAnnoucement(AnnoucementForUpdateDto annoucementDto, int userId)
+        private bool UserIdFromClaimsEquals(int id)
         {
-            Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
-            annoucement.UserId = userId;
-
-            await _repo.Update(annoucement);
-            await _repo.Save();
-
-            if (annoucementDto.Photo != null)
+            var user = _contextAccessor.HttpContext.User;
+            if (user.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
             {
-                string annoucementImageFolder = GetFolderNameForAnnoucementPhotos(annoucement.AnnoucementId);
-                ImageFileProcessor.DeleteFolderWithAnnoucementPhotos(annoucementImageFolder);
-                //var annoucementWithPhotos = await _repo.GetAll().Include(p => p.Photos).Where(x => x.AnnoucementId == annoucement.AnnoucementId).FirstOrDefaultAsync();
-                //annoucementWithPhotos.Photos = new List<Photo>();
-                List<string> generatedImageNames = UploadImages(annoucementDto.Photo, annoucementImageFolder);
-                AddPhotosToAnnoucement(annoucement, generatedImageNames);
-                await _repo.Save();
+                return id == Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
             }
+            else
+            {
+                throw new InvalidCredentialException($"User has no NameIdentifier claims");
+            }
+        }
 
-            return _mapper.Map<AnnoucementForViewDto>(annoucement);
+        private int GetUserIdFromClaims()
+        {
+            var user = _contextAccessor.HttpContext.User;
+            if (user.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+            {
+                return  Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
+            }
+            else
+            {
+                throw new InvalidCredentialException($"User has no NameIdentifier claims");
+            }
+        }
 
+        private bool UserHasRequiredRoles(params string[] roles)
+        {
+            var user = _contextAccessor.HttpContext.User;
+            if (user.HasClaim(x => x.Type == ClaimTypes.Role))
+            {
+                var result =  roles.Any(role => user.IsInRole(role));
+                if (!result)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+                else 
+                    return true;
+            }
+            else
+            {
+                throw new InvalidCredentialException($"User has no Role claims");
+            }
         }
     }
 }

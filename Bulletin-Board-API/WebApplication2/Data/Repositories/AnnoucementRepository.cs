@@ -21,12 +21,14 @@ namespace WebApplication2.Data.Repositories
             entity.CreateDate = DateTime.Now;
             entity.ExpirationDate = DateTime.Now.AddDays(30);
             entity.IsActive = true;
-            await _context.Annoucements.AddAsync(entity);       
+            await _context.Annoucements.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(Annoucement annoucement)
         {     
             _context.Annoucements.Remove(annoucement);
+            await _context.SaveChangesAsync();
             return;
         }
 
@@ -59,12 +61,14 @@ namespace WebApplication2.Data.Repositories
             annoucementFromUser.Photos = annoucementFromDb.Photos;
             _context.Update(annoucementFromUser);
             //context.Entry(annoucementFromDb).CurrentValues.SetValues(annoucementFromUser);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateFromDto(AnnoucementPartialUpdateDto annoucementDto)
         {
             var annoucementFromDb = await _context.Annoucements.FindAsync(annoucementDto.AnnoucementId);
             _context.Entry(annoucementFromDb).CurrentValues.SetValues(annoucementDto);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<int> Save()

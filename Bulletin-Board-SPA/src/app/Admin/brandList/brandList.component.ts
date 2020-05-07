@@ -132,16 +132,6 @@ export class BrandListComponent implements OnInit {
 
 
 
-  // onUpdateClicked(data: any) {
-  //   const config = new MatDialogConfig();
-  //   config.minWidth = '380px';
-  //   config.width = '600px';
-  //   config.data = data;
-  //   console.log(config);
-  //   this.dialog.open(BrandListUpdateComponent, config);
-  // }
-
-
   onUpdateClicked(brand: Brand) {
     const dataToInject = {
       identity: brand.brandId,

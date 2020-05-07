@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Models;
 using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
@@ -26,12 +23,7 @@ namespace WebApplication2.Controllers
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginDto userLoginDto)
-        {
-         
-            if(!ModelState.IsValid)
-            { 
-                return BadRequest(ModelState); 
-            }
+        {         
             try
             {
                 var user = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
@@ -41,20 +33,13 @@ namespace WebApplication2.Controllers
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e);
-            }
-     
+            }     
         }
-
         
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody]UserRegisterDto userRegisterDto)
         {
-            
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             UserForPublicDetail createdUser;
             try
             {
@@ -73,8 +58,6 @@ namespace WebApplication2.Controllers
             {
                 return Problem("Could not register");
             }
-        }
-
-        
+        }        
     }
 }

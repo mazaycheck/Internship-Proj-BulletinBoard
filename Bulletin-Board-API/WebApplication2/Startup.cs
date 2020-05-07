@@ -62,6 +62,7 @@ namespace WebApplication2
             services.AddAutoMapper(typeof(Annoucement).Assembly);
             services.AddScoped<IGenericRepository<Message>, GenericRepository<Message>>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddHttpContextAccessor();
 
             IdentityBuilder identityBuilder = services.AddIdentityCore<User>(options =>
             {

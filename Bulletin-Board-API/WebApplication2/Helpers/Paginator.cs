@@ -7,7 +7,7 @@ using WebApplication2.Data.Dtos;
 
 namespace WebApplication2.Helpers
 {
-    public class Paged<T>
+    public class PagedData<T>
     {
         private readonly IQueryable<T> QueryAbleData;
 
@@ -47,7 +47,7 @@ namespace WebApplication2.Helpers
         public int TotalPages { get; set; }
 
 
-        public Paged(IQueryable<T> queryAbleData, PaginateParams pageParams)
+        public PagedData(IQueryable<T> queryAbleData, PaginateParams pageParams)
         {
             QueryAbleData = queryAbleData;
             TotalEntries = queryAbleData.Count();
@@ -63,9 +63,9 @@ namespace WebApplication2.Helpers
 
 
 
-        public static async Task<Paged<T>> Paginate(IQueryable<T> source, PaginateParams pageParams)
+        public static async Task<PagedData<T>> Paginate(IQueryable<T> source, PaginateParams pageParams)
         {
-            var paginator = new Paged<T>(source, pageParams);
+            var paginator = new PagedData<T>(source, pageParams);
             paginator.PageData = await paginator.GetPageData();                        
             return paginator;
         }

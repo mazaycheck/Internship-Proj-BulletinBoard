@@ -6,7 +6,7 @@ using WebApplication2.Models;
 
 namespace WebApplication2.Data.Dtos
 {
-    public class AnnoucementForViewDto
+    public class AnnoucementViewDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -18,6 +18,7 @@ namespace WebApplication2.Data.Dtos
         public string Category { get; set; }
         public string Brand { get; set; }
         public string Town { get; set; }
+        public int BrandCategoryId { get; set; }
 
     }
 }

@@ -9,7 +9,7 @@ using WebApplication2.Models;
 
 namespace WebApplication2.Data.Dtos
 {
-    public class AnnoucementForCreateDto
+    public class AnnoucementCreateDto
     {        
         [Required]
         [MaxLength(100, ErrorMessage = "Maximum title lengh is 100 characters")]

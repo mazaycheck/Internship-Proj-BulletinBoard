@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using WebApplication2.Data.Dtos;
@@ -12,12 +13,14 @@ namespace WebApplication2.Helpers
     {
         public AutoMapperConfig()
         {
-            CreateMap<AnnoucementForCreateDto, Annoucement>();
-            CreateMap<AnnoucementForUpdateDto, Annoucement>();
+            CreateMap<AnnoucementCreateDto, Annoucement>();
+            CreateMap<AnnoucementUpdateDto, Annoucement>().ForMember(dest => dest.AnnoucementId, sourse => sourse.Ignore());
+            
+            CreateMap<BrandCategory, BrandCategoryForViewDto>()
+                .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
+                .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
 
-            CreateMap<BrandCategoryDto, BrandCategory>();
-
-            CreateMap<Annoucement, AnnoucementForViewDto>()
+            CreateMap<Annoucement, AnnoucementViewDto>()
                 .ForMember(dest => dest.Id, sourse => sourse
                     .MapFrom(src => src.AnnoucementId))
                 .ForMember(dest => dest.Date, sourse => sourse

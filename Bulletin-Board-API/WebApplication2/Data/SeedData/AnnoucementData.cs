@@ -56,7 +56,7 @@ namespace WebApplication2.Data.SeedData
             }
             string annoucementIdImageFolder = Path.Combine(RootPath, "images", $"{annoucementId}");
 
-            var imgUrls = ImageFileProcessor.UploadFilesOnServerAndGetListOfFileNames(listOfImages, annoucementIdImageFolder);
+            var imgUrls = ImageFileProcessor.UploadFilesOnServer(listOfImages, annoucementIdImageFolder);
 
             return imgUrls.Select(x => new Photo() { PhotoUrl = x }).ToList();
             

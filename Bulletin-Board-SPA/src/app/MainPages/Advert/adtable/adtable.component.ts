@@ -98,11 +98,13 @@ export class AdtableComponent implements OnInit, OnChanges {
   goToDetails(id: number) {
     this.router.navigateByUrl(`/ads/details/${id}`);
   }
+
   selectChanged($event) {
-    console.log($event);
+
     this.queryOptions.category = $event.target.value;
     this.refresh();
   }
+
   refresh() {
     this.adservice.getAds(this.queryOptions).subscribe(
       response => {
@@ -121,16 +123,15 @@ export class AdtableComponent implements OnInit, OnChanges {
   }
 
   removeAd(id: number) {
-    console.log('Delete');
+
     this.adservice.deleteAd(id).subscribe(response => {
       this.toast.warning(`Removed advert with id ${id}`);
       this.refresh();
     }, error => {
-      this.toast.error(`Could not delete advert`);
+      this.toast.error(error);
     }
     );
   }
-
 
   pageClicked($event: PageEvent) {
     this.queryOptions.pageNumber = $event.pageIndex + 1;
@@ -140,7 +141,6 @@ export class AdtableComponent implements OnInit, OnChanges {
   }
 
   sortData(sort: Sort) {
-    console.log(sort);
     this.queryOptions.orderBy = sort.active;
     this.queryOptions.direction = sort.direction;
     this.refresh();

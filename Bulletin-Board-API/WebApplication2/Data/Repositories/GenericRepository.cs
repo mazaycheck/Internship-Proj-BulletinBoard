@@ -18,7 +18,8 @@ namespace WebApplication2.Data.Repositories
 
         public async Task Create(T entity)
         {
-            await _context.Set<T>().AddAsync(entity);
+            await _context.Set<T>().AddAsync(entity);            
+            await _context.SaveChangesAsync();
             return;
         }
 
@@ -26,6 +27,7 @@ namespace WebApplication2.Data.Repositories
         {
             
             _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
             return;
         }
 
@@ -63,6 +65,8 @@ namespace WebApplication2.Data.Repositories
         public async Task Update(T entity)
         {
             _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+            return;
         }
 
 

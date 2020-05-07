@@ -9,7 +9,7 @@ namespace WebApplication2.Helpers
 {
     public static class AnnoucementExtensions
     {
-        public static IQueryable<AnnoucementForViewDto> ApplySeachQuery(this IQueryable<AnnoucementForViewDto> annoucements, AnnoucementFilter searchOptions)
+        public static IQueryable<AnnoucementViewDto> ApplySeachQuery(this IQueryable<AnnoucementViewDto> annoucements, AnnoucementFilter searchOptions)
         {           
             if (searchOptions.UserId > 0)
             {
@@ -29,9 +29,9 @@ namespace WebApplication2.Helpers
             return annoucements;
         }
 
-        public static IQueryable<AnnoucementForViewDto> OrderAnnoucements(this IQueryable<AnnoucementForViewDto> annoucements, OrderParams orderParams)
+        public static IQueryable<AnnoucementViewDto> OrderAnnoucements(this IQueryable<AnnoucementViewDto> annoucements, OrderParams orderParams)
         {
-            IQueryable<AnnoucementForViewDto> orderedAnnoucements;
+            IQueryable<AnnoucementViewDto> orderedAnnoucements;
 
             if (orderParams.Direction == "desc")
             {

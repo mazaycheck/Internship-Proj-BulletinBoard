@@ -43,9 +43,6 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
 
   addDataListening() {
     this.hubconnection.on('ReceiveMessage', (signalrdata) => {
-      // this.hubData = signalrdata;
-      console.log(`SIGNAL : ${signalrdata}`);
-      // this.userNotTyping();
       this.updateMessages();
 
     });
@@ -82,8 +79,6 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
     this.userToken = this.authService.getToken();
     this.startConnection();
     this.addDataListening();
-
-    console.log(this.data);
     this.newMessage = { recieverId: this.data.id, text: '' };
     this.updateMessages();
 
@@ -109,7 +104,6 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
   sendMessage() {
     this.messageService.createMessage(this.newMessage).subscribe(response => {
       this.messages.push(response);
-      console.log(response);
       this.hubconnection.invoke('SendPrivateMessage', `${this.data.id}`, this.newMessage.text);
       this.updateMessages();
       this.resetMessage();

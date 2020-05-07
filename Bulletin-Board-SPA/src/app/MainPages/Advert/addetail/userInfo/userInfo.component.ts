@@ -44,7 +44,6 @@ export class UserInfoComponent implements OnInit {
   onMessageClick() {
     const chatWithId = this.userId;
     const chatWithName = this.user.userName;
-    console.log(chatWithName, chatWithId);
     this.onChatOpen({id: chatWithId, name: chatWithName});
   }
 

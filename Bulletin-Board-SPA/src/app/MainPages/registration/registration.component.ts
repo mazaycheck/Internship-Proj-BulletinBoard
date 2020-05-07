@@ -36,9 +36,6 @@ export class RegistrationComponent implements OnInit {
   }
 
   selectedTownChanged($event) {
-    console.log($event);
-    console.log($event.value);
-    console.log(this.model);
     this.selectedTownId = $event.value;
   }
 
@@ -47,7 +44,6 @@ export class RegistrationComponent implements OnInit {
   }
 
   register() {
-    console.log(this.model);
     this.service.register(this.model).subscribe(
       response => {
         this.toast.success('Registered!');

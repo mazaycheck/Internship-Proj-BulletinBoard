@@ -1,9 +1,9 @@
-<!-- 
+
 <br>
 <mat-card class="example-card" class="">
 
 
-  <mat-toolbar color="primary" class="my-3">
+  <mat-toolbar color="basic" class="my-3">
     <mat-toolbar-row>
       <h3  class="m-0">Update Advertisement</h3>
     </mat-toolbar-row>
@@ -20,9 +20,9 @@
   <div class="d-flex justify-content-between">
   <mat-form-field appearance="outline" class="w-50">
     <mat-label>Category</mat-label>
-    <mat-select required (selectionChange)="selectChanged($event)" formControlName="categoryId">  
-      <ng-container *ngIf="categories.length">
-        <mat-option *ngFor="let cat of categories" [value]="cat.categoryId">
+    <mat-select required (selectionChange)="selectedCategoryChanged($event)" formControlName="categoryId">  
+      <ng-container *ngIf="allCategoriesFromDb.length">
+        <mat-option *ngFor="let cat of allCategoriesFromDb" [value]="cat.categoryId">
           {{ cat.title }}
         </mat-option>
       </ng-container>
@@ -30,11 +30,11 @@
   </mat-form-field>
     
 
-  <mat-form-field *ngIf="brandsOfCategory.length && brands.length" appearance="outline" class="w-50">
+  <mat-form-field *ngIf="selectedCategory" appearance="outline" class="w-50">
     <mat-label for="title">Brand</mat-label>
-      <mat-select class="custom select bg-light form-control"  formControlName="brandCategoryId">      
-          <mat-option *ngFor="let brand of brandsOfCategory" [value]="brand.brandCategoryId">
-            {{getBrandNameById(brand.brandId)}}
+      <mat-select class="custom select bg-light form-control"  formControlName="brand">      
+          <mat-option *ngFor="let brand of selectedCategory.brands" [value]="brand">
+            {{brand}}
           </mat-option>
       </mat-select>
     </mat-form-field>
@@ -60,13 +60,13 @@
 <ng-container *ngIf="advertFromDb">
   <div class="mb-3">
     
-    <ng-container *ngIf="pictures.length && imgUrls.length">
-      <div *ngFor="let url of imgUrls" class="img-preview-container mr-1">
+    <ng-container *ngIf="uploadedPicturesBinaryData.length && pictureGUIDs.length">
+      <div *ngFor="let url of pictureGUIDs" class="img-preview-container mr-1">
         <img [src]="url" class="img-preview">
       </div>   
     </ng-container>
-    <ng-container *ngIf="!(pictures.length && imgUrls.length)">
-      <div *ngFor="let url of imgUrls" class="img-preview-container mr-1">
+    <ng-container *ngIf="!(uploadedPicturesBinaryData.length && pictureGUIDs.length)">
+      <div *ngFor="let url of pictureGUIDs" class="img-preview-container mr-1">
         <img [src]="baseUrl + 'images/' + advertFromDb.id + '/medium/' +  url" class="img-preview">            
       </div>  
     </ng-container>
@@ -77,4 +77,4 @@
   <a routerLink="/ads" mat-raised-button color="basic" type="submit">Cancel</a>
 </form>
 </mat-card-content>
-</mat-card> -->
+</mat-card>

@@ -10,11 +10,11 @@ namespace WebApplication2.Services
 {
     public interface IAnnoucementService
     {
-        Task<Paged<AnnoucementForViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
+        Task<PagedData<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
             PaginateParams paginateParams, OrderParams orderParams);
-        Task<AnnoucementForViewDto> GetAnnoucementById(int id);
-        Task<AnnoucementForViewDto> CreateNewAnnoucement(AnnoucementForCreateDto annoucementDto, int userId);
+        Task<AnnoucementViewDto> GetAnnoucementById(int id);
+        Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto);
         Task<bool> DeleteAnnoucementById(int id);
-        Task<AnnoucementForViewDto> UpdateAnnoucement(AnnoucementForUpdateDto annoucementDto, int userId);
+        Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto);
     }
 }
