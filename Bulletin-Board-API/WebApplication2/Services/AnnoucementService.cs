@@ -49,9 +49,9 @@ namespace WebApplication2.Services
                 {
                     await SaveAnnoucementImages(annoucement, images);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    throw new 
+                    throw new Exception("Could not save images"); 
                 }
                 
             }
@@ -92,7 +92,7 @@ namespace WebApplication2.Services
         public async Task<PagedData<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
                      PaginateParams paginateParams, OrderParams orderParams)
         {
-            var annoucements = _annoucementRepo.GetAll();
+            var annoucements = _annoucementRepo.GetAllQueryable();
             IQueryable<AnnoucementViewDto> annoucementsDto = annoucements.ProjectTo<AnnoucementViewDto>(_mapper.ConfigurationProvider);
             var filteredAnnoucements = annoucementsDto.ApplySeachQuery(filterOptions);
             if (filteredAnnoucements.Count() > 0)

@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Faker;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace WebApplication2.Data.Repositories
@@ -41,9 +44,32 @@ namespace WebApplication2.Data.Repositories
             return false;
         }
 
- 
+        public async Task<bool> Exists(params Expression<Func<T, bool>>[] expressions)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            query = expressions.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            return await query.AnyAsync();
+        }
 
-        public IQueryable<T> GetAll()
+        public async Task<bool> Exists(List<Expression<Func<T, bool>>> expressions, List<Expression<Func<T, object>>> references)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            query = references.Aggregate(query,(current, navigationProp) => query.Include(navigationProp));
+            query = expressions.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            return await query.AnyAsync();
+        }
+
+
+        public async Task<T> FindFirst(params Expression<Func<T, bool>>[] expressions)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            query = expressions.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            return await query.FirstOrDefaultAsync();
+        }
+
+
+
+        public IQueryable<T> GetAllQueryable()
         {
             return _context.Set<T>();
         }
@@ -54,7 +80,49 @@ namespace WebApplication2.Data.Repositories
             return entity;
         }
 
-  
+
+
+        public async Task<T> GetByIdInclude(int id, List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections = null)
+        {
+            var entity = await _context.Set<T>().FindAsync(id);
+            if(references != null)
+            {
+                foreach (var reference in references)
+                {
+                    await _context.Entry(entity).Reference(reference).LoadAsync();
+                }
+            }
+
+            if (collections != null)
+            {
+                foreach (var collection in collections)
+                {
+                    await _context.Entry(entity).Collection(collection).LoadAsync();
+                }                
+            }
+
+             return entity;
+        }
+
+
+        public async Task<List<T>> GetAllInclude(params Expression<Func<T, object>>[] includes)
+        {
+            var query = _context.Set<T>().AsQueryable();
+
+            query = includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<T>> GetAllIncludeFilter(List<Expression<Func<T, object>>> includes, List<Expression<Func<T, bool>>> filters)
+        {
+            var query = _context.Set<T>().AsQueryable();
+
+            query = includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
+            
+            return await query.ToListAsync();
+        }
 
         public async Task<int> Save()
         {
@@ -68,7 +136,6 @@ namespace WebApplication2.Data.Repositories
             await _context.SaveChangesAsync();
             return;
         }
-
 
 
     }

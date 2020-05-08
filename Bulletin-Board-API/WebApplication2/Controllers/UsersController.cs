@@ -35,7 +35,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] PaginateParams paginateParams, [FromQuery] string query)
         {
-            var users =  _repo.GetAll()
+            var users =  _repo.GetAllQueryable()
                 .ProjectTo<UserForModeratorView>(_mapper.ConfigurationProvider);
             var filtered = users.Where(x => x.Email.Contains(query ?? "") || x.UserName.Contains(query ?? ""));
             var pageData = await PagedData<UserForModeratorView>.Paginate(filtered, paginateParams);

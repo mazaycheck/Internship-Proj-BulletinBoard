@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Models;
@@ -32,7 +33,7 @@ namespace WebApplication2.Data.Repositories
             return;
         }
 
-        public IQueryable<Annoucement> GetAll()
+        public IQueryable<Annoucement> GetAllQueryable()
         {
             return _context.Annoucements.AsNoTracking()
                 .Include(a => a.BrandCategory)
@@ -46,7 +47,7 @@ namespace WebApplication2.Data.Repositories
     
         public async Task<Annoucement> GetById(int id)
         {            
-            return await GetAll().SingleOrDefaultAsync(p=> p.AnnoucementId == id);
+            return await GetAllQueryable().SingleOrDefaultAsync(p=> p.AnnoucementId == id);
         }
 
         public async Task Update(Annoucement annoucementFromUser)
@@ -107,6 +108,39 @@ namespace WebApplication2.Data.Repositories
             return _context.Annoucements.Where(x => x.AnnoucementId == id);
         }
 
-   
+        public Task<List<Annoucement>> GetAllInclude(params Expression<Func<Annoucement, object>>[] includes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Annoucement> GetByIdInclude(int id, string[] references, string[] collections = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Annoucement> GetByIdInclude(int id, List<Expression<Func<Annoucement, object>>> references, List<Expression<Func<Annoucement, IEnumerable<object>>>> collections = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Exists(params Expression<Func<Annoucement, bool>>[] expressions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Exists(List<Expression<Func<Annoucement, bool>>> expressions, List<Expression<Func<Annoucement, object>>> references)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Annoucement> FindFirst(params Expression<Func<Annoucement, bool>>[] expressions)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Annoucement>> GetAllIncludeFilter(List<Expression<Func<Annoucement, object>>> includes, List<Expression<Func<Annoucement, bool>>> filters)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

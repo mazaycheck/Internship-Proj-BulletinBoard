@@ -1,12 +1,8 @@
-﻿using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Data.Repositories;
-using WebApplication2.Models;
 using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
@@ -16,17 +12,17 @@ namespace WebApplication2.Controllers
     [Authorize]
     public class BrandCategoryController : ControllerBase
     {
-        private readonly BrandCategoryService _brandCategoryService;
+        private readonly IBrandCategoryService _brandCategoryService;
 
-        public BrandCategoryController(BrandCategoryService brandCategoryService)
+        public BrandCategoryController(IBrandCategoryService brandCategoryService)
         {
             _brandCategoryService = brandCategoryService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] string categoryFilter, string brandFilter)
+        public async Task<IActionResult> GetAll([FromQuery] string category, string brand)
         {
-            var data = await _brandCategoryService.GetAll(categoryFilter, brandFilter);
+            var data = await _brandCategoryService.GetAll(category, brand);
             return Ok(data);
         }
 
@@ -34,74 +30,42 @@ namespace WebApplication2.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var dataQuery = _repo.GetAll()
-                    .Include(x => x.Category).Include(x => x.Brand)
-                    .Where(x => x.BrandCategoryId == id);
-
-            var data = await dataQuery
-                .Select(x => new BrandCategoryForViewDto()
-                {
-                    BrandCategoryId = x.BrandCategoryId,
-                    CategoryId = x.CategoryId,
-                    CategoryTitle = x.Category.Title,
-                    BrandId = x.BrandId,
-                    BrandTitle = x.Brand.Title
-                })
-                .SingleOrDefaultAsync();
-            return Ok(data);
+            return Ok(await _brandCategoryService.GetById(id));
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post ([FromBody] BrandCategory entity)
+        public async Task<IActionResult> Post([FromBody] BrandCategoryForCreateDto brandCategoryForCreate)
         {
-            var exists = await _repo.GetAll()
-                .FirstOrDefaultAsync(x => x.CategoryId == entity.CategoryId & x.BrandId == entity.BrandId);
-            if (exists != null)
-                return BadRequest($"This relation already exists: {entity}");
-            await _repo.Create(entity);
-            await _repo.Save();
-            return StatusCode(201, entity);
-        }
-
-
-        [Authorize(Roles = "Admin, Moderator")]
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] BrandCategory entity)
-        {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(brandCategoryForCreate);
+                return StatusCode(201, newBrandCategory);
             }
-            var exists = await _repo.GetAll()
-                .FirstOrDefaultAsync(x => x.CategoryId == entity.CategoryId & x.BrandId == entity.BrandId);
-            if (exists != null)
-                return BadRequest($"This relation already exists : {entity}");
-
-
-            await _repo.Update(entity);
-            await _repo.Save();
-            return StatusCode(201, entity);
+            catch(NullReferenceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);                
+            }                        
         }
-
-
-
-
-
-
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var brandCategory = await _repo.GetById(id);
-            if (brandCategory == null)
+            try
             {
-                return NotFound(id);
+                await _brandCategoryService.DeleteRelation(id);
+                return Ok($"Removed successfully relation with id: {id}");
             }
-            await _repo.Delete(brandCategory);
-            await _repo.Save();
-            return Ok(brandCategory);
+            catch (NullReferenceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            
         }
     }
 }

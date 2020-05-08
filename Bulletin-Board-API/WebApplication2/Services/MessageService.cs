@@ -84,7 +84,7 @@ namespace WebApplication2.Services
 
         private IQueryable<Message> MessagesIncludeSenderAndReciever()
         {
-            return _repo.GetAll()
+            return _repo.GetAllQueryable()
                .Include(m => m.Sender)
                .Include(m => m.Reciever);
         }

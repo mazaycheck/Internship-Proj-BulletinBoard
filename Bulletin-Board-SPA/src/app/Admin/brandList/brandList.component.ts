@@ -56,56 +56,25 @@ export class BrandListComponent implements OnInit {
 
   getAllBrands() {
     this.brandsService.getAll(this.queryOptions).subscribe(response => {
+      if (!response) {
+        this.toastr.warning('No content!');
+        this.allBrandsFromDb = [];
+        return;
+      }
       this.allBrandsFromDb = response.pageData;
       this.totalBrandsEntriesInDb = response.totalEntries;
       this.currentPageNumber = response.pageNumber;
       this.currentPageSize = response.currentPageSize;
-
-      if (this.allBrandsFromDb.length === 0) {
-        this.toastr.warning('No data');
-      }
     });
   }
 
-
-
-  // allBrandsEditOff() {
-  //   this.allBrandsFromDb.forEach(element => {
-  //     element.edit = false;
-  //   });
-
-  // }
-
-  // editSave(brand) {
-  //   this.brandsService.updateCategories(brand.brandId, this.temporaryBrandTitle, this.temporaryCategories).subscribe(response => {
-  //     this.toastr.success(`${brand.title} was updated`);
-  //     brand.categories = [...this.temporaryCategories].sort();
-  //     brand.title = this.temporaryBrandTitle;
-  //     this.temporaryBrandTitle = '';
-  //     brand.edit = false;
-  //   },
-  //     error => {
-  //       this.toastr.error(error);
-  //       brand.edit = false;
-  //     });
-
-  // }
-
-  // editCancel(entity) {
-  //   this.allBrandsEditOff();
-  // }
-
   update(brand) {
-    // this.allBrandsEditOff();
-    // this.temporaryCategories = [...brand.categories];
-    // this.temporaryBrandTitle = brand.title;
     this.onUpdateClicked(brand);
   }
 
   pageClicked($event: PageEvent) {
     this.queryOptions.pageNumber = $event.pageIndex + 1;
     this.queryOptions.pageSize = $event.pageSize;
-    // this.globals.pageSize = $event.pageSize;
     this.getAllBrands();
   }
 
@@ -117,9 +86,6 @@ export class BrandListComponent implements OnInit {
   }
 
   delete(brand) {
-    // const index = this.allBrandsFromDb.indexOf(brand);
-    // this.allBrandsFromDb.splice(index, 1);
-    // this.allBrandsFromDb = [...this.allBrandsFromDb];
     this.brandsService.delete(brand).subscribe(response => {
       this.toastr.warning('Deleteted brand: ' + brand.title);
       this.getAllBrands();
@@ -129,8 +95,6 @@ export class BrandListComponent implements OnInit {
   resetNewEntity() {
     this.newEntity = '';
   }
-
-
 
   onUpdateClicked(brand: Brand) {
     const dataToInject = {

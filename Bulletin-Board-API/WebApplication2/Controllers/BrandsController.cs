@@ -38,7 +38,7 @@ namespace WebApplication2.Controllers
         public async Task<IActionResult> Get([FromQuery]AnnoucementFilter filterOptions,
             [FromQuery]PaginateParams paginateParams, [FromQuery]OrderParams orderParams)
         {            
-            var brands = _repo.GetAll().OrderBy(x => x.Title).Include(x => x.BrandCategories).ThenInclude(x => x.Category)
+            var brands = _repo.GetAllQueryable().OrderBy(x => x.Title).Include(x => x.BrandCategories).ThenInclude(x => x.Category)
                 .Select(x => new BrandForViewDto
                 {
                     BrandId = x.BrandId,
@@ -46,8 +46,13 @@ namespace WebApplication2.Controllers
                     Categories = x.BrandCategories.Select(x => x.Category.Title)
                 });
             var filtered = brands.Where(x => x.Title.Contains(filterOptions.Query ?? ""));
-            var paginatedData = await PagedData<BrandForViewDto>.Paginate(filtered, paginateParams);
-            return Ok(paginatedData);
+            if(filtered.Count() > 0) 
+            { 
+                var paginatedData = await PagedData<BrandForViewDto>.Paginate(filtered, paginateParams);
+                return Ok(paginatedData);
+            }
+            return NoContent();
+            
         }
 
         
@@ -82,7 +87,7 @@ namespace WebApplication2.Controllers
         [Route("updateCategories")]
         public async Task<IActionResult> UpdateBrand([FromBody] BrandForUpdateDto brandForUpdate )
         {
-            var brand = await _repo.GetAll()
+            var brand = await _repo.GetAllQueryable()
                 .Include(x => x.BrandCategories)
                     .ThenInclude(x => x.Category)
                 .Where(x => x.BrandId == brandForUpdate.BrandId).SingleOrDefaultAsync();

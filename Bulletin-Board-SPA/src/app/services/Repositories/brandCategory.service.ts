@@ -34,9 +34,10 @@ export class BrandCategoryService {
     return this.http.get<BrandCategory>(this.baseUrl + '/' + `${id}`);
   }
 
-  create(brandCategory: BrandCategory): Observable<any> {
-    return this.http.post(this.baseUrl, brandCategory);
+  create(brand: string, category: string): Observable<any> {
+    return this.http.post(this.baseUrl, { brand, category });
   }
+  
   delete(brandCategory: BrandCategory): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + brandCategory.brandCategoryId);
   }

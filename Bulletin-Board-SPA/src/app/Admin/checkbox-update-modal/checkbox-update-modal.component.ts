@@ -25,9 +25,7 @@ export class CheckboxUpdateModalComponent implements OnInit {
   editTitle: boolean;
 
   constructor(@Inject(MAT_DIALOG_DATA) public injectedData, private toastr: ToastrService,
-    private dialog: MatDialog) { }
-
-
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     this.editTitle = this.injectedData.editTitle;

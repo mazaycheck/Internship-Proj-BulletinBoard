@@ -109,7 +109,7 @@ export class AdtableComponent implements OnInit, OnChanges {
     this.adservice.getAds(this.queryOptions).subscribe(
       response => {
         if (!response) {
-          this.toast.warning('No data!');
+          this.toast.warning('No content!');
           this.advertisements = [];
           return;
         }

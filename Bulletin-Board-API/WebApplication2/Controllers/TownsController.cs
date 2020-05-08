@@ -27,7 +27,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var towns = await _repo.GetAll().ToListAsync();
+            var towns = await _repo.GetAllQueryable().ToListAsync();
             return Ok(towns);
         }
 
