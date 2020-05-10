@@ -15,7 +15,7 @@ export class UserprofileComponent implements OnInit {
   userId: number;
   userInfo: UserForDetail;
   adverts: Advert[] = [];
-  columns: string[] = ['title', 'price', 'category',  'date'];
+  columns: string[] = ['Title', 'Price', 'Category', 'CreateDate'];
   constructor(private route: ActivatedRoute, private userservice: UserService, private advertService: AdvertService) { }
   ngOnInit() {
     this.userId = +this.route.snapshot.paramMap.get('id');

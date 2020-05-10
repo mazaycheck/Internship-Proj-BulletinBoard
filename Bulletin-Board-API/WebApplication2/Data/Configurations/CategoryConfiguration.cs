@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebApplication2.Models;
 
 namespace WebApplication2.Data.Configurations
@@ -12,7 +8,6 @@ namespace WebApplication2.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-
             builder.HasIndex(x => x.Title).IsUnique();
             builder.HasData(
                 new Category() { CategoryId = 1, Title = "Vehicles"},

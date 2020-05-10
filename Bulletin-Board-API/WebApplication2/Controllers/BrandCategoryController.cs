@@ -22,15 +22,27 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string category, string brand)
         {
-            var data = await _brandCategoryService.GetAll(category, brand);
-            return Ok(data);
-        }
+            var brandCategoryRelations = await _brandCategoryService.GetAllRelations(category, brand);
 
+            if(brandCategoryRelations.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(brandCategoryRelations);
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await _brandCategoryService.GetById(id));
+            var brandCategoryRelation = await _brandCategoryService.GetRelationById(id);
+
+            if(brandCategoryRelation == null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -40,11 +52,12 @@ namespace WebApplication2.Controllers
             try
             {
                 BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(brandCategoryForCreate);
+
                 return StatusCode(201, newBrandCategory);
             }
             catch(NullReferenceException ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -59,7 +72,7 @@ namespace WebApplication2.Controllers
             try
             {
                 await _brandCategoryService.DeleteRelation(id);
-                return Ok($"Removed successfully relation with id: {id}");
+                return Ok($"Removed relation with id: {id}");
             }
             catch (NullReferenceException ex)
             {

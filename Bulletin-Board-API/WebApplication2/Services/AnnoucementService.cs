@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,15 +21,16 @@ namespace WebApplication2.Services
     {
         private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHost;        
+        private readonly IWebHostEnvironment _webHost;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
 
-        public AnnoucementService(IAnnoucementRepository annoucementRepo, IMapper mapper, IWebHostEnvironment webHost,  IHttpContextAccessor contextAccessor, IGenericRepository<BrandCategory> brandCategoryRepo)
+        public AnnoucementService(IAnnoucementRepository annoucementRepo, IMapper mapper, IWebHostEnvironment webHost, IHttpContextAccessor contextAccessor, IGenericRepository<BrandCategory> brandCategoryRepo)
         {
             _annoucementRepo = annoucementRepo;
+            _annoucementRepo = annoucementRepo;
             _mapper = mapper;
-            _webHost = webHost;            
+            _webHost = webHost;
             _contextAccessor = contextAccessor;
             _brandCategoryRepo = brandCategoryRepo;
         }
@@ -37,12 +39,15 @@ namespace WebApplication2.Services
         {
             Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
             annoucement.UserId = GetUserIdFromClaims();
-            if (! await _brandCategoryRepo.Exists(annoucementDto.BrandCategoryId))
+            if (!await _brandCategoryRepo.Exists(annoucementDto.BrandCategoryId))
             {
                 throw new ArgumentException("No such category / brand combination");
             }
+            annoucement.CreateDate = DateTime.Now;
+            annoucement.ExpirationDate = DateTime.Now.AddDays(30);
+            annoucement.IsActive = true;
             await _annoucementRepo.Create(annoucement);
-            var images = annoucementDto.Photo;
+            List<IFormFile> images = annoucementDto.Photo;
             if (images != null)
             {
                 try
@@ -51,19 +56,26 @@ namespace WebApplication2.Services
                 }
                 catch
                 {
-                    throw new Exception("Could not save images"); 
+                    throw new Exception("Could not save images");
                 }
-                
             }
             return _mapper.Map<AnnoucementViewDto>(annoucement);
         }
 
-
-
         public async Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
         {
-            Annoucement annoucement = await _annoucementRepo.GetById(annoucementDto.AnnoucementId);
-            if(annoucement == null)
+            var propertiesToInclude = new List<Expression<Func<Annoucement, object>>>
+            {
+                annoucement => annoucement.User
+            };
+
+            var collectionsToInclude = new List<Expression<Func<Annoucement, IEnumerable<object>>>>
+            {
+                annoucement => annoucement.Photos
+            };
+            Annoucement annoucementFromDb = await _annoucementRepo.GetById(annoucementDto.AnnoucementId, propertiesToInclude, collectionsToInclude);
+
+            if (annoucementFromDb == null)
             {
                 throw new NullReferenceException($"No annoucement with such id: {annoucementDto.AnnoucementId}");
             }
@@ -72,71 +84,72 @@ namespace WebApplication2.Services
                 throw new ArgumentException("No such category / brand combination");
             }
 
+            //annoucementFromDb.CreateDate = annoucementFromDb.CreateDate;
+            //annoucementFromDb.ExpirationDate = annoucementFromDb.ExpirationDate;
+            //annoucementFromDb.Photos = annoucementFromDb.Photos;
 
-            if (UserIdFromClaimsEquals(annoucement.UserId)) {
-                _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucement);
-                await _annoucementRepo.Update(annoucement);
-                var images = annoucementDto.Photo;
+            if (UserIdFromClaimsEquals(annoucementFromDb.UserId))
+            {
+                _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucementFromDb);
+                await _annoucementRepo.Update(annoucementFromDb);
+                List<IFormFile> images = annoucementDto.Photo;
                 if (images != null)
                 {
-                    await SaveAnnoucementImages(annoucement, images);
+                    await SaveAnnoucementImages(annoucementFromDb, images);
                 }
-                return _mapper.Map<AnnoucementViewDto>(annoucement);
+                return _mapper.Map<AnnoucementViewDto>(annoucementFromDb);
             }
             else
             {
                 throw new UnauthorizedAccessException("You cannot edit other user's annoucement");
-            }            
+            }
         }
 
-        public async Task<PagedData<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
+        public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
                      PaginateParams paginateParams, OrderParams orderParams)
         {
-            var annoucements = _annoucementRepo.GetAllQueryable();
-            IQueryable<AnnoucementViewDto> annoucementsDto = annoucements.ProjectTo<AnnoucementViewDto>(_mapper.ConfigurationProvider);
-            var filteredAnnoucements = annoucementsDto.ApplySeachQuery(filterOptions);
-            if (filteredAnnoucements.Count() > 0)
+            PageDataContainer<Annoucement> pagedData = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
+            if (pagedData == null)
             {
-                var orderedAnnoucements = filteredAnnoucements.OrderAnnoucements(orderParams);
-                var pageData = await PagedData<AnnoucementViewDto>.Paginate(orderedAnnoucements, paginateParams);
-                return pageData;
+                throw new NullReferenceException("No data");
             }
-            else
-            {
-                return null;
-            }
+
+            PageDataContainer<AnnoucementViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementViewDto>>(pagedData);
+
+            return pagedViewData;
+
         }
 
         public async Task<AnnoucementViewDto> GetAnnoucementById(int id)
         {
-            var annoucement = await _annoucementRepo.GetById(id);
+
+            Annoucement annoucement = await _annoucementRepo.GetAnnoucementById(id);
             if (annoucement != null)
             {
-                return  _mapper.Map<AnnoucementViewDto>(annoucement);
+                return _mapper.Map<AnnoucementViewDto>(annoucement);
             }
             return null;
         }
 
         public async Task<bool> DeleteAnnoucementById(int annoucementId)
-        {                                    
-            var annoucement = await _annoucementRepo.GetById(annoucementId);
+        {
+            Annoucement annoucement = await _annoucementRepo.GetById(annoucementId);
 
-            if(annoucement == null)
+            if (annoucement == null)
             {
                 throw new NullReferenceException($"No annoucement with such id: {annoucementId}");
             }
 
-            if(UserHasRequiredRoles("Admin", "Moderator") || UserIdFromClaimsEquals(annoucementId))
+            if (UserHasRequiredRoles("Admin", "Moderator") || UserIdFromClaimsEquals(annoucementId))
             {
                 await _annoucementRepo.Delete(annoucement);
                 DeleteFolderWithAnnoucementPhotos(annoucement.AnnoucementId);
                 return true;
             }
-
             else
             {
                 throw new UnauthorizedAccessException("You dont have rights to delete other member's annoucement");
-            }  
+            }
         }
 
         private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
@@ -151,19 +164,19 @@ namespace WebApplication2.Services
         private void AddPhotosToAnnoucement(Annoucement annoucement, List<string> listOfImgUrls)
         {
             annoucement.Photos = new List<Photo>();
-            foreach (var photoPath in listOfImgUrls)
+            foreach (string photoPath in listOfImgUrls)
             {
                 annoucement.Photos.Add(new Photo() { PhotoUrl = photoPath });
             }
         }
 
         private List<string> UploadImages(List<IFormFile> formImages, string folderName)
-        {            
-            var images = ImageFileProcessor.ConvertIFormFileToImage(formImages);
+        {
+            List<Image> images = ImageFileProcessor.ConvertIFormFileToImage(formImages);
             ImageFileProcessor.DeleteFolder(folderName);
             List<string> listOfImgUrls = ImageFileProcessor.UploadFilesOnServer(images, folderName);
-            return listOfImgUrls;            
-        }    
+            return listOfImgUrls;
+        }
 
         private void DeleteFolderWithAnnoucementPhotos(int annoucementId)
         {
@@ -176,10 +189,9 @@ namespace WebApplication2.Services
             return Path.Combine(_webHost.WebRootPath, "images", $"{annoucementId}");
         }
 
-
         private bool UserIdFromClaimsEquals(int id)
         {
-            var user = _contextAccessor.HttpContext.User;
+            ClaimsPrincipal user = _contextAccessor.HttpContext.User;
             if (user.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
             {
                 return id == Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -192,10 +204,10 @@ namespace WebApplication2.Services
 
         private int GetUserIdFromClaims()
         {
-            var user = _contextAccessor.HttpContext.User;
+            ClaimsPrincipal user = _contextAccessor.HttpContext.User;
             if (user.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
             {
-                return  Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
+                return Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
             }
             else
             {
@@ -205,15 +217,15 @@ namespace WebApplication2.Services
 
         private bool UserHasRequiredRoles(params string[] roles)
         {
-            var user = _contextAccessor.HttpContext.User;
+            ClaimsPrincipal user = _contextAccessor.HttpContext.User;
             if (user.HasClaim(x => x.Type == ClaimTypes.Role))
             {
-                var result =  roles.Any(role => user.IsInRole(role));
+                bool result = roles.Any(role => user.IsInRole(role));
                 if (!result)
                 {
                     throw new UnauthorizedAccessException();
                 }
-                else 
+                else
                     return true;
             }
             else

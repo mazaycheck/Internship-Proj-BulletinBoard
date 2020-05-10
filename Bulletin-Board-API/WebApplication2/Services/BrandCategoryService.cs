@@ -25,34 +25,38 @@ namespace WebApplication2.Services
             _categoryRepo = categoryRepo;
         }
 
-        public async Task<List<BrandCategoryForViewDto>> GetAll(string categoryTitle, string brandTitle)
+        public async Task<List<BrandCategoryForViewDto>> GetAllRelations(string categoryTitle, string brandTitle)
         {
-
             var includes = new List<Expression<Func<BrandCategory, object>>>()
             {
                 x => x.Category,
                 y => y.Brand
             };
+
             var filters = new List<Expression<Func<BrandCategory, bool>>>()
             {
                 x => x.Category.Title.Contains(categoryTitle ?? ""),
                 y => y.Brand.Title.Contains(brandTitle ?? "")
             };
-            var brandCategories = await _brandCategoryRepo.GetAllIncludeFilter(includes, filters);
 
-            var dataForView = brandCategories.Select(x => _mapper.Map<BrandCategoryForViewDto>(x)).ToList();
+            List<BrandCategory> brandCategories = await _brandCategoryRepo.GetAll(includes, filters);
+            List<BrandCategoryForViewDto> brandCategoriesDto = brandCategories.Select(x => _mapper.Map<BrandCategoryForViewDto>(x))
+                .OrderBy(x => x.CategoryTitle)
+                    .ThenBy(x => x.BrandTitle)
+                .ToList();
 
-            return dataForView;
+            return brandCategoriesDto;
         }
 
-        public async Task<BrandCategoryForViewDto> GetById(int id)
+        public async Task<BrandCategoryForViewDto> GetRelationById(int id)
         {
             var navigationProperties = new List<Expression<Func<BrandCategory, object>>>
             {
                 p => p.Brand,
                 k => k.Category
             };
-            BrandCategory brandCategory = await _brandCategoryRepo.GetByIdInclude(id, navigationProperties);
+
+            BrandCategory brandCategory = await _brandCategoryRepo.GetById(id, navigationProperties, null);
 
             return _mapper.Map<BrandCategoryForViewDto>(brandCategory);
         }
@@ -61,36 +65,39 @@ namespace WebApplication2.Services
         {
             string brandTitle = brandCategoryForCreate.Brand;
             string categoryTitle = brandCategoryForCreate.Category;
-            var brandFromDb = (await _brandRepo.FindFirst(x => x.Title == brandTitle));
-            var categoryFromDb = (await _categoryRepo.FindFirst(x => x.Title == categoryTitle));
 
-            if (brandFromDb == null || categoryFromDb == null)
+            Category categoryFromDb = await _categoryRepo.FindFirst(x => x.Title == categoryTitle) 
+                ?? throw new NullReferenceException("No such category");
+
+            Brand brandFromDb = await _brandRepo.FindFirst(x => x.Title == brandTitle) 
+                ?? throw new NullReferenceException("No such brand");
+
+            var filters = new Expression<Func<BrandCategory, bool>>[]
             {
-                throw new NullReferenceException("No such brand or category");
-            }
+                x => x.CategoryId == categoryFromDb.CategoryId,
+                y => y.BrandId == brandFromDb.BrandId
+            };
 
-            var brandCat = new BrandCategory() { Brand = brandFromDb, Category = categoryFromDb };
-            bool found = await _brandCategoryRepo.Exists(x => x == brandCat);
+            if (await _brandCategoryRepo.Exists(filters))
+                throw new ArgumentException($"This relation already exists: {categoryTitle} / {brandTitle}");
 
-            if (found)
-            {
-                throw new ArgumentException($"This relation already exists: {brandTitle}, {categoryTitle}");
-            }
+            var brandCatetogyRelation = new BrandCategory() { BrandId = brandFromDb.BrandId, CategoryId = categoryFromDb.CategoryId };
+            await _brandCategoryRepo.Create(brandCatetogyRelation);
 
-            await _brandCategoryRepo.Create(brandCat);
-
-            return _mapper.Map<BrandCategoryForViewDto>(brandCat);
-
+            return _mapper.Map<BrandCategoryForViewDto>(brandCatetogyRelation);
         }
 
         public async Task<bool> DeleteRelation(int brandCategoryId)
         {
-            var brandCategory = await _brandCategoryRepo.GetById(brandCategoryId);
+            BrandCategory brandCategory = await _brandCategoryRepo.GetById(brandCategoryId);
+
             if (brandCategory == null)
             {
                 throw new NullReferenceException($"No brand category relation with id: {brandCategoryId}");
             }
+
             await _brandCategoryRepo.Delete(brandCategory);
+
             return true;
         }
     }

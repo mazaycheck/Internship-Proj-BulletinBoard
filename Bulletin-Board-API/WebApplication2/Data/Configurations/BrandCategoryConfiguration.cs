@@ -1,17 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebApplication2.Models;
 
 namespace WebApplication2.Data.Configurations
 {
     public class BrandCategoryConfiguration : IEntityTypeConfiguration<BrandCategory>
     {
-
-
         public void Configure(EntityTypeBuilder<BrandCategory> builder)
         {
             builder.HasKey(x => x.BrandCategoryId);
@@ -130,10 +124,7 @@ namespace WebApplication2.Data.Configurations
                   new BrandCategory() { BrandCategoryId = 907, CategoryId = 9, BrandId = 97 },
                   new BrandCategory() { BrandCategoryId = 908, CategoryId = 9, BrandId = 98 },
                   new BrandCategory() { BrandCategoryId = 909, CategoryId = 9, BrandId = 99 }
-                  
-
                     );
-
         }
     }
 }

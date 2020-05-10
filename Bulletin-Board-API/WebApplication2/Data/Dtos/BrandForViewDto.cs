@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApplication2.Models;
+﻿using System.Collections.Generic;
 
 namespace WebApplication2.Data.Dtos
 {

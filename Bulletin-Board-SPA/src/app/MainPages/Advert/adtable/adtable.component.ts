@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, ViewChild } from '@angular/core';
 import { Advert } from '../../../Models/Advert';
 import { AdvertService } from '../../../services/Repositories/advert.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,7 +10,7 @@ import { GlobalsService } from 'src/app/services/global/globals.service';
 import { AdvertQueryOptions } from 'src/app/Models/AdvertQueryOptions';
 import { PageObject } from 'src/app/Models/PageObject';
 import { MatTableDataSource } from '@angular/material/table';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounce, debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -23,8 +23,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./adtable.component.css']
 })
 export class AdtableComponent implements OnInit, OnChanges {
-  @Input() displayedColumns: string[] = ['title', 'description', 'price', 'category', 'town', 'date', 'manage'];
+  @Input() displayedColumns: string[] = ['Title', 'Description', 'Price', 'Category', 'Town', 'CreateDate', 'Manage'];
   @Input() userId = 0;
+  @ViewChild('paginator') paginator: MatPaginator;
   advertisements: Advert[] = [];
   categories: Category[] = [];
   queryOptions: AdvertQueryOptions;
@@ -45,6 +46,8 @@ export class AdtableComponent implements OnInit, OnChanges {
   public set optionSelected(newValue) {
     this.queryOptions.category = newValue;
     this._optionSelected = newValue;
+    this.paginator.pageIndex = 0;
+    this.queryOptions.pageNumber = 1;
     this.refresh();
   }
 
@@ -55,11 +58,11 @@ export class AdtableComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    // tslint:disable-next-line: forin
-    if (changes.optionSelected) {
-      this.queryOptions.category = this.optionSelected;
-      this.refresh();
-    }
+    // // tslint:disable-next-line: forin
+    // if (changes.optionSelected) {
+    //   this.queryOptions.category = this.optionSelected;
+    //   this.refresh();
+    // }
   }
 
   onOptionSelected(option: string) {
@@ -100,8 +103,8 @@ export class AdtableComponent implements OnInit, OnChanges {
   }
 
   selectChanged($event) {
-
     this.queryOptions.category = $event.target.value;
+    this.queryOptions.pageNumber = 1;
     this.refresh();
   }
 

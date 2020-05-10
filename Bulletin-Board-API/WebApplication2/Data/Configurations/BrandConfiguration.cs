@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebApplication2.Models;
 
 namespace WebApplication2.Data.Configurations
@@ -83,7 +79,6 @@ namespace WebApplication2.Data.Configurations
            new Brand() { BrandId = 68, Title = "Longines" },
            new Brand() { BrandId = 69, Title = "Citizen" },
 
-
            new Brand() { BrandId = 70, Title = "ROCA " },
            new Brand() { BrandId = 71, Title = "Vitra" },
            new Brand() { BrandId = 72, Title = "Ikea" },
@@ -94,7 +89,6 @@ namespace WebApplication2.Data.Configurations
            new Brand() { BrandId = 77, Title = "Ekomia" },
            new Brand() { BrandId = 78, Title = "B&B Italia" },
            new Brand() { BrandId = 79, Title = "Minotti" },
-
 
            new Brand() { BrandId = 80, Title = "Electrolux" },
            new Brand() { BrandId = 81, Title = "Whirlpool" },

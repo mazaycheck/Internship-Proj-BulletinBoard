@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication2.Data.Dtos
 {
@@ -10,6 +6,7 @@ namespace WebApplication2.Data.Dtos
     {
         [Required]
         public int BrandId { get; set; }
+
         public string Title { get; set; }
         public string[] Categories { get; set; }
     }

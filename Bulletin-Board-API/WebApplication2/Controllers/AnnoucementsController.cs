@@ -28,7 +28,7 @@ namespace WebApplication2.Controllers
         public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilter filterOptions, 
             [FromQuery]PaginateParams paginateParams, [FromQuery]OrderParams orderByParams)
         {
-            PagedData<AnnoucementViewDto> pagedObject = await _service.GetAnnoucements(filterOptions, paginateParams, orderByParams);
+            PageDataContainer<AnnoucementViewDto> pagedObject = await _service.GetAnnoucements(filterOptions, paginateParams, orderByParams);
             if (pagedObject != null) 
             {                
                 return Ok(pagedObject);

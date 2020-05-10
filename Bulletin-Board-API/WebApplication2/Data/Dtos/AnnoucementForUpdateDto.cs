@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebApplication2.Data.Dtos
 {
@@ -11,6 +9,7 @@ namespace WebApplication2.Data.Dtos
     {
         [Required]
         public int AnnoucementId { get; set; }
+
         [Required]
         [MaxLength(100, ErrorMessage = "Maximum title lengh is 100 characters")]
         public string Title { get; set; }
@@ -21,9 +20,9 @@ namespace WebApplication2.Data.Dtos
         [Required]
         [Range(1, 9999999)]
         public int Price { get; set; }
-        
+
         public virtual List<IFormFile> Photo { get; set; }
-       
+
         [Required]
         [Range(1, int.MaxValue)]
         public int BrandCategoryId { get; set; }

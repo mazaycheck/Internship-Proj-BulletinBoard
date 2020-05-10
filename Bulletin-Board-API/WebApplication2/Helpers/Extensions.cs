@@ -1,15 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApplication2.Models;
-
-namespace WebApplication2.Helpers
+﻿namespace WebApplication2.Helpers
 {
-
     //public class DataSeedingContext : DbContext
     //{
     //    private readonly DbContextOptions<DataSeedingContext> options;
@@ -21,7 +11,6 @@ namespace WebApplication2.Helpers
 
     //    public DbSet<User> Users { get; set; }
     //}
-
 
     //public static class MyExtensions
     //{
@@ -52,5 +41,4 @@ namespace WebApplication2.Helpers
     //        context.SaveChanges();
     //    }
     //}
-
 }

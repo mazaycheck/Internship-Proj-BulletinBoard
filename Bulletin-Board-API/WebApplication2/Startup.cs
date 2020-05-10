@@ -21,6 +21,7 @@ using SignalRChat.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using WebApplication2.Helpers;
 
 namespace WebApplication2
 {
@@ -37,18 +38,26 @@ namespace WebApplication2
         {         
             services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));                
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IAnnoucementRepository, AnnoucementRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IGenericRepository<Annoucement>, GenericRepository<Annoucement>>();
             services.AddScoped<IGenericRepository<Category>, GenericRepository<Category>>();
             services.AddScoped<IGenericRepository<Town>, GenericRepository<Town>>();
             services.AddScoped<IGenericRepository<Brand>, GenericRepository<Brand>>();
             services.AddScoped<IGenericRepository<BrandCategory>, GenericRepository<BrandCategory>>();
-            services.AddScoped<IAnnoucementService, AnnoucementService>();
-            services.AddAutoMapper(typeof(Annoucement).Assembly);
             services.AddScoped<IGenericRepository<Message>, GenericRepository<Message>>();
+            services.AddScoped<IAnnoucementRepository, AnnoucementRepository>();
+            services.AddScoped<IPageService<Annoucement>, PageService<Annoucement>>();
+            services.AddScoped<IPageService<Category>, PageService<Category>>();
+            services.AddScoped<IPageService<Town>, PageService<Town>>();
+            services.AddScoped<IPageService<Brand>, PageService<Brand>>();
+            services.AddScoped<IPageService<BrandCategory>, PageService<BrandCategory>>();
+            services.AddScoped<IPageService<Message>, PageService<Message>>();
+            services.AddAutoMapper(typeof(Annoucement).Assembly);
+            services.AddScoped<IAnnoucementService, AnnoucementService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IBrandCategoryService, BrandCategoryService>();
+            services.AddScoped<IBrandService, BrandService>();
             services.AddHttpContextAccessor();
 
             IdentityBuilder identityBuilder = services.AddIdentityCore<User>(options =>

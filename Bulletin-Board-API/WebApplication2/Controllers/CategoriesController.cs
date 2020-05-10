@@ -29,7 +29,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var categories =  await _repo.GetAllQueryable()
+            var categories =  await _repo.GetQueryableSet()
                 .Include(x=>x.BrandCategories)
                     .ThenInclude(p => p.Brand)
                 .Select(x => new CategoryForViewDto
@@ -48,7 +48,7 @@ namespace WebApplication2.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var category = await _repo.GetAllQueryable().Where(x => x.CategoryId == id)
+            var category = await _repo.GetQueryableSet().Where(x => x.CategoryId == id)
              .Include(x => x.BrandCategories)
                  .ThenInclude(p => p.Brand)
              .Select(x => new CategoryForViewDto

@@ -22,11 +22,11 @@ namespace WebApplication2.Helpers
             }
             return list;
         }
-        
+
         public static List<string> UploadFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)
         {
             var listOfImgUrls = new List<string>();
-            
+
             string smallImageFolder = Path.Combine(annoucementIdImageFolder, "small");
             string mediumImageFolder = Path.Combine(annoucementIdImageFolder, "medium");
             string largeImageFolder = Path.Combine(annoucementIdImageFolder, "large");
@@ -41,7 +41,7 @@ namespace WebApplication2.Helpers
                 string largeImageFilePath = Path.Combine(largeImageFolder, guidFileName);
                 string mediumImageFilePath = Path.Combine(mediumImageFolder, guidFileName);
                 string smallImageFilePath = Path.Combine(smallImageFolder, guidFileName);
-                
+
                 SaveImageResized(imageFile, largeImageFilePath, 1000, 1000);
                 SaveImageResized(imageFile, mediumImageFilePath, 500, 500);
                 SaveImageResized(imageFile, smallImageFilePath, 200, 200);
@@ -51,7 +51,7 @@ namespace WebApplication2.Helpers
 
             return listOfImgUrls;
         }
-      
+
         public static void SaveImageResized(Image imageFromForm, string filePath, int width, int height)
         {
             Image imageResized;
@@ -63,13 +63,13 @@ namespace WebApplication2.Helpers
                 imageResized.Save(fileStream, format);
             }
         }
-     
+
         private static void SaveImageOriginal(Image imageFromForm, string largeImageFilePath)
         {
             System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Jpeg;
 
             using (var fileStream = new FileStream(largeImageFilePath, FileMode.Create))
-            {             
+            {
                 imageFromForm.Save(fileStream, format);
             }
         }
@@ -86,8 +86,9 @@ namespace WebApplication2.Helpers
         }
 
         public static void DeleteFolder(string imagesPath)
-        {            
-            if (Directory.Exists(imagesPath)) { 
+        {
+            if (Directory.Exists(imagesPath))
+            {
                 try
                 {
                     Directory.Delete(imagesPath, true);

@@ -12,36 +12,36 @@ export class AdtablebodyComponent implements OnInit {
   @Input() displayedColumns: string[];
   @Output() sort: EventEmitter<any> = new EventEmitter<any>();
   @Output() delete: EventEmitter<any> = new EventEmitter<any>();
-  // ['title', 'description', 'price', 'category', 'town', 'date', 'manage']
+
   constructor(breakpointObserver: BreakpointObserver) {
     breakpointObserver.observe(['(max-width: 600px)']).subscribe(result => {
       this.displayedColumns = result.matches ?
-        ['title', 'price', 'date'] :
-        ['title', 'price', 'category', 'date', ];
+        ['Title', 'Price', 'CreateDate'] :
+        ['Title', 'Price', 'Category', 'CreateDate', ];
     });
 
     breakpointObserver.observe(['(max-width: 1300px)']).subscribe(result => {
       this.displayedColumns = result.matches ?
-      ['title', 'price', 'category',  'date', 'manage'] :
-        ['title',  'price', 'category', 'town', 'date', 'manage'];
+      ['Title', 'Price', 'Category',  'CreateDate', 'Manage'] :
+        ['Title',  'Price', 'Category', 'Town', 'CreateDate', 'Manage'];
     });
 
     breakpointObserver.observe(['(max-width: 1156px)']).subscribe(result => {
       this.displayedColumns = result.matches ?
-      ['title',  'price', 'category',  'date',] :
-        ['title',  'price', 'category', 'town', 'date'];
+      ['Title',  'Price', 'Category',  'CreateDate'] :
+        ['Title',  'Price', 'Category', 'Town', 'CreateDate'];
     });
 
     breakpointObserver.observe(['(max-width: 900px)']).subscribe(result => {
       this.displayedColumns = result.matches ?
-      ['title', 'price', 'date'] :
-        ['title',  'price', 'category',  'date'];
+      ['Title', 'Price', 'CreateDate'] :
+        ['Title',  'Price', 'Category',  'CreateDate'];
     });
 
     breakpointObserver.observe(['(max-width: 700px)']).subscribe(result => {
       this.displayedColumns = result.matches ?
-      ['title',  'price', 'date'] :
-      ['title',  'price', 'category',  'date'];
+      ['Title',  'Price', 'CreateDate'] :
+      ['Title',  'Price', 'Category',  'CreateDate'];
     });
   }
 

@@ -35,12 +35,13 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] PaginateParams paginateParams, [FromQuery] string query)
         {
-            var users =  _repo.GetAllQueryable()
+            var users =  _repo.GetQueryableSet()
                 .ProjectTo<UserForModeratorView>(_mapper.ConfigurationProvider);
             var filtered = users.Where(x => x.Email.Contains(query ?? "") || x.UserName.Contains(query ?? ""));
-            var pageData = await PagedData<UserForModeratorView>.Paginate(filtered, paginateParams);
+            //var pageData = await PageService<UserForModeratorView>.Paginate(filtered, paginateParams);
 
-            return Ok(pageData);
+            //return Ok(pageData);
+            return Ok();
         }
 
 

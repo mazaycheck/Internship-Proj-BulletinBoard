@@ -34,7 +34,7 @@ namespace NUnitTestProject1
 
             var mockTownsList = towns.AsQueryable().BuildMock();
 
-            _mockRepo.Setup(x => x.GetAllQueryable()).Returns(mockTownsList.Object);
+            _mockRepo.Setup(x => x.GetQueryableSet()).Returns(mockTownsList.Object);
 
             _mockRepo.Setup(x => x.GetById(5)).ReturnsAsync(new Town() { TownId = 5, Title = "New York" });
 

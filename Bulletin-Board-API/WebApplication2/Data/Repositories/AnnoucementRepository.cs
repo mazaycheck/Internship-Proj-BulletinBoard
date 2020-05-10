@@ -5,37 +5,55 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
+using WebApplication2.Helpers;
 using WebApplication2.Models;
 
 namespace WebApplication2.Data.Repositories
 {
-    public class AnnoucementRepository : IAnnoucementRepository
+    public class AnnoucementRepository : GenericRepository<Annoucement>, IAnnoucementRepository
     {
         private readonly AppDbContext _context;
+        private readonly IPageService<Annoucement> _pageService;
+        private DbSet<Annoucement> _dataSet;
 
-        public AnnoucementRepository(AppDbContext context)
+        public AnnoucementRepository(AppDbContext context, IPageService<Annoucement> pageService) : base(context)
         {
             _context = context;
-        }
-        public async Task Create(Annoucement entity)
-        {
-            entity.CreateDate = DateTime.Now;
-            entity.ExpirationDate = DateTime.Now.AddDays(30);
-            entity.IsActive = true;
-            await _context.Annoucements.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            _pageService = pageService;
+            _dataSet = _context.Annoucements;
         }
 
-        public async Task Delete(Annoucement annoucement)
-        {     
-            _context.Annoucements.Remove(annoucement);
-            await _context.SaveChangesAsync();
-            return;
+        public async Task<Annoucement> GetAnnoucementById(int id)
+        {
+            var includes = new string[]
+            {
+                $"{nameof(BrandCategory)}.{nameof(BrandCategory.Brand)}",
+                $"{nameof(BrandCategory)}.{nameof(BrandCategory.Category)}",
+                $"{nameof(User)}.{nameof(User.Town)}",
+                $"{nameof(Annoucement.Photos)}"
+            };
+
+            Expression<Func<Annoucement, bool>> condition = x => x.AnnoucementId == id;
+            var annoucement = await GetSingle(condition, includes);
+
+            return annoucement;
         }
 
-        public IQueryable<Annoucement> GetAllQueryable()
+
+        public async Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilter filterOptions,
+                     PaginateParams paginateParams, OrderParams orderParams)
         {
-            return _context.Annoucements.AsNoTracking()
+            _dataSet = _context.Annoucements;
+            IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
+            var filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
+            var orderedAnnoucements = OrderAnnoucements(filteredAnnoucements, orderParams);
+            return await _pageService.Paginate(orderedAnnoucements, paginateParams);
+        }
+
+        private static IQueryable<Annoucement> IncludeProperties(DbSet<Annoucement> dataSet)
+        {
+            return dataSet
+                .AsNoTracking()
                 .Include(a => a.BrandCategory)
                     .ThenInclude(b => b.Brand)
                 .Include(a => a.BrandCategory)
@@ -44,103 +62,53 @@ namespace WebApplication2.Data.Repositories
                     .ThenInclude(t => t.Town)
                 .Include(p => p.Photos);
         }
-    
-        public async Task<Annoucement> GetById(int id)
-        {            
-            return await GetAllQueryable().SingleOrDefaultAsync(p=> p.AnnoucementId == id);
-        }
 
-        public async Task Update(Annoucement annoucementFromUser)
+        private static IQueryable<Annoucement> ApplySeachQuery(IQueryable<Annoucement> annoucements, AnnoucementFilter searchOptions)
         {
-            Annoucement annoucementFromDb = _context.Annoucements.AsNoTracking().Include(p => p.Photos).SingleOrDefault(x =>  x.AnnoucementId == annoucementFromUser.AnnoucementId);
-            if(annoucementFromDb == null)
+            if (searchOptions.UserId > 0)
             {
-                throw new NullReferenceException("No annoucement with id:" + annoucementFromUser.AnnoucementId);
+                annoucements = annoucements.Where(x => x.UserId == searchOptions.UserId);
             }
-            annoucementFromUser.CreateDate = annoucementFromDb.CreateDate;
-            annoucementFromUser.ExpirationDate = annoucementFromDb.ExpirationDate;
-            annoucementFromUser.Photos = annoucementFromDb.Photos;
-            _context.Update(annoucementFromUser);
-            //context.Entry(annoucementFromDb).CurrentValues.SetValues(annoucementFromUser);
-            await _context.SaveChangesAsync();
-        }
 
-        public async Task UpdateFromDto(AnnoucementPartialUpdateDto annoucementDto)
-        {
-            var annoucementFromDb = await _context.Annoucements.FindAsync(annoucementDto.AnnoucementId);
-            _context.Entry(annoucementFromDb).CurrentValues.SetValues(annoucementDto);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<int> Save()
-        {
-            var rowcount = await _context.SaveChangesAsync();
-            return rowcount;
-        }
-
-        public async Task<int> DeleteAllFromUser(int id)
-        {
-            
-            using (var trans = _context.Database.BeginTransaction())
+            if (!string.IsNullOrWhiteSpace(searchOptions.Category))
             {
-                try
+                annoucements = annoucements.Where(x => x.BrandCategory.Category.Title.ToLower().Contains(searchOptions.Category.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchOptions.Query))
+            {
+                annoucements = annoucements.Where(x => x.Title.ToLower().Contains(searchOptions.Query.ToLower()) || x.Description.ToLower().Contains(searchOptions.Query.ToLower()));
+            }
+
+            return annoucements;
+        }
+
+        private static IQueryable<Annoucement> OrderAnnoucements(IQueryable<Annoucement> annoucements, OrderParams orderParams)
+        {
+            IQueryable<Annoucement> orderedAnnoucements;
+
+            if (orderParams.Direction == "desc")
+            {
+                switch (orderParams.OrderBy?.ToLower())
                 {
-                    //var annoucementsToDelete = await _context.Annoucements.Where(x => x.UserId == id).ToListAsync();
-                    var rowcount = _context.Database.ExecuteSqlInterpolated($"DELETE FROM Annoucements WHERE UserId = {id}");
-                    await trans.CommitAsync();
-                    return rowcount;
+                    case "title": orderedAnnoucements = annoucements.OrderByDescending(x => x.Title); break;
+                    case "price": orderedAnnoucements = annoucements.OrderByDescending(x => x.Price); break;
+                    case "date": orderedAnnoucements = annoucements.OrderByDescending(x => x.CreateDate); break;
+                    default: orderedAnnoucements = annoucements.OrderByDescending(x => x.CreateDate); break;
                 }
-                catch (Exception e)
+            }
+            else
+            {
+                switch (orderParams.OrderBy?.ToLower())
                 {
-                    await trans.RollbackAsync();
-                    return 0;
+                    case "title": orderedAnnoucements = annoucements.OrderBy(x => x.Title); break;
+                    case "price": orderedAnnoucements = annoucements.OrderBy(x => x.Price); break;
+                    case "date": orderedAnnoucements = annoucements.OrderBy(x => x.CreateDate); break;
+                    default: orderedAnnoucements = annoucements.OrderBy(x => x.CreateDate); break;
                 }
-            }                                    
-        }
+            }
 
-        public async Task<bool> Exists(int entityId)
-        {
-            return await _context.Annoucements.AnyAsync(p => p.AnnoucementId == entityId);
-        }
-
-        public IQueryable<Annoucement> GetByIdQueryable(int id)
-        {
-            return _context.Annoucements.Where(x => x.AnnoucementId == id);
-        }
-
-        public Task<List<Annoucement>> GetAllInclude(params Expression<Func<Annoucement, object>>[] includes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Annoucement> GetByIdInclude(int id, string[] references, string[] collections = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Annoucement> GetByIdInclude(int id, List<Expression<Func<Annoucement, object>>> references, List<Expression<Func<Annoucement, IEnumerable<object>>>> collections = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Exists(params Expression<Func<Annoucement, bool>>[] expressions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Exists(List<Expression<Func<Annoucement, bool>>> expressions, List<Expression<Func<Annoucement, object>>> references)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Annoucement> FindFirst(params Expression<Func<Annoucement, bool>>[] expressions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Annoucement>> GetAllIncludeFilter(List<Expression<Func<Annoucement, object>>> includes, List<Expression<Func<Annoucement, bool>>> filters)
-        {
-            throw new NotImplementedException();
+            return orderedAnnoucements;
         }
     }
 }

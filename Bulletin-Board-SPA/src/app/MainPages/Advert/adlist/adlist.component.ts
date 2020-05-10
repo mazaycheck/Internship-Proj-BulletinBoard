@@ -28,7 +28,7 @@ export class AdlistComponent implements OnInit, OnChanges {
   presentationMode: string;
   basePhotoUrl = 'http://localhost:5000/images/';
   pageObject: PageObject;
-  columns: string[] = ['title', 'price', 'category', 'town', 'date', 'manage'];
+  columns: string[] = ['Title', 'Price', 'Category', 'Town', 'CreateDate', 'Manage'];
   pageEvent: PageEvent;
   length = 1000;
   pageSize = 10;
@@ -77,7 +77,7 @@ export class AdlistComponent implements OnInit, OnChanges {
     this.filter = new FormControl('');
     this.subscribeToSearchField();
     this.presentationMode = this.globals.displayAdvertStyle;
-    this.refresh();
+    // this.refresh();
     this.catservice.getAll().subscribe(
       response => {
         this.categories = response;

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WebApplication2.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using WebApplication2.Helpers;
 
 namespace WebApplication2.Data.Repositories
 {
@@ -58,12 +59,12 @@ namespace WebApplication2.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<User>> GetAllIncludeFilter(List<Expression<Func<User, object>>> includes, List<Expression<Func<User, bool>>> filters)
+        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> includes, List<Expression<Func<User, bool>>> filters)
         {
             throw new NotImplementedException();
         }
 
-        public IQueryable<User> GetAllQueryable()
+        public IQueryable<User> GetQueryableSet()
         {
             return _context.Users.AsNoTracking().Include(x => x.Town).Include(x => x.UserRoles);            
         }
@@ -83,7 +84,7 @@ namespace WebApplication2.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<User> GetByIdInclude(int id, List<Expression<Func<User, object>>> references, List<Expression<Func<User, IEnumerable<object>>>> collections = null)
+        public Task<User> GetById(int id, List<Expression<Func<User, object>>> references, List<Expression<Func<User, IEnumerable<object>>>> collections = null)
         {
             throw new NotImplementedException();
         }
@@ -106,8 +107,54 @@ namespace WebApplication2.Data.Repositories
             return await _context.Users.AnyAsync(x => x.Email == email);
         }
 
-  
+        public Task<List<User>> GetAll(string[] references)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> references)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<List<User>> GetAll(string[] references, List<Expression<Func<User, bool>>> filters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll(string[] references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PageDataContainer<User>> GetPageData(int pageNumber, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PageDataContainer<User>> GetPageData(string[] references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending, int pageNumber, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PageDataContainer<User>> GetPageData(List<Expression<Func<User, object>>> references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending, int pageNumber, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetById(int id, string[] includes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetSingle(Expression<Func<User, bool>> condition, string[] includes)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using WebApplication2.Data;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Data.Repositories;
 using WebApplication2.Helpers;
 using WebApplication2.Models;
+using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
@@ -21,45 +19,31 @@ namespace WebApplication2.Controllers
     [ApiController]
     public class BrandsController : ControllerBase
     {
-        private readonly IGenericRepository<Brand> _repo;
+        private readonly IBrandService _brandService;
+        private readonly IGenericRepository<Brand> _brandRepo;
         private readonly IMapper _mapper;
         private readonly AppDbContext _context;
 
-        public BrandsController(IGenericRepository<Brand> repo, IMapper mapperConfig, AppDbContext context)
+        public BrandsController(IBrandService brandService, IGenericRepository<Brand> brandRepo, IGenericRepository<Category> categoryRepo, IGenericRepository<BrandCategory> brandCategoryRepo, IMapper mapperConfig, AppDbContext context)
         {
-            
-            _repo = repo;
+            _brandService = brandService;
+            _brandRepo = brandRepo;
             _mapper = mapperConfig;
             _context = context;
         }
 
-        
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> Get([FromQuery]AnnoucementFilter filterOptions,
             [FromQuery]PaginateParams paginateParams, [FromQuery]OrderParams orderParams)
-        {            
-            var brands = _repo.GetAllQueryable().OrderBy(x => x.Title).Include(x => x.BrandCategories).ThenInclude(x => x.Category)
-                .Select(x => new BrandForViewDto
-                {
-                    BrandId = x.BrandId,
-                    Title = x.Title,
-                    Categories = x.BrandCategories.Select(x => x.Category.Title)
-                });
-            var filtered = brands.Where(x => x.Title.Contains(filterOptions.Query ?? ""));
-            if(filtered.Count() > 0) 
-            { 
-                var paginatedData = await PagedData<BrandForViewDto>.Paginate(filtered, paginateParams);
-                return Ok(paginatedData);
-            }
+        {
+            PageService<BrandForViewDto> brands = await _brandService.GetAllBrands(filterOptions, paginateParams, orderParams);
             return NoContent();
-            
         }
 
-        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var brand = await _repo.GetById(id);
+            var brand = await _brandRepo.GetById(id);
             if (brand == null)
             {
                 return NotFound(id);
@@ -75,41 +59,40 @@ namespace WebApplication2.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
-            await _repo.Create(brand);
-            await _repo.Save();       
+
+            await _brandRepo.Create(brand);
+            await _brandRepo.Save();
             return StatusCode(201, brand);
         }
-
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [Route("updateCategories")]
-        public async Task<IActionResult> UpdateBrand([FromBody] BrandForUpdateDto brandForUpdate )
+        public async Task<IActionResult> UpdateBrand([FromBody] BrandForUpdateDto brandForUpdate)
         {
-            var brand = await _repo.GetAllQueryable()
+            var brand = await _brandRepo.GetQueryableSet()
                 .Include(x => x.BrandCategories)
                     .ThenInclude(x => x.Category)
                 .Where(x => x.BrandId == brandForUpdate.BrandId).SingleOrDefaultAsync();
-            if(brand == null)
+            if (brand == null)
             {
                 return NotFound("Not found such brand");
             }
 
-            if(brand.Title != brandForUpdate.Title)
+            if (brand.Title != brandForUpdate.Title)
             {
                 brand.Title = brandForUpdate.Title;
-                await _repo.Save();
+                await _brandRepo.Save();
             }
 
             var categoriesOfBrandFromDb = brand.BrandCategories.Select(x => x.Category.Title).ToArray();
 
-            if (!categoriesOfBrandFromDb.SequenceEqual(brandForUpdate.Categories)) { 
+            if (!categoriesOfBrandFromDb.SequenceEqual(brandForUpdate.Categories))
+            {
                 await AddOrRemoveCategoriesOfBrand(brand, brandForUpdate.Categories, categoriesOfBrandFromDb);
             }
 
             return Ok();
-            
         }
 
         private async Task AddOrRemoveCategoriesOfBrand(Brand brand, string[] newCategories, string[] oldCategories)
@@ -122,7 +105,7 @@ namespace WebApplication2.Controllers
             var categoriesToRemove = oldCategories.Except(newCategories).Select(x => _context.Categories.Where(p => p.Title == x).SingleOrDefault());
             var brandCategoriesToRemove = categoriesToRemove.Select(x => _context.BrandCategories.Where(p => p.CategoryId == x.CategoryId && p.BrandId == brandId).SingleOrDefault());
 
-            if(brandCategoriesToAdd.Count() > 0)
+            if (brandCategoriesToAdd.Count() > 0)
                 _context.BrandCategories.AddRange(brandCategoriesToAdd);
             if (brandCategoriesToRemove.Count() > 0)
                 _context.BrandCategories.RemoveRange(brandCategoriesToRemove);
@@ -139,8 +122,8 @@ namespace WebApplication2.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _repo.Update(brand);
-            await _repo.Save();
+            await _brandRepo.Update(brand);
+            await _brandRepo.Save();
             return StatusCode(201, brand);
         }
 
@@ -148,13 +131,13 @@ namespace WebApplication2.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var brand = await _repo.GetById(id);
+            var brand = await _brandRepo.GetById(id);
             if (brand == null)
             {
                 return NotFound(id);
             }
-            await _repo.Delete(brand);
-            await _repo.Save();
+            await _brandRepo.Delete(brand);
+            await _brandRepo.Save();
             return Ok(brand);
         }
     }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AutoMapper;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using AutoMapper;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Models;
 
@@ -14,8 +10,12 @@ namespace WebApplication2.Helpers
         public AutoMapperConfig()
         {
             CreateMap<AnnoucementCreateDto, Annoucement>();
-            CreateMap<AnnoucementUpdateDto, Annoucement>().ForMember(dest => dest.AnnoucementId, sourse => sourse.Ignore());
-            
+            CreateMap<AnnoucementUpdateDto, Annoucement>()
+                .ForMember(dest => dest.AnnoucementId, sourse => sourse.Ignore())
+                .ForMember(dest => dest.CreateDate, sourse => sourse.Ignore())
+                .ForMember(dest => dest.ExpirationDate, sourse => sourse.Ignore())
+                .ForMember(dest => dest.Photos, sourse => sourse.Ignore());
+
             CreateMap<BrandCategory, BrandCategoryForViewDto>()
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
                 .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
@@ -36,6 +36,8 @@ namespace WebApplication2.Helpers
                  .ForMember(dest => dest.PhotoUrls, sourse => sourse
                     .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
 
+            CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementViewDto>>();
+
             CreateMap<MessageForCreateDto, Message>();
             CreateMap<Message, MessageForDetailDto>()
                 .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))
@@ -51,9 +53,7 @@ namespace WebApplication2.Helpers
                 .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id))
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
                 .ForMember(dest => dest.Roles, sourse => sourse
-                    .MapFrom(src => src.UserRoles.Select(x=> x.Role.Name).ToList()));
-                
-                
+                    .MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()));
         }
     }
 }
