@@ -7,8 +7,9 @@ namespace WebApplication2.Data.Repositories
 {
     public interface IAnnoucementRepository : IGenericRepository<Annoucement>
     {
-        Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilter filterOptions,
-                     PaginateParams paginateParams, OrderParams orderParams);
+        Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions,
+                     PageArguments paginateParams, SortingArguments orderParams);
+
         Task<Annoucement> GetAnnoucementById(int id);
     }
 }

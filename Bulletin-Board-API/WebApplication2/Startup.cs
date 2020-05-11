@@ -47,6 +47,7 @@ namespace WebApplication2
             services.AddScoped<IGenericRepository<BrandCategory>, GenericRepository<BrandCategory>>();
             services.AddScoped<IGenericRepository<Message>, GenericRepository<Message>>();
             services.AddScoped<IAnnoucementRepository, AnnoucementRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<IPageService<Annoucement>, PageService<Annoucement>>();
             services.AddScoped<IPageService<Category>, PageService<Category>>();
             services.AddScoped<IPageService<Town>, PageService<Town>>();
@@ -58,6 +59,7 @@ namespace WebApplication2
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IBrandCategoryService, BrandCategoryService>();
             services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddHttpContextAccessor();
 
             IdentityBuilder identityBuilder = services.AddIdentityCore<User>(options =>

@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.EntityFrameworkCore;
-using WebApplication2.Data;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Models;
 using WebApplication2.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication2.Controllers
 {
@@ -142,18 +135,6 @@ namespace WebApplication2.Controllers
             { 
                 return Unauthorized();
             }                  
-        }
-
-        
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Message>> DeleteMessage(int id)
-        {
-            return Ok();
-        }
-
-        private bool MessageExists(int id)
-        {
-            return true;
-        }
+        }       
     }
 }

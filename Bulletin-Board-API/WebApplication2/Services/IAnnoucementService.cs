@@ -6,8 +6,8 @@ namespace WebApplication2.Services
 {
     public interface IAnnoucementService
     {
-        Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
-            PaginateParams paginateParams, OrderParams orderParams);
+        Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+            PageArguments paginateParams, SortingArguments orderParams);
         Task<AnnoucementViewDto> GetAnnoucementById(int id);
         Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto);
         Task<bool> DeleteAnnoucementById(int id);

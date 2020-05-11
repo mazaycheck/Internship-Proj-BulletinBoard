@@ -84,10 +84,6 @@ namespace WebApplication2.Services
                 throw new ArgumentException("No such category / brand combination");
             }
 
-            //annoucementFromDb.CreateDate = annoucementFromDb.CreateDate;
-            //annoucementFromDb.ExpirationDate = annoucementFromDb.ExpirationDate;
-            //annoucementFromDb.Photos = annoucementFromDb.Photos;
-
             if (UserIdFromClaimsEquals(annoucementFromDb.UserId))
             {
                 _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucementFromDb);
@@ -105,8 +101,8 @@ namespace WebApplication2.Services
             }
         }
 
-        public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilter filterOptions,
-                     PaginateParams paginateParams, OrderParams orderParams)
+        public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+                     PageArguments paginateParams, SortingArguments orderParams)
         {
             PageDataContainer<Annoucement> pagedData = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
             if (pagedData == null)
@@ -117,12 +113,10 @@ namespace WebApplication2.Services
             PageDataContainer<AnnoucementViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementViewDto>>(pagedData);
 
             return pagedViewData;
-
         }
 
         public async Task<AnnoucementViewDto> GetAnnoucementById(int id)
         {
-
             Annoucement annoucement = await _annoucementRepo.GetAnnoucementById(id);
             if (annoucement != null)
             {

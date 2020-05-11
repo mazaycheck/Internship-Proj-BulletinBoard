@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using WebApplication2.Helpers;
+using WebApplication2.Data.Dtos;
 
 namespace WebApplication2.Data.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly AppDbContext _context;
-        private readonly IPageService<T> _pageService;
 
         public GenericRepository(AppDbContext context)
         {
@@ -100,8 +99,8 @@ namespace WebApplication2.Data.Repositories
         {
             var query = _context.Set<T>().AsQueryable();
             if (includes != null)
-            {                     
-                query = includes.Aggregate(query, (current, include) => query.Include(include));            
+            {
+                query = includes.Aggregate(query, (current, include) => query.Include(include));
             }
             var entity = await query.SingleAsync(condition);
             return entity;
@@ -158,22 +157,20 @@ namespace WebApplication2.Data.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<Expression<Func<T, object>>> orderParams, bool descending = false)
+        public async Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
             var query = _context.Set<T>().AsQueryable();
             query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
             query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
-            IOrderedQueryable<T> orderedQuery = descending ? query.OrderByDescending(orderParams[0]) : query.OrderBy(orderParams[0]);
+            var firstOrder = orderParams[0];
+            var orderedQuery = firstOrder.Descending ? query.OrderByDescending(firstOrder.OrderBy) : query.OrderBy(firstOrder.OrderBy);
 
             if (orderParams.Count > 1)
             {
-                if (descending)
-                    orderedQuery = orderParams.Aggregate(orderedQuery, (current, orderParam) => current.ThenByDescending(orderParam));
-                else
-                    orderedQuery = orderParams.Aggregate(orderedQuery, (current, orderParam) => current.ThenBy(orderParam));
+                orderedQuery = orderParams.Skip(1).Aggregate(orderedQuery, (current, orderParam) => orderParam.Descending ? current.ThenByDescending(orderParam.OrderBy) : current.ThenBy(orderParam.OrderBy));
             }
 
-            return await query.ToListAsync();
+            return await orderedQuery.ToListAsync();
         }
 
         public async Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<Expression<Func<T, object>>> orderParams, bool descending = false)
@@ -181,17 +178,50 @@ namespace WebApplication2.Data.Repositories
             var query = _context.Set<T>().AsQueryable();
             query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
             query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
-            IOrderedQueryable<T> orderedQuery = descending ? query.OrderByDescending(orderParams[0]) : query.OrderBy(orderParams[0]);
+            //IOrderedQueryable<T> orderedQuery = descending ? query.OrderByDescending(orderParams[0]) : query.OrderBy(orderParams[0]);
+            var orderedQuery = query.OrderBy(orderParams[0]);
+
+            //if (orderParams.Count > 1)
+            //{
+            //    if (descending)
+            //        orderedQuery = orderParams.Aggregate(orderedQuery, (current, orderParam) => current.ThenByDescending(orderParam));
+            //    else
+            //        orderedQuery = orderParams.Aggregate(orderedQuery, (current, orderParam) => current.ThenBy(orderParam));
+            //}
+
+            return await orderedQuery.ToListAsync();
+        }
+
+        public IOrderedQueryable<T> PrepareDataForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
+            var firstOrderParam = orderParams[0];
+            var orderedQuery = firstOrderParam.Descending ? query.OrderByDescending(firstOrderParam.OrderBy) : query.OrderBy(firstOrderParam.OrderBy);
 
             if (orderParams.Count > 1)
             {
-                if (descending)
-                    orderedQuery = orderParams.Aggregate(orderedQuery, (current, orderParam) => current.ThenByDescending(orderParam));
-                else
-                    orderedQuery = orderParams.Aggregate(orderedQuery, (current, orderParam) => current.ThenBy(orderParam));
+                orderedQuery = orderParams.Skip(1).Aggregate(orderedQuery, (current, orderParam) => orderParam.Descending ? current.ThenByDescending(orderParam.OrderBy) : current.ThenBy(orderParam.OrderBy));
             }
 
-            return await query.ToListAsync();
+            return orderedQuery;
+        }
+
+        public async Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
+            var firstOrder = orderParams[0];
+            var orderedQuery = firstOrder.Descending ? query.OrderByDescending(firstOrder.OrderBy) : query.OrderBy(firstOrder.OrderBy);
+
+            if (orderParams.Count > 1)
+            {
+                orderedQuery = orderParams.Skip(1).Aggregate(orderedQuery, (current, orderParam) => orderParam.Descending ? current.ThenByDescending(orderParam.OrderBy) : current.ThenBy(orderParam.OrderBy));
+            }
+
+            return await orderedQuery.ToListAsync();
         }
     }
 }

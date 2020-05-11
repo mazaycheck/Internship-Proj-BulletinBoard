@@ -1,6 +1,6 @@
 ﻿namespace WebApplication2.Data.Dtos
 {
-    public class AnnoucementFilter
+    public class AnnoucementFilterArguments
     {
         public string Category { get; set; }
 

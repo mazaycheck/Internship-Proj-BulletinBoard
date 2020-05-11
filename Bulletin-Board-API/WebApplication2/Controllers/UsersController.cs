@@ -33,7 +33,7 @@ namespace WebApplication2.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] PaginateParams paginateParams, [FromQuery] string query)
+        public async Task<IActionResult> GetUsers([FromQuery] PageArguments paginateParams, [FromQuery] string query)
         {
             var users =  _repo.GetQueryableSet()
                 .ProjectTo<UserForModeratorView>(_mapper.ConfigurationProvider);

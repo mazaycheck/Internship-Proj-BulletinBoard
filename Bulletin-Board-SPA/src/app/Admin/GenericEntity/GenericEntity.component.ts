@@ -67,7 +67,7 @@ export class GenericEntityComponent implements OnInit {
         this.refresh();
       },
       error => {
-        this.toastr.error('Could not delete entity: ' + entity.title);
+        this.toastr.error('Could not delete entity: ' + entity.title + error);
       }
     );
   }

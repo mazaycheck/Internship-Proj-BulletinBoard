@@ -21,18 +21,15 @@ import { CheckboxUpdateModalComponent } from '../checkbox-update-modal/checkbox-
   styleUrls: ['./brandList.component.css']
 })
 export class BrandListComponent implements OnInit {
-
-
+  
   allBrandsFromDb: Brand[] = [];
   allCategoriesFromDb: string[] = [];
   displayedColumns = ['title', 'categories', 'action'];
-
   filter = new FormControl('');
-
   newEntity: string;
 
   // Page data
-  queryOptions: { pageNumber: number, pageSize: number, query?: string, category?: string } = { pageNumber: 1, pageSize: 10 };
+  queryOptions: { pageNumber: number, pageSize: number, title?: string, category?: string } = { pageNumber: 1, pageSize: 10 };
   totalBrandsEntriesInDb: number;
   currentPageNumber: number;
   currentPageSize: number;
@@ -45,7 +42,7 @@ export class BrandListComponent implements OnInit {
     this.getAllBrands();
     this.getAllCategories();
     this.filter.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe(x => { this.queryOptions.query = x; this.getAllBrands(); });
+      .subscribe(x => { this.queryOptions.title = x; this.getAllBrands(); });
   }
 
   getAllCategories() {

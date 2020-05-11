@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using WebApplication2.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using WebApplication2.Data.Dtos;
 using WebApplication2.Helpers;
+using WebApplication2.Models;
 
 namespace WebApplication2.Data.Repositories
 {
@@ -20,16 +21,16 @@ namespace WebApplication2.Data.Repositories
 
         public async Task Create(User entity)
         {
-            if(entity == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException("User null");
-            }            
-            await _context.Users.AddAsync(entity);            
+            }
+            await _context.Users.AddAsync(entity);
             //await _context.SaveChangesAsync();
         }
 
         public async Task Delete(User user)
-        {   
+        {
             _context.Users.Remove(user);
             return;
         }
@@ -66,7 +67,7 @@ namespace WebApplication2.Data.Repositories
 
         public IQueryable<User> GetQueryableSet()
         {
-            return _context.Users.AsNoTracking().Include(x => x.Town).Include(x => x.UserRoles);            
+            return _context.Users.AsNoTracking().Include(x => x.Town).Include(x => x.UserRoles);
         }
 
         public async Task<User> GetByEmail(string email)
@@ -75,7 +76,7 @@ namespace WebApplication2.Data.Repositories
         }
 
         public async Task<User> GetById(int id)
-        {            
+        {
             return await _context.Users.Include(x => x.Town).Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 
@@ -99,7 +100,6 @@ namespace WebApplication2.Data.Repositories
         {
             var userToUpdate = _context.Users.Find(entity.Id);
             _context.Entry(userToUpdate).CurrentValues.SetValues(entity);
-           
         }
 
         public async Task<bool> UserExists(string email)
@@ -153,6 +153,21 @@ namespace WebApplication2.Data.Repositories
         }
 
         public Task<User> GetSingle(Expression<Func<User, bool>> condition, string[] includes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll(string[] references, List<Expression<Func<User, bool>>> filters, List<OrderParams<User>> orderParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOrderedQueryable<User> PrepareDataForPaging(string[] references, List<Expression<Func<User, bool>>> filters, List<OrderParams<User>> orderParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> references, List<Expression<Func<User, bool>>> filters, List<OrderParams<User>> orderParams)
         {
             throw new NotImplementedException();
         }

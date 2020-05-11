@@ -41,7 +41,7 @@ export class BrandService {
   //   return this.http.put(this.baseUrl, brand);
   // }
   update(brandId: number, title: string, categories: string[]): Observable<any> {
-    return this.http.post(this.baseUrl + '/updateCategories', { brandId, title, categories });
+    return this.http.post(this.baseUrl + '/update', { brandId, title, categories });
   }
 
 }

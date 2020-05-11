@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -39,9 +38,8 @@ namespace WebApplication2.Data.Repositories
             return annoucement;
         }
 
-
-        public async Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilter filterOptions,
-                     PaginateParams paginateParams, OrderParams orderParams)
+        public async Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions,
+                     PageArguments paginateParams, SortingArguments orderParams)
         {
             _dataSet = _context.Annoucements;
             IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
@@ -63,7 +61,7 @@ namespace WebApplication2.Data.Repositories
                 .Include(p => p.Photos);
         }
 
-        private static IQueryable<Annoucement> ApplySeachQuery(IQueryable<Annoucement> annoucements, AnnoucementFilter searchOptions)
+        private static IQueryable<Annoucement> ApplySeachQuery(IQueryable<Annoucement> annoucements, AnnoucementFilterArguments searchOptions)
         {
             if (searchOptions.UserId > 0)
             {
@@ -83,9 +81,9 @@ namespace WebApplication2.Data.Repositories
             return annoucements;
         }
 
-        private static IQueryable<Annoucement> OrderAnnoucements(IQueryable<Annoucement> annoucements, OrderParams orderParams)
+        private static IOrderedQueryable<Annoucement> OrderAnnoucements(IQueryable<Annoucement> annoucements, SortingArguments orderParams)
         {
-            IQueryable<Annoucement> orderedAnnoucements;
+            IOrderedQueryable<Annoucement> orderedAnnoucements;
 
             if (orderParams.Direction == "desc")
             {

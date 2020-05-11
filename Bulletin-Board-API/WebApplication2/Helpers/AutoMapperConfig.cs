@@ -20,6 +20,18 @@ namespace WebApplication2.Helpers
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
                 .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
 
+            CreateMap<Brand, BrandForViewDto>()
+                .ForMember(dest => dest.Categories, sourse => sourse
+                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()));
+
+            CreateMap<Category, CategoryForViewDto>()
+                .ForMember(dest => dest.Brands, sourse => sourse
+                    .MapFrom(src => src.BrandCategories.Select(x => x.Brand.Title).ToList()));
+
+            CreateMap<CategoryForCreateDto, Category>();
+
+            CreateMap<BrandForCreateDto, Brand>();
+
             CreateMap<Annoucement, AnnoucementViewDto>()
                 .ForMember(dest => dest.Id, sourse => sourse
                     .MapFrom(src => src.AnnoucementId))
@@ -37,6 +49,7 @@ namespace WebApplication2.Helpers
                     .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
 
             CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementViewDto>>();
+            CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandForViewDto>>();
 
             CreateMap<MessageForCreateDto, Message>();
             CreateMap<Message, MessageForDetailDto>()

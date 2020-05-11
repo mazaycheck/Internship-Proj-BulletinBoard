@@ -29,7 +29,7 @@ export class AdvertService {
 
   getAds(advertOptions: AdvertQueryOptions): Observable<PageObject> {
     const queryparams: HttpParams = this.getParamsFromOptions(advertOptions);
-    return this.http.get<PageObject>(`${this.baseUrl}search?` + queryparams.toString());
+    return this.http.get<PageObject>(`${this.baseUrl}all?` + queryparams.toString());
   }
 
 

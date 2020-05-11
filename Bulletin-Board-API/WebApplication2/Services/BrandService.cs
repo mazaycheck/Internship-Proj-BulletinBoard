@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using WebApplication2.Data;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Data.Repositories;
 using WebApplication2.Helpers;
@@ -16,63 +11,101 @@ namespace WebApplication2.Services
 {
     public class BrandService : IBrandService
     {
-        private readonly IGenericRepository<Brand> _brandRepo;
-        private readonly IGenericRepository<Category> _categoryRepo;
-        private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
+        private readonly IBrandRepository _brandRepo;
         private readonly IMapper _mapper;
-        private readonly AppDbContext _context;
+        private readonly IPageService<Brand> _pageService;
 
-        public BrandService(IGenericRepository<Brand> brandRepo, IGenericRepository<Category> categoryRepo, IGenericRepository<BrandCategory> brandCategoryRepo, IMapper mapper, AppDbContext context)
+        public BrandService(IBrandRepository brandRepo, IMapper mapper, IPageService<Brand> pageService)
         {
             _brandRepo = brandRepo;
-            _categoryRepo = categoryRepo;
-            _brandCategoryRepo = brandCategoryRepo;
             _mapper = mapper;
-            _context = context;
+            _pageService = pageService;
         }
 
-        public async Task<PageService<BrandForViewDto>> GetAllBrands(AnnoucementFilter filterOptions,
-            PaginateParams paginateParams, OrderParams orderParams)
+        public async Task<BrandForViewDto> CreateBrand(BrandForCreateDto brandForCreate)
         {
-            //var brands = _brandRepo.GetAllQueryable().OrderBy(x => x.Title).Include(x => x.BrandCategories).ThenInclude(x => x.Category)
-            // .Select(x => new BrandForViewDto
-            // {
-            //     BrandId = x.BrandId,
-            //     Title = x.Title,
-            //     Categories = x.BrandCategories.Select(x => x.Category.Title)
-            // });
-            
+            Brand brand =_mapper.Map<Brand>(brandForCreate);
+            await _brandRepo.Create(brand);
+            return _mapper.Map<BrandForViewDto>(brand);
+        }
 
-            var filters = new List<Expression<Func<Brand, bool>>>()
+        public async Task DeleteBrand(int id)
+        {
+            var brand = await _brandRepo.GetById(id);
+            if (brand == null)
             {
-                brand => brand.Title.Contains(filterOptions.Query ?? ""),                
-            };
-
-            var includes = new string[] { "BrandCategories.Category" };
-
-
-            var orderParameters = new List<Expression<Func<Brand, object>>>()
-            {
-                x => x.Title
-            };            
-
-            List<Brand> brands = await _brandRepo.GetAll(includes, filters, orderParameters);
-
-            if(brands.Count > 0)
-            {
-
+                throw new NullReferenceException($"No such brand with id: {id}");
             }
-            
-            //var filtered = brands.Where(x => x.Title.Contains(filterOptions.Query ?? ""));
-            //if (filtered.Count() > 0)
-            //{
-            //    var paginatedData = await PagedDataContainer<BrandForViewDto>.Paginate(filtered, paginateParams);
-            //    return paginatedData;
-            //}
+            await _brandRepo.Delete(brand);            
+        }
+
+        public async Task<PageDataContainer<BrandForViewDto>> GetAllBrands(BrandFilterArguments filterArguments,
+            PageArguments pageArguments, SortingArguments sortingArguments)
+        {
+            IOrderedQueryable<Brand> brands = _brandRepo.GetBrands(filterArguments, sortingArguments);                     
+            PageDataContainer<Brand> pagedBrands = await _pageService.Paginate(brands, pageArguments);
+            if(pagedBrands.PageData.Count > 0)
+            {
+                PageDataContainer<BrandForViewDto> pagedBrandDtos = _mapper.Map<PageDataContainer<BrandForViewDto>>(pagedBrands);
+                return pagedBrandDtos;
+            }
+
             return null;
         }
 
+        public async Task<BrandForViewDto> GetBrand(int id)
+        {
+            Brand brand = await _brandRepo.GetSingleBrand(id);
+            if(brand == null)
+            {
+                throw new NullReferenceException($"Not found brand with id: {id}");
+            }
+            return _mapper.Map<BrandForViewDto>(brand);
+        }
 
+        public async Task UpdateBrand(BrandForUpdateDto brandForUpdate)
+        {
+            Brand brandFromDb = await _brandRepo.GetSingleBrand(brandForUpdate.BrandId);
 
+            if (brandFromDb == null)
+            {
+                throw new NullReferenceException("No such brand");
+            }
+
+            if (brandFromDb.Title != brandForUpdate.Title)
+            {
+                brandFromDb.Title = brandForUpdate.Title;
+                await _brandRepo.Save();
+            }
+
+            string[] categoriesOfBrandFromDb = brandFromDb.BrandCategories.Select(x => x.Category.Title).ToArray();
+
+            if (!categoriesOfBrandFromDb.SequenceEqual(brandForUpdate.Categories))
+            {
+                await AddOrRemoveCategoriesOfBrand(brandFromDb, brandForUpdate.Categories, categoriesOfBrandFromDb);
+            }
+        }
+
+        private async Task AddOrRemoveCategoriesOfBrand(Brand brand, string[] newCategories, string[] oldCategories)
+        {
+            var brandId = brand.BrandId;
+
+            var categoriesToAdd = newCategories.Except(oldCategories);
+
+            if (categoriesToAdd.Count() > 0)
+                try
+                {
+                    await _brandRepo.UpdateWithNewCategories(brandId, categoriesToAdd);
+                }
+                catch (NullReferenceException ex)
+                {
+                    throw new ArgumentException("Invalid category", ex);              
+                }
+                
+            var categoriesToRemove = oldCategories.Except(newCategories);
+
+            if (categoriesToRemove.Count() > 0)
+                await _brandRepo.RemoveCategories(brandId, categoriesToRemove);
+        }
     }
 }

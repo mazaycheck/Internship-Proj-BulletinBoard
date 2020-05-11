@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Data.Repositories;
 using WebApplication2.Models;
+using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
@@ -18,94 +17,80 @@ namespace WebApplication2.Controllers
     
     public class CategoriesController : ControllerBase
     {
-        private readonly IGenericRepository<Category> _repo;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(IGenericRepository<Category> repo)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _repo = repo;
+            _categoryService = categoryService;
         }
-
         
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery]string filter)
         {
-            var categories =  await _repo.GetQueryableSet()
-                .Include(x=>x.BrandCategories)
-                    .ThenInclude(p => p.Brand)
-                .Select(x => new CategoryForViewDto
-                { 
-                    CategoryId = x.CategoryId, 
-                    Title = x.Title, 
-                    Brands = x.BrandCategories.Select(x => x.Brand.Title)
-                })
-                .ToListAsync();
-            return Ok(categories);
+            List<CategoryForViewDto> allCategories =  await _categoryService.GetAllCategories(filter);
+            if(allCategories == null)
+            {
+                return NoContent();
+            }
+            
+            return Ok(allCategories);
         }
-
-
-
         
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var category = await _repo.GetQueryableSet().Where(x => x.CategoryId == id)
-             .Include(x => x.BrandCategories)
-                 .ThenInclude(p => p.Brand)
-             .Select(x => new CategoryForViewDto
-             {
-                 CategoryId = x.CategoryId,
-                 Title = x.Title,
-                 Brands = x.BrandCategories.Select(x => x.Brand.Title)
-             })
-             .SingleOrDefaultAsync();
-
-            if (category == null)
+            CategoryForViewDto category = await _categoryService.GetCategory(id);
+            if(category == null)
             {
-                return NotFound(id);
+                return NotFound($"No such category with id: {id}");
             }
             return Ok(category);
+            
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Category cat)
+        public async Task<IActionResult> Post([FromBody] CategoryForCreateDto cat)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                CategoryForViewDto category = await _categoryService.CreateCategory(cat);
+                return StatusCode(201, category);
             }
-            await _repo.Create(cat);
-            await _repo.Save();
-            return StatusCode(201, cat);            
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }                                            
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Category cat)
+        public async Task<IActionResult> Put([FromBody] CategoryForCreateDto categoryForUpdate)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                CategoryForViewDto category = await _categoryService.CreateCategory(categoryForUpdate);
+                return StatusCode(201, category);
             }
-
-         
-            await _repo.Update(cat);
-            await _repo.Save();
-            return StatusCode(201, cat);
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }            
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _repo.GetById(id);
-            if (category == null)
+            try
             {
-                return NotFound(id);
+                await _categoryService.DeleteCategory(id);
+                return Ok();
             }
-            await _repo.Delete(category);
-            await _repo.Save();
-            return Ok(category);
+            catch (NullReferenceException)
+            {
+                return NotFound($"No such category with id: {id}");
+            }                        
         }
     }
 }

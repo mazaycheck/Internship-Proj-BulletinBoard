@@ -3,11 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Helpers;
-using System.Security.Claims;
 using WebApplication2.Services;
-using System.Security.Authentication;
-using System.Linq;
 
 namespace WebApplication2.Controllers
 {
@@ -24,11 +20,11 @@ namespace WebApplication2.Controllers
         
         [AllowAnonymous]
         [HttpGet]               
-        [Route("search")]        
-        public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilter filterOptions, 
-            [FromQuery]PaginateParams paginateParams, [FromQuery]OrderParams orderByParams)
+        [Route("all")]        
+        public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs, 
+            [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<AnnoucementViewDto> pagedObject = await _service.GetAnnoucements(filterOptions, paginateParams, orderByParams);
+            PageDataContainer<AnnoucementViewDto> pagedObject = await _service.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
             if (pagedObject != null) 
             {                
                 return Ok(pagedObject);

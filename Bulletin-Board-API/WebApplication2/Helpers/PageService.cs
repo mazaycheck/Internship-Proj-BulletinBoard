@@ -10,7 +10,7 @@ namespace WebApplication2.Helpers
 {
     public class PageService<T> : IPageService<T>
     {
-        private IQueryable<T> QueryableData;
+        private IOrderedQueryable<T> QueryableData;
         private readonly IMapper _mapper;
         private static int maxPageSize = 50;
         private int _pageSize;
@@ -52,50 +52,34 @@ namespace WebApplication2.Helpers
             return await QueryableData.Skip((PageNumber - 1) * PageSize).Take(PageSize).ToListAsync();
         }
 
-        public async Task<PageDataContainer<T>> Paginate(IQueryable<T> queryAbleData, PaginateParams pageParams)
+        public async Task<PageDataContainer<T>> Paginate(IOrderedQueryable<T> queryAbleData, PageArguments pageParams)
         {
             await InitializePageParams(queryAbleData, pageParams);
             return new PageDataContainer<T>(PageData, PageNumber, PageSize, TotalPages, TotalEntries);
         }
 
-        private async Task InitializePageParams(IQueryable<T> queryAbleData, PaginateParams pageParams)
+        private async Task InitializePageParams(IOrderedQueryable<T> queryAbleData, PageArguments pageParams)
         {
             QueryableData = queryAbleData;
             TotalEntries = queryAbleData.Count();
             PageSize = pageParams.PageSize;
             TotalPages = (int)Math.Ceiling((double)TotalEntries / PageSize);
-            PageNumber = pageParams.PageNumber;
-            PageData = await GetDataForCurrentPage();
+            PageNumber = pageParams.PageNumber;    
+            if(TotalEntries != 0)
+            {
+                PageData = await GetDataForCurrentPage();
+            }
+            else
+            {
+                PageData = new List<T>();
+            }
         }
 
         public static void SetMaxPageSize(int size)
         {
             maxPageSize = size;
-        }
-
-        public PageDataContainer<U> TransformData<U>()
-        {
-            var data = PageData.Select(x => _mapper.Map<U>(x)).ToList();
-
-            return new PageDataContainer<U>(data, PageNumber, PageSize, TotalPages, TotalEntries);
-        }
+        }      
     }
 
-    public class PageDataContainer<U>
-    {
-        public readonly List<U> PageData;
-        public readonly int PageNumber;
-        public readonly int PageSize;
-        public readonly int TotalEntries;
-        public readonly int TotalPages;
-
-        public PageDataContainer(List<U> pageData, int pageNumber, int pageSize, int totalPages, int totalEntries)
-        {
-            PageData = pageData;
-            PageNumber = pageNumber;
-            PageSize = pageSize;
-            TotalPages = totalPages;
-            TotalEntries = totalEntries;
-        }
-    }
+  
 }

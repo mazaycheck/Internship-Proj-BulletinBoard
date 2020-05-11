@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Services;
 
@@ -24,7 +24,7 @@ namespace WebApplication2.Controllers
         {
             var brandCategoryRelations = await _brandCategoryService.GetAllRelations(category, brand);
 
-            if(brandCategoryRelations.Count == 0)
+            if (brandCategoryRelations.Count == 0)
             {
                 return NoContent();
             }
@@ -37,7 +37,7 @@ namespace WebApplication2.Controllers
         {
             var brandCategoryRelation = await _brandCategoryService.GetRelationById(id);
 
-            if(brandCategoryRelation == null)
+            if (brandCategoryRelation == null)
             {
                 return NotFound();
             }
@@ -55,14 +55,14 @@ namespace WebApplication2.Controllers
 
                 return StatusCode(201, newBrandCategory);
             }
-            catch(NullReferenceException ex)
+            catch (NullReferenceException ex)
             {
                 return BadRequest(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                return Conflict(ex.Message);                
-            }                        
+                return Conflict(ex.Message);
+            }
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -78,7 +78,6 @@ namespace WebApplication2.Controllers
             {
                 return NotFound(ex.Message);
             }
-            
         }
     }
 }

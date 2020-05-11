@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication2.Data.Dtos
 {
-    public class PaginateParams
+    public class PageArguments
     {
         [Range(0, 1000)]
         public int PageNumber { get; set; }
