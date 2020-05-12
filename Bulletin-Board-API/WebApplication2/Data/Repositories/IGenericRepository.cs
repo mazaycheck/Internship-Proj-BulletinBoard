@@ -9,9 +9,7 @@ namespace WebApplication2.Data.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {
-        IQueryable<T> GetQueryableSet();
-
-        IOrderedQueryable<T> GetDataForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
+        IOrderedQueryable<T> GetAllForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 
         Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 

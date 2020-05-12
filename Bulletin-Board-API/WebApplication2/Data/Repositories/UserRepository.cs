@@ -31,7 +31,7 @@ namespace WebApplication2.Data.Repositories
                 new OrderParams<User> { OrderBy = (x) => x.UserName, Descending = false }
             };
 
-            IOrderedQueryable<User> query = GetDataForPaging(includes, filters, orderParameters);
+            IOrderedQueryable<User> query = GetAllForPaging(includes, filters, orderParameters);
 
             return query;
         }

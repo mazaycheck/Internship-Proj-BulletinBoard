@@ -108,7 +108,6 @@ namespace WebApplication2.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            // if user tries to modify other members's annoucement
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ex.Message);

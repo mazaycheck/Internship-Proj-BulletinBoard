@@ -38,14 +38,13 @@ namespace WebApplication2.Data.Repositories
             return annoucement;
         }
 
-        public async Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions,
-                     PageArguments paginateParams, SortingArguments orderParams)
+        public IOrderedQueryable<Annoucement> GetAnnoucementsForPaging(AnnoucementFilterArguments filterOptions,
+             PageArguments paginateParams, SortingArguments orderParams)
         {
             _dataSet = _context.Annoucements;
             IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
-            var filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
-            var orderedAnnoucements = OrderAnnoucements(filteredAnnoucements, orderParams);
-            return await _pageService.Paginate(orderedAnnoucements, paginateParams);
+            IQueryable<Annoucement> filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
+            return OrderAnnoucements(filteredAnnoucements, orderParams);
         }
 
         private static IQueryable<Annoucement> IncludeProperties(DbSet<Annoucement> dataSet)

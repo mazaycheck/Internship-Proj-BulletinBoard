@@ -11,7 +11,6 @@ namespace WebApplication2.Helpers
     public class PageService<T> : IPageService<T>
     {
         private IOrderedQueryable<T> QueryableData;
-        private readonly IMapper _mapper;
         private static int maxPageSize = 50;
         private int _pageSize;
         private int _pageNumber;
@@ -42,10 +41,6 @@ namespace WebApplication2.Helpers
             }
         }
 
-        public PageService(IMapper mapper)
-        {
-            _mapper = mapper;
-        }
 
         private async Task<List<T>> GetDataForCurrentPage()
         {

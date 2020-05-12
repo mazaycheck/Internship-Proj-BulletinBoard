@@ -33,7 +33,7 @@ namespace WebApplication2.Data.Repositories
                     Descending = (sortingArguments.Direction == "desc") }
             };
 
-            IOrderedQueryable<Brand> query = GetDataForPaging(includes, filters, orderParameters);
+            IOrderedQueryable<Brand> query = GetAllForPaging(includes, filters, orderParameters);
 
             return query;
         }

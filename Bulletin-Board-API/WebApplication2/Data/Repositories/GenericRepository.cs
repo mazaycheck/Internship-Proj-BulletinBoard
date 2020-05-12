@@ -111,7 +111,7 @@ namespace WebApplication2.Data.Repositories
             return;
         }
 
-        public IOrderedQueryable<T> GetDataForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
+        public IOrderedQueryable<T> GetAllForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
             var query = _context.Set<T>().AsQueryable();
             query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));

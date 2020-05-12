@@ -49,14 +49,8 @@ namespace WebApplication2.Controllers
                 return StatusCode(409, a.Message);
             }
 
-            if (createdUser != null)
-            {
-                return Ok(createdUser);
-            }
-            else
-            {
-                return Problem("Could not register");
-            }
+            return Ok(createdUser);
+          
         }
     }
 }

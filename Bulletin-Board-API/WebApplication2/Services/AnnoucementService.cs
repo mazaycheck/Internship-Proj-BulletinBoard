@@ -25,13 +25,15 @@ namespace WebApplication2.Services
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IImageFileProcessor _imageFileProcessor;
+        private readonly IPageService<Annoucement> _pageService;
 
         public AnnoucementService(
             IAnnoucementRepository annoucementRepo,
             IMapper mapper, IWebHostEnvironment webHost,
             IHttpContextAccessor contextAccessor,
             IGenericRepository<BrandCategory> brandCategoryRepo,
-            IImageFileProcessor imageFileProcessor
+            IImageFileProcessor imageFileProcessor,
+            IPageService<Annoucement> pageService
             )
         {
             _annoucementRepo = annoucementRepo;
@@ -41,6 +43,7 @@ namespace WebApplication2.Services
             _contextAccessor = contextAccessor;
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileProcessor = imageFileProcessor;
+            _pageService = pageService;
         }
 
         public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto)
@@ -112,13 +115,15 @@ namespace WebApplication2.Services
         public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
                      PageArguments paginateParams, SortingArguments orderParams)
         {
-            PageDataContainer<Annoucement> pagedData = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
-            if (pagedData == null)
-            {
-                throw new NullReferenceException("No data");
-            }
+            IOrderedQueryable<Annoucement> annoucements = _annoucementRepo.GetAnnoucementsForPaging(filterOptions, paginateParams, orderParams);
 
-            PageDataContainer<AnnoucementViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementViewDto>>(pagedData);
+            PageDataContainer<Annoucement> pagedAnnoucements = await _pageService.Paginate(annoucements, paginateParams);
+
+            if (pagedAnnoucements.PageData.Count == 0)
+            {
+                return null;
+            }
+            PageDataContainer<AnnoucementViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementViewDto>>(pagedAnnoucements);
 
             return pagedViewData;
         }

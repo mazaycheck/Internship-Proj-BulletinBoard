@@ -54,7 +54,7 @@ namespace WebApplication2.Services
                 new OrderParams<Town>{ OrderBy = (town) => town.Title, Descending = false}
             };
 
-            IOrderedQueryable<Town> allTowns = _repository.GetDataForPaging(references, filters, orderParams);
+            IOrderedQueryable<Town> allTowns = _repository.GetAllForPaging(references, filters, orderParams);
 
             PageDataContainer<Town> pagedTowns = await _pageService.Paginate(allTowns, pageArguments);
 
