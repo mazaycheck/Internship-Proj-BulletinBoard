@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Helpers;
 using WebApplication2.Models;
 
 namespace WebApplication2.Data.Repositories
@@ -12,7 +11,7 @@ namespace WebApplication2.Data.Repositories
     public class BrandRepository : GenericRepository<Brand>, IBrandRepository
     {
         private readonly AppDbContext _context;
-    
+
         public BrandRepository(AppDbContext context) : base(context)
         {
             _context = context;
@@ -34,8 +33,8 @@ namespace WebApplication2.Data.Repositories
                     Descending = (sortingArguments.Direction == "desc") }
             };
 
-            IOrderedQueryable<Brand> query = PrepareDataForPaging(includes, filters, orderParameters);
-            
+            IOrderedQueryable<Brand> query = GetDataForPaging(includes, filters, orderParameters);
+
             return query;
         }
 
@@ -53,10 +52,10 @@ namespace WebApplication2.Data.Repositories
 
         public async Task UpdateWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd)
         {
-            var categories = categoriesToAdd.Select(x => 
-            {                
-                var category =  _context.Categories.Where(p => p.Title == x).FirstOrDefault();
-                if(category == null)
+            var categories = categoriesToAdd.Select(x =>
+            {
+                var category = _context.Categories.Where(p => p.Title == x).FirstOrDefault();
+                if (category == null)
                 {
                     throw new NullReferenceException($"No such category: {x}");
                 }

@@ -7,8 +7,11 @@ namespace WebApplication2.Services
     public interface ICategoryService
     {
         Task<CategoryForViewDto> CreateCategory(CategoryForCreateDto newCategory);
+
         Task DeleteCategory(int id);
+
         Task<List<CategoryForViewDto>> GetAllCategories(string filter);
+
         Task<CategoryForViewDto> GetCategory(int id);
     }
 }

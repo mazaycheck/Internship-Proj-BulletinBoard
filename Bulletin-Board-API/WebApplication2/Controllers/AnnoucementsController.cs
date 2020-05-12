@@ -1,38 +1,38 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]    
+    [ApiController]
     public class AnnoucementsController : ControllerBase
-    {     
+    {
         private readonly IAnnoucementService _service;
-       
+
         public AnnoucementsController(IAnnoucementService service)
-        {    
+        {
             _service = service;
         }
-        
+
         [AllowAnonymous]
-        [HttpGet]               
-        [Route("all")]        
-        public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs, 
+        [HttpGet]
+        [Route("all")]
+        public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
             PageDataContainer<AnnoucementViewDto> pagedObject = await _service.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
-            if (pagedObject != null) 
-            {                
+            if (pagedObject != null)
+            {
                 return Ok(pagedObject);
             }
             else
             {
                 return NoContent();
-            }            
+            }
         }
 
         [AllowAnonymous]
@@ -40,7 +40,7 @@ namespace WebApplication2.Controllers
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
             AnnoucementViewDto annoucementDto = await _service.GetAnnoucementById(id);
-            if(annoucementDto == null)
+            if (annoucementDto == null)
             {
                 return NotFound($"No annoucement with id: {id}");
             }
@@ -70,24 +70,24 @@ namespace WebApplication2.Controllers
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute]int id)
-        {                
+        {
             try
             {
                 await _service.DeleteAnnoucementById(id);
             }
-            catch(NullReferenceException ex)
+            catch (NullReferenceException ex)
             {
                 return BadRequest(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ex.Message);
-            }            
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
-            return Ok();            
+            return Ok();
         }
 
         [Authorize(Roles = "Member")]

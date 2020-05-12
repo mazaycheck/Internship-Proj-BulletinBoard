@@ -6,9 +6,9 @@ using System.IO;
 
 namespace WebApplication2.Helpers
 {
-    public class ImageFileProcessor
+    public class ImageFileProcessor : IImageFileProcessor
     {
-        public static List<Image> ConvertIFormFileToImage(List<IFormFile> formFiles)
+        public List<Image> ConvertIFormFileToImage(List<IFormFile> formFiles)
         {
             List<Image> list = new List<Image>();
             foreach (var formFile in formFiles)
@@ -23,7 +23,37 @@ namespace WebApplication2.Helpers
             return list;
         }
 
-        public static List<string> UploadFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)
+        public Image ResizeImage(Image imgToResize, Size size)
+        {
+            int sourceWidth = imgToResize.Width;
+            int sourceHeight = imgToResize.Height;
+
+            float nPercent = 0;
+            float nPercentW = 0;
+            float nPercentH = 0;
+
+            nPercentW = ((float)size.Width / (float)sourceWidth);
+            nPercentH = ((float)size.Height / (float)sourceHeight);
+
+            if (nPercentH < nPercentW)
+                nPercent = nPercentH;
+            else
+                nPercent = nPercentW;
+
+            int destWidth = (int)(sourceWidth * nPercent);
+            int destHeight = (int)(sourceHeight * nPercent);
+
+            Bitmap b = new Bitmap(destWidth, destHeight);
+            Graphics g = Graphics.FromImage((Image)b);
+            //g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+            g.Dispose();
+
+            return (Image)b;
+        }
+
+        public List<string> UploadFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)
         {
             var listOfImgUrls = new List<string>();
 
@@ -52,19 +82,19 @@ namespace WebApplication2.Helpers
             return listOfImgUrls;
         }
 
-        public static void SaveImageResized(Image imageFromForm, string filePath, int width, int height)
+        public void SaveImageResized(Image imageFromForm, string filePath, int width, int height)
         {
             Image imageResized;
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                imageResized = ImageProcessor.resizeImage(imageFromForm, new Size(width, height));
+                imageResized = ResizeImage(imageFromForm, new Size(width, height));
                 System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Jpeg;
                 imageResized.Save(fileStream, format);
             }
         }
 
-        private static void SaveImageOriginal(Image imageFromForm, string largeImageFilePath)
+        private void SaveImageOriginal(Image imageFromForm, string largeImageFilePath)
         {
             System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Jpeg;
 
@@ -74,7 +104,7 @@ namespace WebApplication2.Helpers
             }
         }
 
-        private static void CreateDirectories(params string[] directories)
+        private void CreateDirectories(params string[] directories)
         {
             foreach (var dir in directories)
             {
@@ -85,7 +115,7 @@ namespace WebApplication2.Helpers
             }
         }
 
-        public static void DeleteFolder(string imagesPath)
+        public void DeleteFolder(string imagesPath)
         {
             if (Directory.Exists(imagesPath))
             {

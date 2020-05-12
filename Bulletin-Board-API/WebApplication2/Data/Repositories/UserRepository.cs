@@ -1,175 +1,49 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Helpers;
 using WebApplication2.Models;
 
 namespace WebApplication2.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly AppDbContext _context;
 
-        public UserRepository(AppDbContext context)
+        public UserRepository(AppDbContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task Create(User entity)
+        public IOrderedQueryable<User> PrepareUsersForPaging(string filter)
         {
-            if (entity == null)
+            var filters = new List<Expression<Func<User, bool>>>()
             {
-                throw new ArgumentNullException("User null");
-            }
-            await _context.Users.AddAsync(entity);
-            //await _context.SaveChangesAsync();
-        }
+                user => user.UserName.Contains(filter ?? ""),
+                user => user.Email.Contains(filter ?? ""),
+            };
 
-        public async Task Delete(User user)
-        {
-            _context.Users.Remove(user);
-            return;
-        }
+            var includes = new string[] { $"{nameof(User.UserRoles)}.{nameof(Role)}", $"{nameof(User.Town)}" };
 
-        public async Task<bool> Exists(int entityId)
-        {
-            return await _context.Users.AnyAsync(x => x.Id == entityId);
-        }
+            var orderParameters = new List<OrderParams<User>>()
+            {
+                new OrderParams<User> { OrderBy = (x) => x.UserName, Descending = false }
+            };
 
-        public Task<bool> Exists(params Expression<Func<User, bool>>[] expressions)
-        {
-            throw new NotImplementedException();
-        }
+            IOrderedQueryable<User> query = GetDataForPaging(includes, filters, orderParameters);
 
-        public Task<bool> Exists(List<Expression<Func<User, bool>>> expressions, List<Expression<Func<User, object>>> references)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> FindFirst(params Expression<Func<User, bool>>[] expressions)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAllInclude(params Expression<Func<User, object>>[] includes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> includes, List<Expression<Func<User, bool>>> filters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<User> GetQueryableSet()
-        {
-            return _context.Users.AsNoTracking().Include(x => x.Town).Include(x => x.UserRoles);
+            return query;
         }
 
         public async Task<User> GetByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
-        }
-
-        public async Task<User> GetById(int id)
-        {
-            return await _context.Users.Include(x => x.Town).Where(x => x.Id == id).SingleOrDefaultAsync();
-        }
-
-        public Task<User> GetByIdInclude(int id, string[] references, string[] collections = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetById(int id, List<Expression<Func<User, object>>> references, List<Expression<Func<User, IEnumerable<object>>>> collections = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> Save()
-        {
-            var rowncount = await _context.SaveChangesAsync();
-            return rowncount;
-        }
-
-        public async Task Update(User entity)
-        {
-            var userToUpdate = _context.Users.Find(entity.Id);
-            _context.Entry(userToUpdate).CurrentValues.SetValues(entity);
+            return await GetSingle(x => x.Email == email);
         }
 
         public async Task<bool> UserExists(string email)
         {
-            return await _context.Users.AnyAsync(x => x.Email == email);
-        }
-
-        public Task<List<User>> GetAll(string[] references)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> references)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(string[] references, List<Expression<Func<User, bool>>> filters)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(string[] references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PageDataContainer<User>> GetPageData(int pageNumber, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PageDataContainer<User>> GetPageData(string[] references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending, int pageNumber, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PageDataContainer<User>> GetPageData(List<Expression<Func<User, object>>> references, List<Expression<Func<User, bool>>> filters, List<Expression<Func<User, object>>> orderParams, bool descending, int pageNumber, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetById(int id, string[] includes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetSingle(Expression<Func<User, bool>> condition, string[] includes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(string[] references, List<Expression<Func<User, bool>>> filters, List<OrderParams<User>> orderParams)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IOrderedQueryable<User> PrepareDataForPaging(string[] references, List<Expression<Func<User, bool>>> filters, List<OrderParams<User>> orderParams)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetAll(List<Expression<Func<User, object>>> references, List<Expression<Func<User, bool>>> filters, List<OrderParams<User>> orderParams)
-        {
-            throw new NotImplementedException();
+            return await Exists(x => x.Email == email);
         }
     }
 }

@@ -89,8 +89,6 @@ export class GenericEntityComponent implements OnInit {
     this.resetTempEntity();
   }
 
-
-
   turnUpdateOffOnAllEtries() {
     this.entityList.forEach(element => {
       element.edit = false;
@@ -121,8 +119,9 @@ export class GenericEntityComponent implements OnInit {
           entity.edit = false;
         },
         error => {
-          this.toastr.error('Could not update entity : ' + entity.title);
+          this.toastr.error(error);
           entity.edit = false;
+          this.refresh();
         }
     );
   } this.temproraryEntity = new entity();

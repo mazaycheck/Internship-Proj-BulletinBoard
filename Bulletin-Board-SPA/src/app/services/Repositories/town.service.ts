@@ -13,9 +13,8 @@ export class TownService {
     this.baseUrl = this.config.baseUrl + 'api/towns';
   }
 
-
   getAll(): Observable<any> {
-    return this.http.get(this.baseUrl);
+    return this.http.get(this.baseUrl + '/public');
   }
   getById() { }
   create(town: Town): Observable<any> {

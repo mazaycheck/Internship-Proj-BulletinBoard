@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication2.Data;
+using System;
+using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Data.Repositories;
-using WebApplication2.Helpers;
-using WebApplication2.Models;
-
+using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
@@ -22,67 +12,50 @@ namespace WebApplication2.Controllers
     [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public UsersController(IUserRepository context, IMapper mapper)
+        public UsersController(IUserService userService)
         {
-            _repo = context;
-            _mapper = mapper;
+            _userService = userService;
         }
 
-        [Authorize(Roles = "Admin, Moderator")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] PageArguments paginateParams, [FromQuery] string query)
         {
-            var users =  _repo.GetQueryableSet()
-                .ProjectTo<UserForModeratorView>(_mapper.ConfigurationProvider);
-            var filtered = users.Where(x => x.Email.Contains(query ?? "") || x.UserName.Contains(query ?? ""));
-            //var pageData = await PageService<UserForModeratorView>.Paginate(filtered, paginateParams);
-
-            //return Ok(pageData);
-            return Ok();
+            PageDataContainer<UserForModeratorView> users = await _userService.GetUsers(paginateParams, query);
+            if (users == null)
+            {
+                return NoContent();
+            }
+            return Ok(users);
         }
 
-
-
-        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var userFromDb = await _repo.GetById(id);
+            UserForPublicDetail userFromDb = await _userService.GetUser(id);
             if (userFromDb == null)
             {
                 return NotFound();
             }
-            var usereDto = _mapper.Map<UserForPublicDetail>(userFromDb);
-  
-            return Ok(usereDto);
+
+            return Ok(userFromDb);
         }
 
-        [Authorize(Policy = ("ReqModOrAdmin"))]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(User user)
-        {
-            await _repo.Update(user);
-            await _repo.Save();
-
-            return Ok();
-        }
-
-        [Authorize(Policy = ("ReqModOrAdmin"))]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            var user = await _repo.GetById(id);
-            if(user == null)
+            try
             {
-                return NotFound(id);
+                await _userService.DeleteUser(id);
+                return Ok();
             }
-            await _repo.Delete(user);
-            await _repo.Save();
-            return Ok(user);
+            catch (NullReferenceException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
-
     }
 }

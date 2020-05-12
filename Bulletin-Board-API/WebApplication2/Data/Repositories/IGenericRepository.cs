@@ -11,14 +11,13 @@ namespace WebApplication2.Data.Repositories
     {
         IQueryable<T> GetQueryableSet();
 
-        IOrderedQueryable<T> PrepareDataForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
+        IOrderedQueryable<T> GetDataForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 
         Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
+
         Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 
-        //Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters);
-
-        Task<T> FindFirst(params Expression<Func<T, bool>>[] expressions);
+        Task<T> GetSingle(params Expression<Func<T, bool>>[] expressions);
 
         Task<T> GetSingle(Expression<Func<T, bool>> condition, string[] includes);
 
@@ -37,14 +36,5 @@ namespace WebApplication2.Data.Repositories
         Task Delete(T entity);
 
         Task<int> Save();
-
-        //Task<List<T>> GetAll(List<Expression<Func<T, object>>> references);
-        //Task<List<T>> GetAllInclude(List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections);
-        //Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters);
-        //Task<List<T>> GetAllIncludeFilter(List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections, List<Expression<Func<T, bool>>> filters);
-        //Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<Expression<Func<T, object>>> orderParams, bool descending = false);
-        //Task<List<T>> GetAllIncludeFilterOrderBy(List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections, List<Expression<Func<T, bool>>> filters, Expression<Func<T, object>> orderBy, bool descending);
-        //Task<bool> Exists(List<Expression<Func<T, bool>>> expressions, List<Expression<Func<T, object>>> references);
-        //Task<bool> ExistsWhereInclude(List<Expression<Func<T, bool>>> expressions, List<Expression<Func<T, object>>> references, List<Expression<Func<T, object>>> collections);
     }
 }

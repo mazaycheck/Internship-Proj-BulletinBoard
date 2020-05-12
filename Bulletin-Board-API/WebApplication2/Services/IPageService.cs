@@ -6,6 +6,6 @@ namespace WebApplication2.Helpers
 {
     public interface IPageService<T>
     {
-        Task<PageDataContainer<T>> Paginate(IOrderedQueryable<T> queryAbleData, PageArguments pageParams);        
+        Task<PageDataContainer<T>> Paginate(IOrderedQueryable<T> queryAbleData, PageArguments pageParams);
     }
 }

@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+using System;
+using WebApplication2.Data;
 using WebApplication2.Helpers;
 using WebApplication2.Models;
-using Microsoft.Extensions.DependencyInjection;
-using WebApplication2.Data;
-using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication2
 {
@@ -19,7 +15,6 @@ namespace WebApplication2
     {
         public static void Main(string[] args)
         {
-
             var hostBuilder = CreateHostBuilder(args).ConfigureLogging(
                 (context, logging) =>
                 {
@@ -30,7 +25,7 @@ namespace WebApplication2
                     logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Debug);
                 }
                 ).Build();
-            using(var servicesScope = hostBuilder.Services.CreateScope())
+            using (var servicesScope = hostBuilder.Services.CreateScope())
             {
                 var services = servicesScope.ServiceProvider;
                 try
@@ -39,11 +34,13 @@ namespace WebApplication2
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     var environment = services.GetRequiredService<IWebHostEnvironment>();
+                    var imageProcessor = services.GetRequiredService<IImageFileProcessor>();
                     context.Database.Migrate();
                     Seed.SeedUsers(userManager, roleManager);
                     Seed.SeedAnnoucements(context, environment.WebRootPath);
+                    Seed.SeedPhotos(context, environment.WebRootPath, imageProcessor);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     var log = services.GetRequiredService<ILogger<Program>>();
                     log.LogError(e, "Error while migrating");
@@ -52,13 +49,11 @@ namespace WebApplication2
             hostBuilder.Run();
         }
 
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-        
     }
 }

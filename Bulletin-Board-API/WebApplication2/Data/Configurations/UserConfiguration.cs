@@ -8,7 +8,6 @@ namespace WebApplication2.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-
         }
     }
 }

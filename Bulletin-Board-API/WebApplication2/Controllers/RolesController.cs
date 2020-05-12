@@ -1,77 +1,49 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Models;
+using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly IMapper _mapper;
+        private readonly IRolesService _rolesService;
 
-        public RolesController(UserManager<User> userManager, RoleManager<Role> roleManager, IMapper mapper)
+        public RolesController(IRolesService rolesService)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _mapper = mapper;
+            _rolesService = rolesService;
         }
 
         [HttpGet]
         [Route("roleslist")]
         public async Task<IActionResult> Get()
         {
-            var listOfRoles  = await _roleManager.Roles.Select(x => x.Name).ToListAsync();
+            var listOfRoles = await _rolesService.GetRoles();
+            if (listOfRoles == null)
+            {
+                return NoContent();
+            }
             return Ok(listOfRoles);
         }
-
 
         [HttpPost]
         [Route("editroles")]
         public async Task<IActionResult> EditRoles([FromBody] UserRolesForModifyDto userRolesForModifyDto)
         {
-            var email = userRolesForModifyDto.Email;
-            var newroles = userRolesForModifyDto.NewRoles;
-            var user = await _userManager.FindByEmailAsync(email);
-            
-
-            foreach (var role in newroles)
+            try
             {
-                if(!await _roleManager.RoleExistsAsync(role))
-                {
-                    return BadRequest($"Role: {role} does not exist!");
-                }
+                UserForModeratorView updatedUser = await _rolesService.UpdateUserRoles(userRolesForModifyDto);
+                return Ok(updatedUser);
             }
-
-            if (user != null)
+            catch (ArgumentException ex)
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var result = await _userManager.AddToRolesAsync(user, newroles.Except(userRoles));
-                
-                if (!result.Succeeded)
-                {
-                    return BadRequest("Could not update roles");
-                }
-                result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(newroles));
-
-                if (!result.Succeeded)
-                {
-                    return BadRequest("Could not update roles");
-                }
+                return BadRequest(ex.Message);
             }
-            var updatedRoles =  await _userManager.GetRolesAsync(user);
-            var userToReturn = _mapper.Map<UserForModeratorView>(user);
-            userToReturn.Roles = updatedRoles.ToArray<string>();
-            return Ok(userToReturn);
         }
     }
 }

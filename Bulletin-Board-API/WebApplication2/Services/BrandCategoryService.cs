@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
@@ -48,12 +46,6 @@ namespace WebApplication2.Services
 
             List<BrandCategory> brandCategories = await _brandCategoryRepo.GetAll(includes, filters, orderParams);
             return _mapper.Map<List<BrandCategory>, List<BrandCategoryForViewDto>>(brandCategories);
-            //List<BrandCategoryForViewDto> brandCategoriesDto = brandCategories.Select(x => _mapper.Map<BrandCategoryForViewDto>(x))
-            //    .OrderBy(x => x.CategoryTitle)
-            //        .ThenBy(x => x.BrandTitle)
-            //    .ToList();
-
-            //return brandCategoriesDto;
         }
 
         public async Task<BrandCategoryForViewDto> GetRelationById(int id)
@@ -74,10 +66,10 @@ namespace WebApplication2.Services
             string brandTitle = brandCategoryForCreate.Brand;
             string categoryTitle = brandCategoryForCreate.Category;
 
-            Category categoryFromDb = await _categoryRepo.FindFirst(x => x.Title == categoryTitle)
+            Category categoryFromDb = await _categoryRepo.GetSingle(x => x.Title == categoryTitle)
                 ?? throw new NullReferenceException("No such category");
 
-            Brand brandFromDb = await _brandRepo.FindFirst(x => x.Title == brandTitle)
+            Brand brandFromDb = await _brandRepo.GetSingle(x => x.Title == brandTitle)
                 ?? throw new NullReferenceException("No such brand");
 
             var filters = new Expression<Func<BrandCategory, bool>>[]

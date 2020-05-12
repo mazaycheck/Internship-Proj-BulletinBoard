@@ -24,8 +24,15 @@ namespace WebApplication2.Services
         private readonly IWebHostEnvironment _webHost;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
+        private readonly IImageFileProcessor _imageFileProcessor;
 
-        public AnnoucementService(IAnnoucementRepository annoucementRepo, IMapper mapper, IWebHostEnvironment webHost, IHttpContextAccessor contextAccessor, IGenericRepository<BrandCategory> brandCategoryRepo)
+        public AnnoucementService(
+            IAnnoucementRepository annoucementRepo,
+            IMapper mapper, IWebHostEnvironment webHost,
+            IHttpContextAccessor contextAccessor,
+            IGenericRepository<BrandCategory> brandCategoryRepo,
+            IImageFileProcessor imageFileProcessor
+            )
         {
             _annoucementRepo = annoucementRepo;
             _annoucementRepo = annoucementRepo;
@@ -33,6 +40,7 @@ namespace WebApplication2.Services
             _webHost = webHost;
             _contextAccessor = contextAccessor;
             _brandCategoryRepo = brandCategoryRepo;
+            _imageFileProcessor = imageFileProcessor;
         }
 
         public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto)
@@ -166,16 +174,16 @@ namespace WebApplication2.Services
 
         private List<string> UploadImages(List<IFormFile> formImages, string folderName)
         {
-            List<Image> images = ImageFileProcessor.ConvertIFormFileToImage(formImages);
-            ImageFileProcessor.DeleteFolder(folderName);
-            List<string> listOfImgUrls = ImageFileProcessor.UploadFilesOnServer(images, folderName);
+            List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
+            _imageFileProcessor.DeleteFolder(folderName);
+            List<string> listOfImgUrls = _imageFileProcessor.UploadFilesOnServer(images, folderName);
             return listOfImgUrls;
         }
 
         private void DeleteFolderWithAnnoucementPhotos(int annoucementId)
         {
             string annoucementIdImageFolder = FolderForImages(annoucementId);
-            ImageFileProcessor.DeleteFolder(annoucementIdImageFolder);
+            _imageFileProcessor.DeleteFolder(annoucementIdImageFolder);
         }
 
         private string FolderForImages(int annoucementId)

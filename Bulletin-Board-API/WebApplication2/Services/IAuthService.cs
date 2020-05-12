@@ -7,7 +7,9 @@ namespace WebApplication2.Services
     public interface IAuthService
     {
         Task<User> Login(string email, string password);
+
         Task<UserForPublicDetail> Register(UserRegisterDto userRegisterDto);
+
         Task<string> CreateToken(User user);
     }
 }

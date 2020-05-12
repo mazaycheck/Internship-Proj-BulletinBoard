@@ -5,8 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +22,7 @@ namespace WebApplication2.Services
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration, 
+        public AuthService(IUserRepository userRepository, IConfiguration configuration,
             UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper)
         {
             _userRepository = userRepository;
@@ -37,46 +35,38 @@ namespace WebApplication2.Services
         public async Task<User> Login(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if(user != null)
+            if (user != null)
             {
                 var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
                 if (result.Succeeded)
                 {
                     return user;
                 }
-                
             }
             throw new UnauthorizedAccessException("Cannot login");
-            
-
         }
 
         public async Task<UserForPublicDetail> Register(UserRegisterDto userRegisterDto)
         {
-
             var userEmail = userRegisterDto.Email;
-            if(await _userManager.FindByEmailAsync(userEmail) != null)
+            if (await _userManager.FindByEmailAsync(userEmail) != null)
             {
-                throw  new ArgumentException("User already exists");                
+                throw new ArgumentException("User already exists");
             }
 
             var newUser = _mapper.Map<User>(userRegisterDto);
 
             var result = await _userManager.CreateAsync(newUser, userRegisterDto.Password);
 
-            if (result.Succeeded) 
+            if (result.Succeeded)
             {
                 return _mapper.Map<UserForPublicDetail>(newUser);
             }
-
             else
             {
                 return null;
             }
-            
-
         }
-
 
         public async Task<string> CreateToken(User user)
         {
@@ -102,12 +92,10 @@ namespace WebApplication2.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
-
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescritor);
             return tokenHandler.WriteToken(token);
-
         }
     }
 }

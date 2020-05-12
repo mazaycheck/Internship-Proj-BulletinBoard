@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
 using WebApplication2.Helpers;
@@ -16,10 +15,10 @@ namespace WebApplication2.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly IBrandService _brandService;
-       
+
         public BrandsController(IBrandService brandService, IPageService<Brand> pageService)
         {
-            _brandService = brandService;       
+            _brandService = brandService;
         }
 
         [HttpGet]
@@ -37,12 +36,12 @@ namespace WebApplication2.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            BrandForViewDto brandDto =  await _brandService.GetBrand(id);
-            if(brandDto == null)
+            BrandForViewDto brandDto = await _brandService.GetBrand(id);
+            if (brandDto == null)
             {
                 return NotFound(id);
             }
-                                            
+
             return Ok(brandDto);
         }
 
@@ -56,9 +55,9 @@ namespace WebApplication2.Controllers
             }
             catch (ArgumentException ex)
             {
-                return Conflict(ex.Message);                 
-            }            
-           
+                return Conflict(ex.Message);
+            }
+
             return StatusCode(201, brand);
         }
 
@@ -74,13 +73,12 @@ namespace WebApplication2.Controllers
             }
             catch (NullReferenceException ex)
             {
-
                 return BadRequest(ex.Message);
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
-            }            
+            }
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -94,8 +92,8 @@ namespace WebApplication2.Controllers
             catch (NullReferenceException ex)
             {
                 return NotFound(ex.Message);
-            }         
-            
+            }
+
             return Ok();
         }
     }

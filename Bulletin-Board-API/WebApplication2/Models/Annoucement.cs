@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using WebApplication2.Helpers;
 
 namespace WebApplication2.Models
 {
@@ -23,7 +22,6 @@ namespace WebApplication2.Models
         public DateTime? CreateDate { get; set; }
 
         [DataType(DataType.Date)]
-        [ValidDateOrNull]
         public DateTime? ExpirationDate { get; set; }
 
         [Required]

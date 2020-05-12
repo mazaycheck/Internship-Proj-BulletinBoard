@@ -43,7 +43,6 @@ namespace WebApplication2.Data.Configurations
                 new Town() { TownId = 31, Title = "Vatra", CoordX = 100, CoordY = 115 },
                 new Town() { TownId = 32, Title = "Vulcanesti", CoordX = 100, CoordY = 115 }
             );
-
         }
     }
 }

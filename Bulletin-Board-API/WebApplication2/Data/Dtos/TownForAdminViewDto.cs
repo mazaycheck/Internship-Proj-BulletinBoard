@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace WebApplication2.Models
+﻿namespace WebApplication2.Data.Dtos
 {
-    public class Town
+    public class TownForAdminViewDto
     {
         public int TownId { get; set; }
-
-        [Required]
-        [MaxLength(30)]
         public string Title { get; set; }
-
         public int CoordX { get; set; }
         public int CoordY { get; set; }
     }

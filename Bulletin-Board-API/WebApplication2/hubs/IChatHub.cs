@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace WebApplication2.hubs
 {
@@ -9,8 +6,6 @@ namespace WebApplication2.hubs
     {
         public Task SendMessage(string user, string message);
 
-
         public Task SendPrivateMessage(string user, string message);
-   
     }
 }

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication2.Data.Repositories;
-using WebApplication2.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebApplication2.Data.Dtos;
+using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
@@ -16,71 +13,81 @@ namespace WebApplication2.Controllers
     [Authorize]
     public class TownsController : ControllerBase
     {
-        private readonly IGenericRepository<Town> _repo;
+        private readonly ITownService _townService;
 
-        public TownsController(IGenericRepository<Town> repo)
+        public TownsController(ITownService townService)
         {
-            _repo = repo;
+            _townService = townService;
         }
 
         [AllowAnonymous]
         [HttpGet]
+        [Route("public")]
         public async Task<IActionResult> Get()
         {
-            var towns = await _repo.GetQueryableSet().ToListAsync();
+            List<TownForPublicViewDto> towns = await _townService.GetTownsForPublic();
+            if (towns == null)
+            {
+                return NoContent();
+            }
             return Ok(towns);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, Moderator")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var town = await _repo.GetById(id);
+            TownForAdminViewDto town = await _townService.GetTownForAdmin(id);
             if (town == null)
             {
-                return NotFound(id);
+                return NotFound($"No town with id: {id}");
             }
             return Ok(town);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Town town)
+        public async Task<IActionResult> Post([FromBody] TownForCreateDto town)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                TownForAdminViewDto newTown = await _townService.CreateTown(town);
+                return StatusCode(201, newTown);
             }
-            await _repo.Create(town);
-            await _repo.Save();
-            return StatusCode(201, town);
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Town town)
+        public async Task<IActionResult> Put([FromBody] TownForUpdateDto town)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                TownForAdminViewDto updatedTown = await _townService.UpdateTown(town);
+                return StatusCode(201, updatedTown);
             }
-            await _repo.Update(town);
-            await _repo.Save();
-            return StatusCode(201, town);
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var town = await _repo.GetById(id);
-            if (town == null)
+            try
             {
-                return NotFound(id);
+                await _townService.DeleteTown(id);
+                return Ok();
             }
-            await _repo.Delete(town);
-            await _repo.Save();
-            return Ok(town);
+            catch (NullReferenceException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

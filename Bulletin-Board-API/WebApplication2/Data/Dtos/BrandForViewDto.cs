@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WebApplication2.Data.Dtos
 {
@@ -8,6 +7,5 @@ namespace WebApplication2.Data.Dtos
         public int BrandId { get; set; }
         public string Title { get; set; }
         public IEnumerable<string> Categories { get; set; }
-
     }
 }

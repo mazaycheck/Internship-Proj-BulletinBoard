@@ -15,12 +15,12 @@ namespace WebApplication2.Data.Dtos
         public string Description { get; set; }
 
         [Required]
-        [Range(1, 9999999)]
+        [Range(1, 9999999, ErrorMessage = "Price must be between {1} and {2}")]
         public int Price { get; set; }
 
         public virtual List<IFormFile> Photo { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Must indicate category and brand")]
         [Range(1, int.MaxValue)]
         public int BrandCategoryId { get; set; }
     }

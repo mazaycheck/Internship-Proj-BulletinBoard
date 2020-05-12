@@ -19,11 +19,10 @@ namespace WebApplication2.Controllers
             _authService = authService;
         }
 
-        
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginDto userLoginDto)
-        {         
+        {
             try
             {
                 var user = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
@@ -33,9 +32,9 @@ namespace WebApplication2.Controllers
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e);
-            }     
+            }
         }
-        
+
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody]UserRegisterDto userRegisterDto)
@@ -47,17 +46,17 @@ namespace WebApplication2.Controllers
             }
             catch (ArgumentException a)
             {
-                return StatusCode(409,a.Message);                
-            }            
+                return StatusCode(409, a.Message);
+            }
 
             if (createdUser != null)
-            {                
+            {
                 return Ok(createdUser);
             }
             else
             {
                 return Problem("Could not register");
             }
-        }        
+        }
     }
 }

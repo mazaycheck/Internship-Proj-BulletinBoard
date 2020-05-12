@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using WebApplication2.Controllers;
 using WebApplication2.Data.Repositories;
 using WebApplication2.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using MockQueryable.Moq;
-using System;
+
 //using System.Web.Http.Results;
 
 namespace NUnitTestProject1
@@ -24,6 +24,7 @@ namespace NUnitTestProject1
             _mockRepo = new Mock<IGenericRepository<Town>>();
             _controller = new TownsController(_mockRepo.Object);
         }
+
         [SetUp]
         public void Setup()
         {
@@ -37,8 +38,6 @@ namespace NUnitTestProject1
             _mockRepo.Setup(x => x.GetQueryableSet()).Returns(mockTownsList.Object);
 
             _mockRepo.Setup(x => x.GetById(5)).ReturnsAsync(new Town() { TownId = 5, Title = "New York" });
-
-
         }
 
         [Test]
@@ -77,35 +76,35 @@ namespace NUnitTestProject1
             var town = ((OkObjectResult)actionResult).Value;
             Assert.IsInstanceOf<Town>(town);
         }
+
         [Test]
         public async Task Returns_Town_With_Id_5_Name_New_York()
         {
-            var actionResult = await _controller.Get(5);            
+            var actionResult = await _controller.Get(5);
             var town = ((OkObjectResult)actionResult).Value as Town;
             Assert.AreEqual(town.TownId, 5);
-            Assert.AreEqual(town.Title, "New York");            
+            Assert.AreEqual(town.Title, "New York");
         }
 
         [Test]
         public async Task Update_Does_Not_throw()
         {
             var town1 = new Town() { TownId = 1, Title = "The Chisinau" };
-            _mockRepo.Setup(x => x.Update(town1));            
+            _mockRepo.Setup(x => x.Update(town1));
             Assert.DoesNotThrowAsync(() => _controller.Put(town1));
-
         }
 
         [Test]
         public void Update_Throws_Exception()
-        {            
+        {
             var town2 = new Town() { TownId = 2 };
             var town3 = new Town() { Title = "Great Balti" };
-            
+
             _mockRepo.Setup(x => x.Update(town2)).Throws(new ArgumentException("Not Enough Arguments"));
             _mockRepo.Setup(x => x.Update(town3)).Throws(new ArgumentException("Primary Id not set"));
-            
+
             Assert.ThrowsAsync<ArgumentException>(async () => await _controller.Put(town2), "Not Enough Arguments");
-            Assert.ThrowsAsync<ArgumentException>(async () => await _controller.Put(town3), "Primary Id not set");            
+            Assert.ThrowsAsync<ArgumentException>(async () => await _controller.Put(town3), "Primary Id not set");
         }
 
         [Test]
@@ -119,8 +118,6 @@ namespace NUnitTestProject1
 
             _mockRepo.Setup(x => x.Update(town4)).Throws(new ArgumentException("Not Enough Arguments"));
 
-            
-
             var response = await _controller.Put(town4);
 
             //_controller.ModelState.ClearValidationState("Title");
@@ -128,9 +125,6 @@ namespace NUnitTestProject1
             Assert.IsInstanceOf<BadRequestObjectResult>(response);
             Assert.AreEqual(400, ((BadRequestObjectResult)response).StatusCode);
             //Assert.AreEqual("Required field missing", ((BadRequestObjectResult)response).Value["Title"]);
-
-
         }
-
     }
 }

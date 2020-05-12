@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebApplication2.Data.Dtos;
-using WebApplication2.Data.Repositories;
-using WebApplication2.Models;
 using WebApplication2.Services;
 
 namespace WebApplication2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -23,29 +18,28 @@ namespace WebApplication2.Controllers
         {
             _categoryService = categoryService;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]string filter)
         {
-            List<CategoryForViewDto> allCategories =  await _categoryService.GetAllCategories(filter);
-            if(allCategories == null)
+            List<CategoryForViewDto> allCategories = await _categoryService.GetAllCategories(filter);
+            if (allCategories == null)
             {
                 return NoContent();
             }
-            
+
             return Ok(allCategories);
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             CategoryForViewDto category = await _categoryService.GetCategory(id);
-            if(category == null)
+            if (category == null)
             {
                 return NotFound($"No such category with id: {id}");
             }
             return Ok(category);
-            
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -60,7 +54,7 @@ namespace WebApplication2.Controllers
             catch (ArgumentException ex)
             {
                 return Conflict(ex.Message);
-            }                                            
+            }
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -75,7 +69,7 @@ namespace WebApplication2.Controllers
             catch (ArgumentException ex)
             {
                 return Conflict(ex.Message);
-            }            
+            }
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -90,7 +84,7 @@ namespace WebApplication2.Controllers
             catch (NullReferenceException)
             {
                 return NotFound($"No such category with id: {id}");
-            }                        
+            }
         }
     }
 }

@@ -64,8 +64,8 @@ namespace WebApplication2.Helpers
             TotalEntries = queryAbleData.Count();
             PageSize = pageParams.PageSize;
             TotalPages = (int)Math.Ceiling((double)TotalEntries / PageSize);
-            PageNumber = pageParams.PageNumber;    
-            if(TotalEntries != 0)
+            PageNumber = pageParams.PageNumber;
+            if (TotalEntries != 0)
             {
                 PageData = await GetDataForCurrentPage();
             }
@@ -78,8 +78,6 @@ namespace WebApplication2.Helpers
         public static void SetMaxPageSize(int size)
         {
             maxPageSize = size;
-        }      
+        }
     }
-
-  
 }

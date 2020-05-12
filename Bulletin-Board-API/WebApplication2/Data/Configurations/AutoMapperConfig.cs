@@ -67,6 +67,14 @@ namespace WebApplication2.Helpers
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
                 .ForMember(dest => dest.Roles, sourse => sourse
                     .MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()));
+
+            CreateMap<PageDataContainer<User>, PageDataContainer<UserForModeratorView>>();
+
+            CreateMap<Town, TownForPublicViewDto>();
+            CreateMap<Town, TownForAdminViewDto>();
+            CreateMap<TownForCreateDto, Town>();
+            CreateMap<TownForUpdateDto, Town>();
+            CreateMap<PageDataContainer<Town>, PageDataContainer<TownForAdminViewDto>>();
         }
     }
 }

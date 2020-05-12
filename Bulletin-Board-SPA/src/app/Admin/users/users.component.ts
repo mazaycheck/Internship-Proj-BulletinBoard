@@ -68,18 +68,7 @@ export class UsersComponent implements OnInit {
 
   }
 
-  // editSave(user) {
-  //   this.adminService.updateRoles(user.email, this.temporaryRoles).subscribe(response => {
-  //     this.toastr.success(`${user.userName} updated`);
-  //     user.roles = [...this.temporaryRoles];
-  //     user.edit = false;
-  //   },
-  //     error => {
-  //       this.toastr.error(error);
-  //       user.edit = false;
-  //     });
 
-  // }
 
   editCancel(entity) {
     this.allUsersEditOff();
@@ -87,15 +76,11 @@ export class UsersComponent implements OnInit {
 
   update(user) {
     this.onUpdateClicked(user);
-    // this.allUsersEditOff();
-    // user.edit = true;
-    // this.temporaryRoles = [...user.roles];
   }
 
   pageClicked($event: PageEvent) {
     this.queryOptions.pageNumber = $event.pageIndex + 1;
     this.queryOptions.pageSize = $event.pageSize;
-    // this.globals.pageSize = $event.pageSize;
     this.getAllUsers();
 
   }

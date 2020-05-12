@@ -18,8 +18,8 @@ constructor(private http: HttpClient) {
    return this.http.get(this.baseUrl + 'api/roles/roleslist');
  }
 
- update(email: string, title: string, newRoles: string[]): Observable<any> {
-   return this.http.post(this.baseUrl + 'api/roles/editroles', {email, newRoles});
+ update(email: string, title: string, roles: string[]): Observable<any> {
+   return this.http.post(this.baseUrl + 'api/roles/editroles', {email, roles});
  }
 
 }
