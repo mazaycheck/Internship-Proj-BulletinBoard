@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-Bulletin-Board-API/WebApplication2/wwwroot/
+Bulletin-Board-API/Baraholka.WEB/wwwroot/
 node_modules/
 /dist
 /tmp
