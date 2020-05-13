@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Baraholka.Data.Dtos;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
 
 namespace Baraholka.Web.Services
 {

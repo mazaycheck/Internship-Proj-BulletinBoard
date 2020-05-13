@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Baraholka.Data.Dtos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
 
 namespace Baraholka.Web.Services
 {

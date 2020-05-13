@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Data.Repositories;
+using Baraholka.Domain.Models;
+using Baraholka.Web.Helpers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
-using Baraholka.Web.Data.Repositories;
-using Baraholka.Web.Helpers;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Web.Services
 {

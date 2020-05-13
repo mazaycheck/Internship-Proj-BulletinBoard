@@ -1,4 +1,7 @@
 using AutoMapper;
+using Baraholka.Data;
+using Baraholka.Data.Configurations;
+using Baraholka.Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -17,8 +20,6 @@ using SignalRChat.Hubs;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Baraholka.Web.Data;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Web
 {
@@ -36,9 +37,7 @@ namespace Baraholka.Web
             services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddAutoMapper(typeof(Startup).Assembly);
-
-            
+            services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
 
             services.AddHttpContextAccessor();
             services.RegisterDependencyInjectionProviders();

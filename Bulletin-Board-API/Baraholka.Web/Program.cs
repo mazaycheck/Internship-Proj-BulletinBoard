@@ -1,3 +1,6 @@
+using Baraholka.Data;
+using Baraholka.Domain.Models;
+using Baraholka.Web.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -5,9 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using Baraholka.Web.Data;
-using Baraholka.Web.Helpers;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Web
 {

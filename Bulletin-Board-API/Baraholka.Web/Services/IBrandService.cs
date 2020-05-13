@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
+﻿using Baraholka.Data.Dtos;
+using System.Threading.Tasks;
 
 namespace Baraholka.Web.Services
 {

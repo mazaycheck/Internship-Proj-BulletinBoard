@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Baraholka.Data.Dtos;
+using Baraholka.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
-using Baraholka.Web.Services;
 
 namespace Baraholka.Web.Controllers
 {

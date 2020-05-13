@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Web.Services
 {

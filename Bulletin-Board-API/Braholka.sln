@@ -6,10 +6,15 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Baraholka.Services", "Baraholka.Services\Baraholka.Services.csproj", "{2EDF28D5-44D2-4125-AA2E-06FC76FD35F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Baraholka.Data", "Baraholka.Data\Baraholka.Data.csproj", "{1294690A-D18C-49D6-8DD8-2FFCB609C8FC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5683F358-285D-402C-8078-4FBBDF68FB21} = {5683F358-285D-402C-8078-4FBBDF68FB21}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Baraholka.Domain", "Baraholka.Domain\Baraholka.Domain.csproj", "{5683F358-285D-402C-8078-4FBBDF68FB21}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Baraholka.Web", "Baraholka.Web\Baraholka.Web.csproj", "{2227740E-E825-433E-983A-541B40CAB94E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baraholka.Utilities", "Baraholka.Utilities\Baraholka.Utilities.csproj", "{5C8526AC-432F-4784-ABD2-BBAC747DFC28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{2227740E-E825-433E-983A-541B40CAB94E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2227740E-E825-433E-983A-541B40CAB94E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2227740E-E825-433E-983A-541B40CAB94E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C8526AC-432F-4784-ABD2-BBAC747DFC28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C8526AC-432F-4784-ABD2-BBAC747DFC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C8526AC-432F-4784-ABD2-BBAC747DFC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C8526AC-432F-4784-ABD2-BBAC747DFC28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

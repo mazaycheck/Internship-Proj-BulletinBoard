@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Data.Repositories;
+using Baraholka.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,9 +11,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Baraholka.Web.Data.Dtos;
-using Baraholka.Web.Data.Repositories;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Web.Services
 {
