@@ -1,7 +1,8 @@
 ﻿using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
+using Baraholka.Services;
+using Baraholka.Utilities;
 using Baraholka.Web.Helpers;
-using Baraholka.Web.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Baraholka.Web

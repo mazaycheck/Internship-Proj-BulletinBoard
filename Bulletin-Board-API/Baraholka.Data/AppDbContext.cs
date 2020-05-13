@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Baraholka.Data.Configurations;
+using Baraholka.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Baraholka.Data.Configurations;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Data
 {

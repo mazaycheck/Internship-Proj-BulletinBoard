@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using System.Linq;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
+using System.Linq;
 
 namespace Baraholka.Data.Configurations
 {

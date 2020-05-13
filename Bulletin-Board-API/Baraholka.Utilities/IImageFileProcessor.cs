@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Baraholka.Web.Helpers
+namespace Baraholka.Utilities
 {
     public interface IImageFileProcessor
     {

@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Baraholka.Data.Dtos;
+using System.Linq;
 using System.Threading.Tasks;
-using Baraholka.Data.Dtos;
 
 namespace Baraholka.Web.Helpers
 {

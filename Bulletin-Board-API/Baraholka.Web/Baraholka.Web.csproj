@@ -6,12 +6,20 @@
 
   <ItemGroup>
     <Compile Remove="Data\**" />
+    <Compile Remove="Migrations\**" />
+    <Compile Remove="Services\**" />
     <Compile Remove="Utilities\**" />
     <Content Remove="Data\**" />
+    <Content Remove="Migrations\**" />
+    <Content Remove="Services\**" />
     <Content Remove="Utilities\**" />
     <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <EmbeddedResource Remove="Services\**" />
     <EmbeddedResource Remove="Utilities\**" />
     <None Remove="Data\**" />
+    <None Remove="Migrations\**" />
+    <None Remove="Services\**" />
     <None Remove="Utilities\**" />
   </ItemGroup>
 
@@ -22,10 +30,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameWorkCore.Design" Version="3.1.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameWorkCore.Sqlserver" Version="3.1.3" />
@@ -47,6 +51,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Baraholka.Data\Baraholka.Data.csproj" />
+    <ProjectReference Include="..\Baraholka.Services\Baraholka.Services.csproj" />
     <ProjectReference Include="..\Baraholka.Utilities\Baraholka.Utilities.csproj" />
   </ItemGroup>
 

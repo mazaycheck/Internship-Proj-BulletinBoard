@@ -2,6 +2,7 @@
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
+using Baraholka.Utilities;
 using Baraholka.Web.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,7 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Baraholka.Web.Services
+namespace Baraholka.Services
 {
     public class AnnoucementService : IAnnoucementService
     {

@@ -1,7 +1,7 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
+using Baraholka.Services;
 using Baraholka.Web.Helpers;
-using Baraholka.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

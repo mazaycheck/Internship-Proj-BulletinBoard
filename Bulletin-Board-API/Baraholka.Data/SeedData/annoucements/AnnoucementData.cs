@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Baraholka.Domain.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using Baraholka.Domain.Models;
 
-namespace Baraholka.Web.Data.SeedData
+namespace Baraholka.Data.Seed
 {
     public enum Categories
     {
@@ -46,16 +48,16 @@ namespace Baraholka.Web.Data.SeedData
             {
                 int randomDay = Faker.RandomNumber.Next(1, 20);
                 list.Add(new Annoucement()
-                {                    
+                {
                     Title = GetTitle(category),
                     Description = GetDescription(category),
                     Price = GetPrice(category),
                     UserId = GetUserId(),
-                    BrandCategoryId = GetBrandCategory(category),                    
+                    BrandCategoryId = GetBrandCategory(category),
                     CreateDate = DateTime.Now - TimeSpan.FromDays(randomDay),
                     ExpirationDate = DateTime.Now.AddDays(30 - randomDay),
                     IsActive = true
-                }); 
+                });
 
                 Id++;
             }
@@ -119,7 +121,8 @@ namespace Baraholka.Web.Data.SeedData
 
         private static string GetTitle(Categories category)
         {
-            var jsonData = System.IO.File.ReadAllText("Data/SeedData/jsondata/annoucementTitles.json");
+            var jsonDataFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SeedData/jsondata/annoucementTitles.json");
+            var jsonData = System.IO.File.ReadAllText(jsonDataFile);
 
             JToken token = JObject.Parse(jsonData);
 

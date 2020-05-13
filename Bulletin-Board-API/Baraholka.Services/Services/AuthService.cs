@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Baraholka.Web.Services
+namespace Baraholka.Services
 {
     public class AuthService : IAuthService
     {

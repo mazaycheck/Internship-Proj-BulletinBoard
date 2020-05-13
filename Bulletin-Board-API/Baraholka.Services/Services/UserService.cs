@@ -3,12 +3,11 @@ using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Web.Helpers;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Baraholka.Web.Services
+namespace Baraholka.Services
 {
     public class UserService : IUserService
     {
@@ -23,7 +22,7 @@ namespace Baraholka.Web.Services
             _pageService = pageService;
         }
 
-        public async Task<PageDataContainer<UserForModeratorView>> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string query)
+        public async Task<PageDataContainer<UserForModeratorView>> GetUsers(PageArguments pageArguments, string query)
         {
             IOrderedQueryable<User> users = _repository.PrepareUsersForPaging(query);
 

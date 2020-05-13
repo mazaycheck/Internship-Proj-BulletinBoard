@@ -1,7 +1,7 @@
 ﻿using Baraholka.Data.Dtos;
 using System.Threading.Tasks;
 
-namespace Baraholka.Web.Services
+namespace Baraholka.Services
 {
     public interface IBrandService
     {

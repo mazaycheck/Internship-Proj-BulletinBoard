@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Baraholka.Web.Services
+namespace Baraholka.Services
 {
     public interface IMessageService
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-namespace Baraholka.Web.Helpers
+namespace Baraholka.Utilities
 {
     public class ImageFileProcessor : IImageFileProcessor
     {

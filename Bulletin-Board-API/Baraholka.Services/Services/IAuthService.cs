@@ -2,7 +2,7 @@
 using Baraholka.Domain.Models;
 using System.Threading.Tasks;
 
-namespace Baraholka.Web.Services
+namespace Baraholka.Services
 {
     public interface IAuthService
     {

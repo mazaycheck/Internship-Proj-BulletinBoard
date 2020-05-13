@@ -1,6 +1,7 @@
 using Baraholka.Data;
+using Baraholka.Data.Seed;
 using Baraholka.Domain.Models;
-using Baraholka.Web.Helpers;
+using Baraholka.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

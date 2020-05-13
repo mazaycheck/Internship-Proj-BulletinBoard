@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Baraholka.Data.Dtos;
+using Baraholka.Domain.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Baraholka.Data.Dtos;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Data.Repositories
 {

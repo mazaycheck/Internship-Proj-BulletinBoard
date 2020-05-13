@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Baraholka.Domain.Models;
+using Baraholka.Utilities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -7,15 +9,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using Baraholka.Web.Data;
-using Baraholka.Web.Data.SeedData;
-using Baraholka.Domain.Models;
-using Baraholka.Data;
+using System.Reflection;
 
-namespace Baraholka.Web.Helpers
+namespace Baraholka.Data.Seed
 {
     public class Seed
     {
+        public static string SeedFolderPath
+        {
+            get => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SeedData");
+        }
+
         public static void SeedUsers(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             var roles = new List<Role>()
@@ -33,7 +37,9 @@ namespace Baraholka.Web.Helpers
 
             if (!userManager.Users.Any())
             {
-                var userJsonData = System.IO.File.ReadAllText("Data/SeedData/jsondata/users.json");
+                
+                var fullpath = Path.Combine(SeedFolderPath, "jsondata/users.json");
+                var userJsonData = System.IO.File.ReadAllText(fullpath);
                 var format = "dd-MM-yyyy";
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = format };
                 var users = JsonConvert.DeserializeObject<List<User>>(userJsonData, dateTimeConverter);
@@ -80,7 +86,9 @@ namespace Baraholka.Web.Helpers
 
         private static List<Photo> GetPhotos(Categories category, int annoucementId, string rootPath, IImageFileProcessor imageFileProcessor)
         {
-            var imageFolder = Path.Combine("Data/SeedData/seedimages", category.ToString());
+            var seedRoot = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SeedData");
+            var seedFolder = Path.Combine(seedRoot, "seedimages");
+            var imageFolder = Path.Combine(seedFolder, category.ToString());
 
             var images = Directory.EnumerateFiles(imageFolder).Select(x => Path.GetFileName(x)).ToList();
             var rand = new Random();

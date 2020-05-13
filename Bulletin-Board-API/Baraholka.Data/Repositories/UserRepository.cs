@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Baraholka.Data.Dtos;
+using Baraholka.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Baraholka.Data.Dtos;
-using Baraholka.Domain.Models;
-
 
 namespace Baraholka.Data.Repositories
 {

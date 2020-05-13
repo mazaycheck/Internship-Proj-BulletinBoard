@@ -35,7 +35,9 @@ namespace Baraholka.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options => options
-                .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
+
+                ));
 
             services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
 

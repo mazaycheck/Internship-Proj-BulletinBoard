@@ -1,10 +1,9 @@
-﻿using AutoMapper;
+﻿using Baraholka.Data.Dtos;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Baraholka.Data.Dtos;
 
 namespace Baraholka.Web.Helpers
 {
@@ -40,7 +39,6 @@ namespace Baraholka.Web.Helpers
                 else { _pageNumber = value; }
             }
         }
-
 
         private async Task<List<T>> GetDataForCurrentPage()
         {

@@ -5,29 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="SeedData\seedimages\cars\**" />
+    <Compile Remove="SeedData\seedimages\phones\**" />
+    <EmbeddedResource Remove="SeedData\seedimages\cars\**" />
+    <EmbeddedResource Remove="SeedData\seedimages\phones\**" />
+    <None Remove="SeedData\seedimages\cars\**" />
+    <None Remove="SeedData\seedimages\phones\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="SeedData\jsondata\annoucementTitles.json" />
     <None Remove="SeedData\jsondata\users.json" />
-    <None Remove="SeedData\seedimages\cars\126p.jpg" />
-    <None Remove="SeedData\seedimages\cars\bentley.jpg" />
-    <None Remove="SeedData\seedimages\cars\citroen.jpg" />
-    <None Remove="SeedData\seedimages\cars\dacia-1300.jpg" />
-    <None Remove="SeedData\seedimages\cars\ford-f-series.jpg" />
-    <None Remove="SeedData\seedimages\cars\ford.jpg" />
-    <None Remove="SeedData\seedimages\cars\hyundai.jpg" />
-    <None Remove="SeedData\seedimages\cars\lamborghini.jpg" />
-    <None Remove="SeedData\seedimages\cars\lobini.jpg" />
-    <None Remove="SeedData\seedimages\cars\maserati.jpg" />
-    <None Remove="SeedData\seedimages\cars\mb-roadcars.jpg" />
-    <None Remove="SeedData\seedimages\cars\mclaren-f1.jpg" />
-    <None Remove="SeedData\seedimages\cars\peugeot.jpg" />
-    <None Remove="SeedData\seedimages\cars\renault-clio.jpg" />
-    <None Remove="SeedData\seedimages\cars\renault-symbol.jpg" />
-    <None Remove="SeedData\seedimages\cars\rolls-royce.jpg" />
-    <None Remove="SeedData\seedimages\cars\saturn.jpg" />
-    <None Remove="SeedData\seedimages\cars\ssc-ultimate-aero.jpg" />
-    <None Remove="SeedData\seedimages\cars\tata.jpg" />
-    <None Remove="SeedData\seedimages\cars\volvo-200-series.jpg" />
-    <None Remove="SeedData\seedimages\cars\Škoda-octavia.jpg" />
     <None Remove="SeedData\seedimages\Clothes\04300bf5d9457c9bda62db6f9c7cf2a5.jpg" />
     <None Remove="SeedData\seedimages\Clothes\0d652b8510b4bb1db37dbb771376f654.jpg" />
     <None Remove="SeedData\seedimages\Clothes\2169f93e164499c3a1f85f4c22baa232.jpg" />
@@ -74,24 +62,6 @@
     <None Remove="SeedData\seedimages\Clothes\photo-1525507119028-ed4c629a60a3.jpg" />
     <None Remove="SeedData\seedimages\Clothes\photo-1572291981695-8401b6f4415b.jpg" />
     <None Remove="SeedData\seedimages\Clothes\photo-1581067675198-463d66478d0e.jpg" />
-    <None Remove="SeedData\seedimages\phones\0f3749a437b16a836d4997aab13da740.jpg" />
-    <None Remove="SeedData\seedimages\phones\193d2a2aa0cf067b40cec951f73024b1.jpg" />
-    <None Remove="SeedData\seedimages\phones\1c60d5fc217f3057ba8b8985e638eeaf.jpg" />
-    <None Remove="SeedData\seedimages\phones\1d01b89070db0cf37654ac4a8e3a5dfb.jpg" />
-    <None Remove="SeedData\seedimages\phones\2e80f8392c3f2c8c0820356615540499.jpg" />
-    <None Remove="SeedData\seedimages\phones\3f05dc44c39e32026ace125be79d7026.jpg" />
-    <None Remove="SeedData\seedimages\phones\460254faf7f0eca9d69af78c83dad80c.jpg" />
-    <None Remove="SeedData\seedimages\phones\50056222b323524c140f14d08d62de4a.jpg" />
-    <None Remove="SeedData\seedimages\phones\52523d772399fcfa4a64dc6fa197b4a6.jpg" />
-    <None Remove="SeedData\seedimages\phones\6517c1bf08316c7f00c4bf8794171656.jpg" />
-    <None Remove="SeedData\seedimages\phones\702b7c2d5ef6e9a6deaf58a197019d27.jpg" />
-    <None Remove="SeedData\seedimages\phones\7098b87392ebe2a45fdafd9a0643f6c6.jpg" />
-    <None Remove="SeedData\seedimages\phones\83642b00bb5302f5787b63ed926b4f21.jpg" />
-    <None Remove="SeedData\seedimages\phones\bf10f756423557d78b3e2658b5e6ae9c.jpg" />
-    <None Remove="SeedData\seedimages\phones\c5f7c07f4edb877caa2a11866003de83.jpg" />
-    <None Remove="SeedData\seedimages\phones\e70b25da4ead7bdca5a16d455e476e6c.jpg" />
-    <None Remove="SeedData\seedimages\phones\fdf1e4948d21a802aa2778ac76049c24.jpg" />
-    <None Remove="SeedData\seedimages\phones\gs9.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -101,349 +71,154 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="SeedData\jsondata\users.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\126p.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\bentley.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\citroen.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\dacia-1300.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\ford-f-series.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\ford.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\hyundai.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\lamborghini.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\lobini.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\maserati.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\mb-roadcars.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\mclaren-f1.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\peugeot.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\renault-clio.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\renault-symbol.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\rolls-royce.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\saturn.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\ssc-ultimate-aero.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\tata.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\volvo-200-series.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\cars\Škoda-octavia.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\04300bf5d9457c9bda62db6f9c7cf2a5.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\0d652b8510b4bb1db37dbb771376f654.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\2169f93e164499c3a1f85f4c22baa232.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\225861cf49b9d9d40d506f40d6803319.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\33029d228d55000523aed0d0c455f8d6.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\37cd71399fac4cf478a356eddd96d181.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\3b12741ae1f71251494fc9c59f3dec44.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\4418ee030e974dfd7b0e4de3f404692e (1).jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\4418ee030e974dfd7b0e4de3f404692e.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\48b84cb725976a17eeddb3e4deb7c0f2.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\4ab5970b57f8db84626de78f63f3dc0e.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\4eba4bc12f1492f8ba1881b9ac004fd8.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\5500931e5290ece3872243006d42d43a.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\5b74d4fa6a000af729f4af6326f1a873.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\5ece17a8a63527b3c06b055189910cfd.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\602b2d86f845d4bef68bb85d31592576.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\6359f3a82676c3fe8cedde38ca4381c9.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\6a5aadb22df9b05ec77363e0a50e550e.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\6a66d4dea0228d433e64b7209d261513.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\7976c843321f1945eae16f1e95cef719.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\7c6898180030304d4cd394599129a2ac.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\8a04baccae6399996b396353b30e0ea7.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\8b1b1384175e75a680a254120b268abb.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\9060314d83c765f903924435d13598b1.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\970f4334fb74c0d55c69f9b04b2e768c.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\9e45ca2713473f65d613378babf29ce8.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\a5fbc1d34f436a8b42fd47f16eb082a4.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\a9a4307de99736031a6b05b74fd2bb14.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\ac0c7bd5b4b941bf2e7227f5e3a634d3.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\ae270e364b5e000d7e3962fdc987fd37.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\aefd9bb570e1ede57c930293ea069339.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\af5ac940f8f1f1a75b6116e0cb002934.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\b4e50433842545638f1f3e2a65f78c7b.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\b5a88c7643db3406a8d824c7ca466705.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\b9a9d041cc4174b26c63f550c01e663a.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\d026069173f3ad0d62ab310beafe1bef.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\d0d3f562c5bd0e51d8b309167f58ab17.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\d275abfbab5616e80b6e8cb2327861be.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\d35beea0fb6f436ab86ce71eec0a407c.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\d59becb967c30891fcce170de908068e.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\efe754afb86be3d376978cff591d0e77.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\httpswww.generatormix.com.txt">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\photo-1512436991641-6745cdb1723f.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\seedimages\Clothes\photo-1525507119028-ed4c629a60a3.jpg">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\photo-1572291981695-8401b6f4415b.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\Clothes\photo-1581067675198-463d66478d0e.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\0f3749a437b16a836d4997aab13da740.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\193d2a2aa0cf067b40cec951f73024b1.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\1c60d5fc217f3057ba8b8985e638eeaf.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\1d01b89070db0cf37654ac4a8e3a5dfb.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\2e80f8392c3f2c8c0820356615540499.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\3f05dc44c39e32026ace125be79d7026.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\460254faf7f0eca9d69af78c83dad80c.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\50056222b323524c140f14d08d62de4a.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\52523d772399fcfa4a64dc6fa197b4a6.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\6517c1bf08316c7f00c4bf8794171656.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\702b7c2d5ef6e9a6deaf58a197019d27.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\7098b87392ebe2a45fdafd9a0643f6c6.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\83642b00bb5302f5787b63ed926b4f21.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\bf10f756423557d78b3e2658b5e6ae9c.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\c5f7c07f4edb877caa2a11866003de83.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\e70b25da4ead7bdca5a16d455e476e6c.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\fdf1e4948d21a802aa2778ac76049c24.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="SeedData\seedimages\phones\gs9.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
@@ -451,6 +226,11 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Faker.Net" Version="1.3.77" />
   </ItemGroup>
@@ -458,6 +238,636 @@
   <ItemGroup>
     <ProjectReference Include="..\Baraholka.Domain\Baraholka.Domain.csproj" />
     <ProjectReference Include="..\Baraholka.Utilities\Baraholka.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SeedData\seedimages\Appliances\03312dac72de11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\2bfdc16459c011ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\344555b088de11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\363f2f6c88de11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\4b4ae8582a9a11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\4fea36aa785d11ea8a5b5254a201a8b3 %281%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\4fea36aa785d11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\57654c101c7511ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\5f9f91fa73a611ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\604e87fa73a611ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\61da9e2473a611ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\65d7b52073a611ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\66d7a5f273a611ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\6e07153e8a7011ea8a5b5254a201a8b3 %281%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\6e266a888a7011ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\7c8479007b8211ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\7d96affc7b8211ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\8109390e1d3e11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\83e1eee61d3e11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\84c920025b5211ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\8533e68a5b5211ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\8c66669889a711ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\abbef2c651e411ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\bdbab5f6658911ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\c4076ec8746f11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\c4e7c90e658911ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\f1f8e3c0212c11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\f2664762212c11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Appliances\feb30a8472dd11ea8a5b5254a201a8b3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\05cd427fa9a3208c5c4913e65f4cfa4a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\1c976c3cfb7d848b5f679bd741260b1f.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\21e4af5ac9117985dfac2b76a2b1125b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\37a572a06404e42331215965ca3d261e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\59511c1c1426aae012aa416929a8cdfe.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\5dc89e6608a0b56c2b1c4d41744dcc11.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\5f755b85edeac44b422ad7040870433a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\6283c2dabe1031e2876e23837357129f.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\6f48f4a9415f1ededa5adeeb40020fbe.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\70582c82d41fcaafa8307a50872af9f7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\7e0c0adbbf27e365b3b25a160c9cab30.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\7ee08ae9870fa61b026378452a52764f.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\9f888cfc97be554b22ddb919ab3dd7e0.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\a5cedae36eefd0bbc9b03a417dbef73b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\a79340a24521164a1179cfc2de9c831f.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\a7badf8aedbb3b0876392843db03d884.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\a805750adec203e248194b9b749fb4c5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\bfd346dbfa97cdc1507bd527b60dcbb7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\d746c075082e277d24419641f58951fd.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\d9b6b81bd7680afe407416b52b941ccc.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\dd2352d8501739dd305e9a40e3b54081.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\AudioVideo\fe3d755700e35ca717383482142e4f1b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\0610a79b79f519b67097217532d56536.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\1481b8e847dedf8a4ac28074ef3d4d34.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\3365ec4995f9eac45a45df5d374e9d63.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\34e57fa5101f731035e2ed22d985df31.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\38b02b792f6d7911214a297aa75c656d.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\3c1b3ad3f8f92d6ceba9ddacb19d9c48.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\47c0b5f0208b16f9943f46eb99f87c9e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\487693f908f5c3a0dd52c23557ccaa8e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\5e3910ca94f9ceae5fe51c5138ae1268.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\6923ee0a1a5041f1bf90c5f01abd4158.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\723edc32380fe0b5aad77ffe37892670.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\9769be2501ae141c8c986ee2b6677439.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\a6fb9eff5905b5716119b6b4f5ea40c8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\a8936ac94579b1e1471ad06cacfcc22b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\b1396931be16c440906eb3d3a2d267c9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\d6071615e3a98804bec2ac5490f81cb7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\d6987e87b7e02c140533511e0ad2db34.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\d978fca66047db4a865c1b1d950b879b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\dd2a570b27215d8b816618c2d66a71d0.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Computers\f88cff640be0a31ba9e1125c103bbec2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\174f249a109ce8b7f37d5e0a055f6b45.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\246d77aa6d55d0574c65cd2ef693344d.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\3c7de85b4afa8d2ebde6d7b36e6bec90.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\453da605a4a3e51acfccd5855e4003a4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\4db14a98f2730a0fea1c56ac38b1bcdb.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\5123f164a263191cafd3006ec733d311.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\538629a8697c43d03cb1475e94996d57.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\63deda28f933d840d50b7970f95321ba.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\6e2719baff625ab96d348688a61a53ea.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\9ba2dc7ce049bbac223c1e972524e28b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\a728a9fcab01ae637635e5e4840631c1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\ae8016dfa91c4ecc43518843bb9f4fb6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\aff449055acdc33c5c0acdfa2d85fd34.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\bf6cf32d713ff2a0b89ea67cf2a1b32a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\cada6771849c00428676431e03ceda02.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\ce76de7d636e36d256358e7c5678c286.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\dc55da7b1efe498b0dc0af2119741dac.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\e1d868173bf4153f459e6d9175370ad9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\e548d5357bda194fde0398c44fd671e8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\e79857c0da792278409c4ddb16fd675b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\f019b4f5fb0920cf66fca049650c4502.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\f4100046df5943320261e2d891bac9df.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\f54c1dd977430e0dde723b13647636a3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\fa1e269a6e7c587b9887917f1965ddb7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Furniture\fbb01bc98ee4e5aee934ff7f081df08e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\0f3749a437b16a836d4997aab13da740.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\193d2a2aa0cf067b40cec951f73024b1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\1c60d5fc217f3057ba8b8985e638eeaf.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\1d01b89070db0cf37654ac4a8e3a5dfb.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\2e80f8392c3f2c8c0820356615540499.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\3f05dc44c39e32026ace125be79d7026.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\460254faf7f0eca9d69af78c83dad80c.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\50056222b323524c140f14d08d62de4a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\52523d772399fcfa4a64dc6fa197b4a6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\6517c1bf08316c7f00c4bf8794171656.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\702b7c2d5ef6e9a6deaf58a197019d27.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\7098b87392ebe2a45fdafd9a0643f6c6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\83642b00bb5302f5787b63ed926b4f21.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\bf10f756423557d78b3e2658b5e6ae9c.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\c5f7c07f4edb877caa2a11866003de83.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\e70b25da4ead7bdca5a16d455e476e6c.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\MobilePhones\fdf1e4948d21a802aa2778ac76049c24.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\194d13b66f1a9846372646beb3dda2b1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\1b1b95a784a6491eb4995ef0be1747bd.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\1baf1ef54144e036e9780d04644cd3fa.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\1ca422d1b9e9cba612265530235e2e87.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\2e263188080f5568cb9430024d6542b7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\34b6467f8c4a8843fc035e1ba3bb7f9a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\3f1f7a0f35c35aa846442b432c63cdb7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\4c04222431f6eac20c9f22e2bbebfdfa.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\4d505cc03bb0837afd874d32e0d1dc1a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\4fe802b4f5358e4ca1f89f9fcf4409f8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\50f4754fe1bd52d631e27dc2a2e1ceea.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\570c094c32639a7c3bfa7e1bfd20e03e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\75dc2ee3e22024ddfc6561def509fb6a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\7f9a830b250d8ffe0e46b92942b35e3a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\861d9eff303e7eeb3e7c85d23334059a.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\928d2c5d5ee983934880647785c6cf5d.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\978f6b0a4ea02713bab1ff5a23372d56.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\aad1fec53f88d1f76deebdd0d8906cd5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\b345a020985f90b45d47a41ec2625944.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\bafcdb9991367d289c92a3e95298ff51.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\c4fd3aab59438b3b6144ef4d01241147.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\c571ed72265b7eb2fba488d22ef81bbb.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\c661f184c552d149fd6fb4ef93570ee2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\c8a7464ee541edaa907439eaf8139876.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\e97c211fb106b7f5a6697e01b508e919.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\F7CBD50D-58D9-48AA-3BD7-1E85DBC6ADA8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Services\fb49b4fde25c91fbb1076b01345d294e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\123123asdasd.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\123213213asadd.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\225861cf49b9d9d40d506f40d6803319.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\23123123213.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\3b12741ae1f71251494fc9c59f3dec44.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\4eba4bc12f1492f8ba1881b9ac004fd8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\5b74d4fa6a000af729f4af6326f1a873.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\5c410a55da3592d2cc9e5f6bdf96d2c1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\6359f3a82676c3fe8cedde38ca4381c9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\6a5aadb22df9b05ec77363e0a50e550e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\8b1b1384175e75a680a254120b268abb.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\9060314d83c765f903924435d13598b1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\970f4334fb74c0d55c69f9b04b2e768c.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\a9a4307de99736031a6b05b74fd2bb14.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\aefd9bb570e1ede57c930293ea069339.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\b4e50433842545638f1f3e2a65f78c7b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\d59becb967c30891fcce170de908068e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\e706b15fed07954ce24ec4d68f4f4cc9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\ef0ac36e23f699136fa08ddd9d665524.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\photo-1572291981695-8401b6f4415b.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\photo-1581067675198-463d66478d0e.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Shoes\ShoesBankSneekerForMe1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\126p.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\bentley.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\citroen.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\dacia-1300.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\ford.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\hyundai.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\lamborghini.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\lobini.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\maserati.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\mb-roadcars.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\peugeot.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\renault-clio.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\renault-symbol.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\rolls-royce.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\saturn.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\tata.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\volvo-200-series.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Vehicles\Škoda-octavia.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\12312eqweqeqwe.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\1aeec2bb3ec8ea912a255280bf3a84ab.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\31f99de2f528a056785fb1f68b20ea83.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\3a2de9ed554c7a398f793ebf2d1e8407.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\3d5fb465b9a643c79fa33d5316b70174.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\a99a38c88ffcd74b797051cd941d65a7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\ab52065d84a1eb64541cc5b6ef5c881d.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\bcdaed41f122252d386b40eba78691a8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\c03097c4e1768bea84957a7a011967b9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\c85880010ab41e0527fa644459fe5352.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\omega.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %281%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2810%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2811%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2812%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2813%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2814%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2815%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %2816%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %282%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %283%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %284%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %285%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %286%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %287%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %288%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300 %289%29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l300.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SeedData\seedimages\Watches\s-l500.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

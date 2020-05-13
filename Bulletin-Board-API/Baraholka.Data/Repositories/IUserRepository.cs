@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Baraholka.Domain.Models;
+using System.Linq;
 using System.Threading.Tasks;
-using Baraholka.Domain.Models;
 
 namespace Baraholka.Data.Repositories
 {
