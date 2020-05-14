@@ -48,6 +48,10 @@ namespace Baraholka.Data.Configurations
                  .ForMember(dest => dest.PhotoUrls, sourse => sourse
                     .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
 
+            CreateMap<Annoucement, AnnoucementMinimalDto>()
+                .ForMember(dest => dest.Id, sourse => sourse
+                    .MapFrom(src => src.AnnoucementId)).ReverseMap();
+
             CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementViewDto>>();
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandForViewDto>>();
 

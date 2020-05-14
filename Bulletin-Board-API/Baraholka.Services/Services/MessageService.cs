@@ -31,7 +31,11 @@ namespace Baraholka.Services
         public async Task<MessageForDetailDto> GetById(int id)
         {
             var includes = new string[] { $"{nameof(Message.Sender)}", $"{nameof(Message.Reciever)}" };
-            var messageFromDb = await _repo.GetSingle(m => m.MessageId == id, includes);
+            var conditions = new List<Expression<Func<Message, bool>>>
+            {
+                m => m.MessageId == id
+            };
+            var messageFromDb = await _repo.GetSingle(includes, conditions);
             var messageDto = _mapper.Map<MessageForDetailDto>(messageFromDb);
             return messageDto;
         }
@@ -111,7 +115,7 @@ namespace Baraholka.Services
 
         public async void MarkAsRead(int messageId)
         {
-            var message = await _repo.GetById(messageId);
+            var message = await _repo.FindById(messageId);
             message.IsRead = true;
             message.DateTimeRead = DateTime.Now;
             await _repo.Save();

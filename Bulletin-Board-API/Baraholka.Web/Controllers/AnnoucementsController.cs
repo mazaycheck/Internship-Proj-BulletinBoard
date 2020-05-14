@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -11,11 +10,11 @@ namespace Baraholka.Web.Controllers
     [ApiController]
     public class AnnoucementsController : ControllerBase
     {
-        private readonly IAnnoucementService _service;
+        private readonly IAnnoucementService _annoucementService;
 
-        public AnnoucementsController(IAnnoucementService service)
+        public AnnoucementsController(IAnnoucementService annoucementService)
         {
-            _service = service;
+            _annoucementService = annoucementService;
         }
 
         [AllowAnonymous]
@@ -24,7 +23,7 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<AnnoucementViewDto> pagedObject = await _service.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<AnnoucementViewDto> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
             if (pagedObject != null)
             {
                 return Ok(pagedObject);
@@ -39,7 +38,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
-            AnnoucementViewDto annoucementDto = await _service.GetAnnoucementById(id);
+            AnnoucementViewDto annoucementDto = await _annoucementService.GetAnnoucementForViewById(id);
             if (annoucementDto == null)
             {
                 return NotFound($"No annoucement with id: {id}");
@@ -52,42 +51,35 @@ namespace Baraholka.Web.Controllers
         [Route("new")]
         public async Task<IActionResult> Add([FromForm] AnnoucementCreateDto annoucementDto)
         {
-            try
+            bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+            if (result)
             {
-                AnnoucementViewDto annoucement = await _service.CreateAnnoucement(annoucementDto);
-                return CreatedAtAction("GetById", new { id = annoucement.Id }, annoucement);
+                int userId = User.GetUserID();
+                AnnoucementViewDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
+                return CreatedAtAction(nameof(GetById), new { id = annoucement.Id }, annoucement);
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return BadRequest("BrandCategory Id does not exist");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Member")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
-            try
+            AnnoucementMinimalDto annoucement = await _annoucementService.GetAnnoucementForValidateById(id);
+            if (annoucement != null)
             {
-                await _service.DeleteAnnoucementById(id);
+                int currentUser = User.GetUserID();
+                if (currentUser == annoucement.UserId)
+                {
+                    await _annoucementService.DeleteAnnoucementById(id);
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(403, "You are not allowed to delete other user's annoucement!");
+                }
             }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-            return Ok();
+            return BadRequest($"No annoucement with id: {id}");
         }
 
         [Authorize(Roles = "Member")]
@@ -95,27 +87,29 @@ namespace Baraholka.Web.Controllers
         [Route("update")]
         public async Task<IActionResult> Update([FromForm] AnnoucementUpdateDto annoucementDto)
         {
-            try
+            AnnoucementMinimalDto annoucement = await _annoucementService.GetAnnoucementForValidateById(annoucementDto.AnnoucementId);
+            if (annoucement != null)
             {
-                AnnoucementViewDto annoucement = await _service.UpdateAnnoucement(annoucementDto);
-                return CreatedAtAction("GetById", new { id = annoucement.Id }, annoucement);
+                int currentUser = User.GetUserID();
+                if (currentUser == annoucement.UserId)
+                {
+                    bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+                    if (result)
+                    {
+                        AnnoucementViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);
+                        return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.Id }, updatedAnnoucement);
+                    }
+                    else
+                    {
+                        BadRequest("BrandCategory Id does not exist");
+                    }
+                }
+                else
+                {
+                    return StatusCode(403, "You are not allowed to update other user's annoucement!");
+                }
             }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return BadRequest($"No annoucement with id: {annoucementDto.AnnoucementId}");
         }
     }
 }

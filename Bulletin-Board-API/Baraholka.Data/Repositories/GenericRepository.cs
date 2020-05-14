@@ -43,30 +43,18 @@ namespace Baraholka.Data.Repositories
 
         public async Task<bool> Exists(params Expression<Func<T, bool>>[] expressions)
         {
-            var query = _context.Set<T>().AsQueryable();
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
             query = expressions.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
             return await query.AnyAsync();
         }
 
-        public async Task<T> GetSingle(params Expression<Func<T, bool>>[] expressions)
-        {
-            var query = _context.Set<T>().AsQueryable();
-            query = expressions.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
-            return await query.FirstOrDefaultAsync();
-        }
-
-        public virtual IQueryable<T> GetQueryableSet()
-        {
-            return _context.Set<T>();
-        }
-
-        public virtual async Task<T> GetById(int id)
+        public virtual async Task<T> FindById(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
             return entity;
         }
 
-        public async Task<T> GetById(int id, List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections)
+        public async Task<T> FindById(int id, List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections)
         {
             var entity = await _context.Set<T>().FindAsync(id);
             if (references != null)
@@ -87,14 +75,57 @@ namespace Baraholka.Data.Repositories
             return entity;
         }
 
-        public async Task<T> GetSingle(Expression<Func<T, bool>> condition, string[] includes)
+        public async Task<T> FindById(int id, string[] includes)
         {
-            var query = _context.Set<T>().AsQueryable();
+            var entity = await _context.Set<T>().FindAsync(id);
+            if (includes != null)
+            {
+                foreach (var reference in includes)
+                {
+                    await _context.Entry(entity).Navigation(reference).LoadAsync();
+                }
+            }
+
+            return entity;
+        }
+
+        public async Task<T> GetFirst(params Expression<Func<T, bool>>[] filters)
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+            query = filters.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<T> GetFirst(string[] includes, List<Expression<Func<T, bool>>> filters)
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
             if (includes != null)
             {
                 query = includes.Aggregate(query, (current, include) => query.Include(include));
             }
-            var entity = await query.SingleAsync(condition);
+            query = filters.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            var entity = await query.FirstOrDefaultAsync();
+            return entity;
+        }
+
+        public async Task<T> GetSingle(params Expression<Func<T, bool>>[] filters)
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+            query = filters.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            return await query.SingleOrDefaultAsync();
+        }
+
+        public async Task<T> GetSingle(string[] includes, List<Expression<Func<T, bool>>> filters)
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+
+            foreach (var item in includes)
+            {
+                query = query.Include(item);
+            }
+
+            query = filters.Aggregate(query, (current, nextExpression) => current.Where(nextExpression));
+            var entity = await query.SingleOrDefaultAsync();
             return entity;
         }
 
@@ -113,7 +144,7 @@ namespace Baraholka.Data.Repositories
 
         public IOrderedQueryable<T> GetAllForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
-            var query = _context.Set<T>().AsQueryable();
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
             query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
             query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
             var firstOrderParam = orderParams[0];
@@ -129,7 +160,7 @@ namespace Baraholka.Data.Repositories
 
         public async Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
-            var query = _context.Set<T>().AsQueryable();
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
             query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
             query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
             var firstOrder = orderParams[0];
@@ -145,7 +176,7 @@ namespace Baraholka.Data.Repositories
 
         public async Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
-            var query = _context.Set<T>().AsQueryable();
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
             query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
             query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
             var firstOrder = orderParams[0];

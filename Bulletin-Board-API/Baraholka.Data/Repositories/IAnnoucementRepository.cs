@@ -7,7 +7,7 @@ namespace Baraholka.Data.Repositories
 {
     public interface IAnnoucementRepository : IGenericRepository<Annoucement>
     {
-        Task<Annoucement> GetAnnoucementById(int id);
+        Task<Annoucement> GetSingleAnnoucementForViewById(int id);
 
         IOrderedQueryable<Annoucement> GetAnnoucementsForPaging(AnnoucementFilterArguments filterOptions, PageArguments paginateParams, SortingArguments orderParams);
     }

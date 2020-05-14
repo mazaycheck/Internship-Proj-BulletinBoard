@@ -8,12 +8,16 @@ namespace Baraholka.Services
         Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
             PageArguments paginateParams, SortingArguments orderParams);
 
-        Task<AnnoucementViewDto> GetAnnoucementById(int id);
+        Task<AnnoucementViewDto> GetAnnoucementForViewById(int id);
 
-        Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto);
-
-        Task<bool> DeleteAnnoucementById(int id);
+        Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId);
 
         Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto);
+
+        Task<bool> BrandCategoryExists(int id);
+
+        Task<AnnoucementMinimalDto> GetAnnoucementForValidateById(int id);
+
+        Task DeleteAnnoucementById(int id);
     }
 }

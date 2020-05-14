@@ -31,7 +31,7 @@ namespace Baraholka.Services
 
         public async Task DeleteBrand(int id)
         {
-            var brand = await _brandRepo.GetById(id);
+            var brand = await _brandRepo.FindById(id);
             if (brand == null)
             {
                 throw new NullReferenceException($"No such brand with id: {id}");

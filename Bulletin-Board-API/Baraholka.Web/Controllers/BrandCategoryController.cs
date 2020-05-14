@@ -42,7 +42,7 @@ namespace Baraholka.Web.Controllers
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(brandCategoryRelation);
         }
 
         [Authorize(Roles = "Admin, Moderator")]

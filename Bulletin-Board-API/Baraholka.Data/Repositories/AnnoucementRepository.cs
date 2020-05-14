@@ -3,6 +3,7 @@ using Baraholka.Domain.Models;
 using Baraholka.Web.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace Baraholka.Data.Repositories
             _dataSet = _context.Annoucements;
         }
 
-        public async Task<Annoucement> GetAnnoucementById(int id)
+        public async Task<Annoucement> GetSingleAnnoucementForViewById(int id)
         {
             var includes = new string[]
             {
@@ -32,8 +33,12 @@ namespace Baraholka.Data.Repositories
                 $"{nameof(Annoucement.Photos)}"
             };
 
-            Expression<Func<Annoucement, bool>> condition = x => x.AnnoucementId == id;
-            var annoucement = await GetSingle(condition, includes);
+            var filters = new List<Expression<Func<Annoucement, bool>>>
+            {
+                x => x.AnnoucementId == id
+            };
+
+            var annoucement = await GetSingle(includes, filters);
 
             return annoucement;
         }

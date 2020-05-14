@@ -45,9 +45,12 @@ namespace Baraholka.Data.Repositories
                 $"{nameof(Brand.BrandCategories)}.{nameof(Category)}"
             };
 
-            Expression<Func<Brand, bool>> condition = x => x.BrandId == id;
+            var conditions = new List<Expression<Func<Brand, bool>>>
+            {
+                x => x.BrandId == id
+            };
 
-            return await GetSingle(condition, includes);
+            return await GetSingle(includes, conditions);
         }
 
         public async Task UpdateWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd)

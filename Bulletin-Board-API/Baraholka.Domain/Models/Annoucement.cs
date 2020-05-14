@@ -35,5 +35,9 @@ namespace Baraholka.Domain.Models
         public int BrandCategoryId { get; set; }
 
         public BrandCategory BrandCategory { get; set; }
+
+        public Annoucement()
+        {
+        }
     }
 }

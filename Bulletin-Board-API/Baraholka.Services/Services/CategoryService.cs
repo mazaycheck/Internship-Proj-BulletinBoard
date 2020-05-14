@@ -57,10 +57,12 @@ namespace Baraholka.Services
             {
                 $"{nameof(Category.BrandCategories)}.{nameof(Brand)}",
             };
+            var conditions = new List<Expression<Func<Category, bool>>>
+            {
+                x => x.CategoryId == id
+            };
 
-            Expression<Func<Category, bool>> condition = x => x.CategoryId == id;
-
-            Category category = await _repository.GetSingle(condition, includes);
+            Category category = await _repository.GetSingle(includes, conditions);
 
             if (category == null)
             {
@@ -94,7 +96,7 @@ namespace Baraholka.Services
 
         public async Task DeleteCategory(int id)
         {
-            var category = await _repository.GetById(id);
+            var category = await _repository.FindById(id);
             if (category != null)
             {
                 await _repository.Delete(category);

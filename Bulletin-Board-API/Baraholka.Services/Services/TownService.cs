@@ -68,7 +68,7 @@ namespace Baraholka.Services
 
         public async Task<TownForAdminViewDto> GetTownForAdmin(int id)
         {
-            var town = await _repository.GetById(id);
+            var town = await _repository.FindById(id);
             if (town != null)
             {
                 return _mapper.Map<TownForAdminViewDto>(town);
@@ -92,7 +92,7 @@ namespace Baraholka.Services
         {
             Town townToUpdate = _mapper.Map<Town>(townDto);
 
-            var townFromDb = await _repository.GetSingle(x => x.Title == townDto.Title);
+            var townFromDb = await _repository.GetFirst(x => x.Title == townDto.Title);
 
             if (townFromDb != null)
             {
@@ -114,7 +114,7 @@ namespace Baraholka.Services
 
         public async Task DeleteTown(int id)
         {
-            var town = await _repository.GetById(id);
+            var town = await _repository.FindById(id);
             if (town == null)
             {
                 throw new NullReferenceException($"No such town with id: {id}");

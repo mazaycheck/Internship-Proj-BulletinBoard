@@ -38,7 +38,7 @@ namespace Baraholka.Data.Repositories
 
         public async Task<User> GetByEmail(string email)
         {
-            return await GetSingle(x => x.Email == email);
+            return await GetFirst(x => x.Email == email);
         }
 
         public async Task<bool> UserExists(string email)

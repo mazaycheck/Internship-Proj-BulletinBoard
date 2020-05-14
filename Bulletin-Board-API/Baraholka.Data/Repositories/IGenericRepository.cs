@@ -15,13 +15,19 @@ namespace Baraholka.Data.Repositories
 
         Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 
-        Task<T> GetSingle(params Expression<Func<T, bool>>[] expressions);
+        Task<T> GetFirst(params Expression<Func<T, bool>>[] expressions);
 
-        Task<T> GetSingle(Expression<Func<T, bool>> condition, string[] includes);
+        Task<T> GetFirst(string[] includes, List<Expression<Func<T, bool>>> filters);
 
-        Task<T> GetById(int id);
+        Task<T> GetSingle(params Expression<Func<T, bool>>[] filters);
 
-        Task<T> GetById(int id, List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections);
+        Task<T> GetSingle(string[] includes, List<Expression<Func<T, bool>>> filters);
+
+        Task<T> FindById(int id);
+
+        Task<T> FindById(int id, string[] includes);
+
+        Task<T> FindById(int id, List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections);
 
         Task<bool> Exists(int id);
 

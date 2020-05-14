@@ -37,7 +37,6 @@ namespace Baraholka.Data.Seed
 
             if (!userManager.Users.Any())
             {
-                
                 var fullpath = Path.Combine(SeedFolderPath, "jsondata/users.json");
                 var userJsonData = System.IO.File.ReadAllText(fullpath);
                 var format = "dd-MM-yyyy";

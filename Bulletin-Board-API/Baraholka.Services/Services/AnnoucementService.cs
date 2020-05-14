@@ -12,8 +12,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Authentication;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
@@ -47,70 +45,48 @@ namespace Baraholka.Services
             _pageService = pageService;
         }
 
-        public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto)
+        public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
         {
             Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
-            annoucement.UserId = GetUserIdFromClaims();
-            if (!await _brandCategoryRepo.Exists(annoucementDto.BrandCategoryId))
-            {
-                throw new ArgumentException("No such category / brand combination");
-            }
-            annoucement.CreateDate = DateTime.Now;
-            annoucement.ExpirationDate = DateTime.Now.AddDays(30);
-            annoucement.IsActive = true;
+            SetDefaultValues(userId, annoucement);
             await _annoucementRepo.Create(annoucement);
+
             List<IFormFile> images = annoucementDto.Photo;
             if (images != null)
             {
-                try
-                {
-                    await SaveAnnoucementImages(annoucement, images);
-                }
-                catch
-                {
-                    throw new Exception("Could not save images");
-                }
+                await SaveAnnoucementImages(annoucement, images);
             }
+
             return _mapper.Map<AnnoucementViewDto>(annoucement);
+        }
+
+        private void SetDefaultValues(int userId, Annoucement annoucement)
+        {
+            annoucement.UserId = userId;
+            annoucement.CreateDate = DateTime.Now;
+            annoucement.ExpirationDate = DateTime.Now.AddDays(30);
+            annoucement.IsActive = true;
         }
 
         public async Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
         {
-            var propertiesToInclude = new List<Expression<Func<Annoucement, object>>>
-            {
-                annoucement => annoucement.User
-            };
-
             var collectionsToInclude = new List<Expression<Func<Annoucement, IEnumerable<object>>>>
             {
                 annoucement => annoucement.Photos
             };
-            Annoucement annoucementFromDb = await _annoucementRepo.GetById(annoucementDto.AnnoucementId, propertiesToInclude, collectionsToInclude);
 
-            if (annoucementFromDb == null)
-            {
-                throw new NullReferenceException($"No annoucement with such id: {annoucementDto.AnnoucementId}");
-            }
-            if (!await _brandCategoryRepo.Exists(annoucementDto.BrandCategoryId))
-            {
-                throw new ArgumentException("No such category / brand combination");
-            }
+            var testIncludes = new string[] { $"{nameof(Annoucement.Photos)}" };
 
-            if (UserIdFromClaimsEquals(annoucementFromDb.UserId))
+            Annoucement annoucementFromDb = await _annoucementRepo.FindById(annoucementDto.AnnoucementId, testIncludes);
+
+            _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucementFromDb);
+            await _annoucementRepo.Update(annoucementFromDb);
+            List<IFormFile> images = annoucementDto.Photo;
+            if (images != null)
             {
-                _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucementFromDb);
-                await _annoucementRepo.Update(annoucementFromDb);
-                List<IFormFile> images = annoucementDto.Photo;
-                if (images != null)
-                {
-                    await SaveAnnoucementImages(annoucementFromDb, images);
-                }
-                return _mapper.Map<AnnoucementViewDto>(annoucementFromDb);
+                await SaveAnnoucementImages(annoucementFromDb, images);
             }
-            else
-            {
-                throw new UnauthorizedAccessException("You cannot edit other user's annoucement");
-            }
+            return _mapper.Map<AnnoucementViewDto>(annoucementFromDb);
         }
 
         public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
@@ -129,35 +105,31 @@ namespace Baraholka.Services
             return pagedViewData;
         }
 
-        public async Task<AnnoucementViewDto> GetAnnoucementById(int id)
+        public async Task<AnnoucementViewDto> GetAnnoucementForViewById(int id)
         {
-            Annoucement annoucement = await _annoucementRepo.GetAnnoucementById(id);
+            Annoucement annoucement = await _annoucementRepo.GetSingleAnnoucementForViewById(id);
             if (annoucement != null)
             {
-                return _mapper.Map<AnnoucementViewDto>(annoucement);
+                var annoucementForView = _mapper.Map<AnnoucementViewDto>(annoucement);
+                return annoucementForView;
             }
             return null;
         }
 
-        public async Task<bool> DeleteAnnoucementById(int annoucementId)
+        public async Task<AnnoucementMinimalDto> GetAnnoucementForValidateById(int id)
         {
-            Annoucement annoucement = await _annoucementRepo.GetById(annoucementId);
+            Annoucement annoucement = await _annoucementRepo.GetSingle(x => x.AnnoucementId == id);
+            if (annoucement != null)
+            {
+                return _mapper.Map<AnnoucementMinimalDto>(annoucement);
+            }
+            return null;
+        }
 
-            if (annoucement == null)
-            {
-                throw new NullReferenceException($"No annoucement with such id: {annoucementId}");
-            }
-
-            if (UserHasRequiredRoles("Admin", "Moderator") || UserIdFromClaimsEquals(annoucementId))
-            {
-                await _annoucementRepo.Delete(annoucement);
-                DeleteFolderWithAnnoucementPhotos(annoucement.AnnoucementId);
-                return true;
-            }
-            else
-            {
-                throw new UnauthorizedAccessException("You dont have rights to delete other member's annoucement");
-            }
+        public async Task DeleteAnnoucementById(int id)
+        {
+            await _annoucementRepo.Delete(new Annoucement() { AnnoucementId = id });
+            DeleteFolderWithAnnoucementPhotos(id);
         }
 
         private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
@@ -197,49 +169,9 @@ namespace Baraholka.Services
             return Path.Combine(_webHost.WebRootPath, "images", $"{annoucementId}");
         }
 
-        private bool UserIdFromClaimsEquals(int id)
+        public async Task<bool> BrandCategoryExists(int brandCategoryId)
         {
-            ClaimsPrincipal user = _contextAccessor.HttpContext.User;
-            if (user.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-            {
-                return id == Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
-            }
-            else
-            {
-                throw new InvalidCredentialException($"User has no NameIdentifier claims");
-            }
-        }
-
-        private int GetUserIdFromClaims()
-        {
-            ClaimsPrincipal user = _contextAccessor.HttpContext.User;
-            if (user.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-            {
-                return Int32.Parse(user.FindFirst(ClaimTypes.NameIdentifier).Value);
-            }
-            else
-            {
-                throw new InvalidCredentialException($"User has no NameIdentifier claims");
-            }
-        }
-
-        private bool UserHasRequiredRoles(params string[] roles)
-        {
-            ClaimsPrincipal user = _contextAccessor.HttpContext.User;
-            if (user.HasClaim(x => x.Type == ClaimTypes.Role))
-            {
-                bool result = roles.Any(role => user.IsInRole(role));
-                if (!result)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-                else
-                    return true;
-            }
-            else
-            {
-                throw new InvalidCredentialException($"User has no Role claims");
-            }
+            return await _brandCategoryRepo.Exists(brandCategoryId);
         }
     }
 }

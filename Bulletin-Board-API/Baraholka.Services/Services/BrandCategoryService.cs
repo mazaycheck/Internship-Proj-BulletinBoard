@@ -56,7 +56,7 @@ namespace Baraholka.Services
                 k => k.Category
             };
 
-            BrandCategory brandCategory = await _brandCategoryRepo.GetById(id, includes, null);
+            BrandCategory brandCategory = await _brandCategoryRepo.FindById(id, includes, null);
 
             return _mapper.Map<BrandCategoryForViewDto>(brandCategory);
         }
@@ -66,10 +66,10 @@ namespace Baraholka.Services
             string brandTitle = brandCategoryForCreate.Brand;
             string categoryTitle = brandCategoryForCreate.Category;
 
-            Category categoryFromDb = await _categoryRepo.GetSingle(x => x.Title == categoryTitle)
+            Category categoryFromDb = await _categoryRepo.GetFirst(x => x.Title == categoryTitle)
                 ?? throw new NullReferenceException("No such category");
 
-            Brand brandFromDb = await _brandRepo.GetSingle(x => x.Title == brandTitle)
+            Brand brandFromDb = await _brandRepo.GetFirst(x => x.Title == brandTitle)
                 ?? throw new NullReferenceException("No such brand");
 
             var filters = new Expression<Func<BrandCategory, bool>>[]
@@ -89,7 +89,7 @@ namespace Baraholka.Services
 
         public async Task<bool> DeleteRelation(int brandCategoryId)
         {
-            BrandCategory brandCategory = await _brandCategoryRepo.GetById(brandCategoryId);
+            BrandCategory brandCategory = await _brandCategoryRepo.FindById(brandCategoryId);
 
             if (brandCategory == null)
             {

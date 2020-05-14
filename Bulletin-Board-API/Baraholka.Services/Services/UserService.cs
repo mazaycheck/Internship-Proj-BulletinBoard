@@ -4,7 +4,9 @@ using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Web.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
@@ -39,7 +41,11 @@ namespace Baraholka.Services
         public async Task<UserForPublicDetail> GetUser(int id)
         {
             var includes = new string[] { $"{nameof(Town)}" };
-            var user = await _repository.GetSingle(u => u.Id == id, includes);
+            var conditions = new List<Expression<Func<User, bool>>>
+            {
+                u => u.Id == id
+            };
+            var user = await _repository.GetSingle(includes, conditions);
             if (user == null)
             {
                 return null;
@@ -49,7 +55,7 @@ namespace Baraholka.Services
 
         public async Task DeleteUser(int id)
         {
-            var user = await _repository.GetById(id);
+            var user = await _repository.FindById(id);
             if (user == null)
             {
                 throw new NullReferenceException("No such user");
