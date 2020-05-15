@@ -111,5 +111,16 @@ namespace Baraholka.Data.Repositories
 
             return orderedAnnoucements;
         }
+
+        public async Task BindImages(Annoucement annoucement, List<string> fileGuidNames)
+        {            
+            annoucement.Photos = new List<Photo>();
+            foreach (string photoPath in fileGuidNames)
+            {
+                annoucement.Photos.Add(new Photo() { PhotoUrl = photoPath });
+            }
+
+            await Save();
+        }
     }
 }

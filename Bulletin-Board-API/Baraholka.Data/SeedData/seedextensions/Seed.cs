@@ -102,7 +102,7 @@ namespace Baraholka.Data.Seed
             }
             string annoucementIdImageFolder = Path.Combine(rootPath, "images", $"{annoucementId}");
 
-            var imgUrls = imageFileProcessor.UploadFilesOnServer(listOfImages, annoucementIdImageFolder);
+            var imgUrls = imageFileProcessor.UploadImageFilesOnServer(listOfImages, annoucementIdImageFolder);
 
             return imgUrls.Select(x => new Photo() { PhotoUrl = x }).ToList();
         }

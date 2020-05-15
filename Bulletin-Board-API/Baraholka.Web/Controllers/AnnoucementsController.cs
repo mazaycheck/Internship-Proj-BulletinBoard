@@ -65,7 +65,7 @@ namespace Baraholka.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
-            AnnoucementCheckDto annoucement = await _annoucementService.GetAnnoucementForValidateById(id);
+            AnnoucementCheckDto annoucement = await _annoucementService.GetAnnoucementForValidate(id);
 
             if (annoucement == null)
             {
@@ -89,7 +89,7 @@ namespace Baraholka.Web.Controllers
         [Route("update")]
         public async Task<IActionResult> Update([FromForm] AnnoucementUpdateDto annoucementDto)
         {
-            AnnoucementCheckDto annoucement = await _annoucementService.GetAnnoucementForValidateById(annoucementDto.AnnoucementId);
+            AnnoucementCheckDto annoucement = await _annoucementService.GetAnnoucementForValidate(annoucementDto.AnnoucementId);
 
             if (annoucement == null)
             {

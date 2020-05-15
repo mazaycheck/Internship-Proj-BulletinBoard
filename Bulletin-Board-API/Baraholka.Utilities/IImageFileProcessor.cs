@@ -12,8 +12,8 @@ namespace Baraholka.Utilities
 
         Image ResizeImage(Image imgToResize, Size size);
 
-        void SaveImageResized(Image imageFromForm, string filePath, int width, int height);
+        void SaveResizedImages(Image imageFromForm, string filePath, int width, int height);
 
-        List<string> UploadFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder);
+        List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder);
     }
 }

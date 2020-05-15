@@ -1,56 +1,54 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Baraholka.Domain.Models;
+using Baraholka.Utilities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text;
 
-namespace Baraholka.Utilities
+namespace Baraholka.Services.Services
 {
-    public class ImageFileProcessor : IImageFileProcessor
+    public class ImageFileManagerService : IImageFileManagerService
     {
-        public List<Image> ConvertIFormFileToImage(List<IFormFile> formFiles)
+        private readonly IImageFileProcessor _imageFileProcessor;
+        private readonly IRootFolderPath _rootFolder;
+
+        public ImageFileManagerService(IImageFileProcessor imageFileProcessor, IRootFolderPath rootFolder)
         {
-            List<Image> list = new List<Image>();
-            foreach (var formFile in formFiles)
+            _imageFileProcessor = imageFileProcessor;
+            _rootFolder = rootFolder;
+        }
+
+        private void AddPhotosToAnnoucement(Annoucement annoucement, List<string> listOfImgUrls)
+        {
+            annoucement.Photos = new List<Photo>();
+            foreach (string photoPath in listOfImgUrls)
             {
-                Image imageRaw;
-                using (var stream = formFile.OpenReadStream())
-                {
-                    imageRaw = Image.FromStream(stream);
-                }
-                list.Add(imageRaw);
+                annoucement.Photos.Add(new Photo() { PhotoUrl = photoPath });
             }
-            return list;
         }
 
-        public Image ResizeImage(Image imgToResize, Size size)
+        public List<string> UploadImages(List<IFormFile> formImages, string folderName)
         {
-            int sourceWidth = imgToResize.Width;
-            int sourceHeight = imgToResize.Height;
-
-            float nPercent = 0;
-            float nPercentW = 0;
-            float nPercentH = 0;
-
-            nPercentW = ((float)size.Width / (float)sourceWidth);
-            nPercentH = ((float)size.Height / (float)sourceHeight);
-
-            if (nPercentH < nPercentW)
-                nPercent = nPercentH;
-            else
-                nPercent = nPercentW;
-
-            int destWidth = (int)(sourceWidth * nPercent);
-            int destHeight = (int)(sourceHeight * nPercent);
-
-            Bitmap b = new Bitmap(destWidth, destHeight);
-            Graphics g = Graphics.FromImage((Image)b);
-
-            g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
-            g.Dispose();
-
-            return (Image)b;
+            List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
+            var path = GetImagesFolderPath(folderName);
+            List<string> listOfImgUrls = UploadImageFilesOnServer(images, path);
+            return listOfImgUrls;
         }
+
+        public void DeleteOldImages(int annoucementId)
+        {
+            string annoucementIdImageFolder = GetImagesFolderPath($"{annoucementId}");
+
+            DeleteFolder(annoucementIdImageFolder);
+        }
+
+        private string GetImagesFolderPath(string id)
+        {
+            return Path.Combine(_rootFolder.FolderPath, "images", id);
+        }
+
 
         public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)
         {
@@ -87,7 +85,7 @@ namespace Baraholka.Utilities
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                imageResized = ResizeImage(imageFromForm, new Size(width, height));
+                imageResized = _imageFileProcessor.ResizeImage(imageFromForm, new Size(width, height));
                 System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Jpeg;
                 imageResized.Save(fileStream, format);
             }
@@ -118,5 +116,6 @@ namespace Baraholka.Utilities
                 }
             }
         }
+
     }
 }

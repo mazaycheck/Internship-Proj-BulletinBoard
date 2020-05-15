@@ -2,6 +2,7 @@
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
+using Baraholka.Services.Services;
 using Baraholka.Utilities;
 using Baraholka.Web.Helpers;
 using Microsoft.AspNetCore.Hosting;
@@ -19,30 +20,27 @@ namespace Baraholka.Services
     {
         private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHost;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
-        private readonly IImageFileProcessor _imageFileProcessor;
+        private readonly IImageFileManagerService _imageFileManager;        
 
         public AnnoucementService(
             IAnnoucementRepository annoucementRepo,
-            IMapper mapper, IWebHostEnvironment webHost,
+            IMapper mapper,
             IGenericRepository<BrandCategory> brandCategoryRepo,
-            IImageFileProcessor imageFileProcessor
+            IImageFileManagerService imageFileManager          
             )
         {
             _annoucementRepo = annoucementRepo;
-            _annoucementRepo = annoucementRepo;
             _mapper = mapper;
-            _webHost = webHost;
             _brandCategoryRepo = brandCategoryRepo;
-            _imageFileProcessor = imageFileProcessor;
+            _imageFileManager = imageFileManager;
         }
 
         public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
         {
             Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
 
-            SetDefaultValues(userId, annoucement);
+            SetDefaultValuesForCreate(userId, annoucement);
 
             await _annoucementRepo.Create(annoucement);
 
@@ -56,7 +54,7 @@ namespace Baraholka.Services
             return _mapper.Map<AnnoucementViewDto>(annoucement);
         }
 
-        private void SetDefaultValues(int userId, Annoucement annoucement)
+        private void SetDefaultValuesForCreate(int userId, Annoucement annoucement)
         {
             annoucement.UserId = userId;
             annoucement.CreateDate = DateTime.Now;
@@ -78,6 +76,8 @@ namespace Baraholka.Services
 
             if (images != null)
             {
+                _imageFileManager.DeleteOldImages(annoucementFromDb.AnnoucementId);
+
                 await SaveAnnoucementImages(annoucementFromDb, images);
             }
 
@@ -109,7 +109,7 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<AnnoucementCheckDto> GetAnnoucementForValidateById(int id)
+        public async Task<AnnoucementCheckDto> GetAnnoucementForValidate(int id)
         {
             Annoucement annoucement = await _annoucementRepo.GetSingle(x => x.AnnoucementId == id);
             if (annoucement != null)
@@ -122,49 +122,20 @@ namespace Baraholka.Services
         public async Task DeleteAnnoucementById(int id)
         {
             await _annoucementRepo.Delete(new Annoucement() { AnnoucementId = id });
-            DeleteFolderWithAnnoucementPhotos(id);
-        }
 
-        private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
-        {
-            string annoucementFolderForImageUpload = FolderForImages(annoucement.AnnoucementId);
-            List<string> generatedImageNames = UploadImages(images, annoucementFolderForImageUpload);
-
-            AddPhotosToAnnoucement(annoucement, generatedImageNames);
-            await _annoucementRepo.Save();
-        }
-
-        private void AddPhotosToAnnoucement(Annoucement annoucement, List<string> listOfImgUrls)
-        {
-            annoucement.Photos = new List<Photo>();
-            foreach (string photoPath in listOfImgUrls)
-            {
-                annoucement.Photos.Add(new Photo() { PhotoUrl = photoPath });
-            }
-        }
-
-        private List<string> UploadImages(List<IFormFile> formImages, string folderName)
-        {
-            List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
-            _imageFileProcessor.DeleteFolder(folderName);
-            List<string> listOfImgUrls = _imageFileProcessor.UploadFilesOnServer(images, folderName);
-            return listOfImgUrls;
-        }
-
-        private void DeleteFolderWithAnnoucementPhotos(int annoucementId)
-        {
-            string annoucementIdImageFolder = FolderForImages(annoucementId);
-            _imageFileProcessor.DeleteFolder(annoucementIdImageFolder);
-        }
-
-        private string FolderForImages(int annoucementId)
-        {
-            return Path.Combine(_webHost.WebRootPath, "images", $"{annoucementId}");
+            _imageFileManager.DeleteOldImages(id);
         }
 
         public async Task<bool> BrandCategoryExists(int brandCategoryId)
         {
             return await _brandCategoryRepo.Exists(brandCategoryId);
+        }
+
+        private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
+        {           
+            List<string> fileGuidNames = _imageFileManager.UploadImages(images, folderName: $"{annoucement.AnnoucementId}");
+
+            await _annoucementRepo.BindImages(annoucement, fileGuidNames);       
         }
     }
 }
