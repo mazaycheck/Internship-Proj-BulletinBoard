@@ -3,15 +3,9 @@ using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services.Services;
-using Baraholka.Utilities;
-using Baraholka.Web.Helpers;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
@@ -21,13 +15,13 @@ namespace Baraholka.Services
         private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
-        private readonly IImageFileManagerService _imageFileManager;        
+        private readonly IImageFileManagerService _imageFileManager;
 
         public AnnoucementService(
             IAnnoucementRepository annoucementRepo,
             IMapper mapper,
             IGenericRepository<BrandCategory> brandCategoryRepo,
-            IImageFileManagerService imageFileManager          
+            IImageFileManagerService imageFileManager
             )
         {
             _annoucementRepo = annoucementRepo;
@@ -109,12 +103,12 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<AnnoucementCheckDto> GetAnnoucementForValidate(int id)
+        public async Task<AnnoucementUserInfoDto> GetAnnoucementUserInfo(int id)
         {
             Annoucement annoucement = await _annoucementRepo.GetSingle(x => x.AnnoucementId == id);
             if (annoucement != null)
             {
-                return _mapper.Map<AnnoucementCheckDto>(annoucement);
+                return _mapper.Map<AnnoucementUserInfoDto>(annoucement);
             }
             return null;
         }
@@ -132,10 +126,10 @@ namespace Baraholka.Services
         }
 
         private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
-        {           
+        {
             List<string> fileGuidNames = _imageFileManager.UploadImages(images, folderName: $"{annoucement.AnnoucementId}");
 
-            await _annoucementRepo.BindImages(annoucement, fileGuidNames);       
+            await _annoucementRepo.BindImages(annoucement, fileGuidNames);
         }
     }
 }

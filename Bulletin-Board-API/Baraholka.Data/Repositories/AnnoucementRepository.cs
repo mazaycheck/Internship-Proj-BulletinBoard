@@ -1,6 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
-using Baraholka.Web.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -47,7 +46,7 @@ namespace Baraholka.Data.Repositories
             _dataSet = _context.Annoucements;
             IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
             IQueryable<Annoucement> filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
-            IOrderedQueryable<Annoucement> orderedAnnoucements =  OrderAnnoucements(filteredAnnoucements, orderParams);
+            IOrderedQueryable<Annoucement> orderedAnnoucements = OrderAnnoucements(filteredAnnoucements, orderParams);
             return await orderedAnnoucements.GetPage(paginateParams);
         }
 
@@ -113,7 +112,7 @@ namespace Baraholka.Data.Repositories
         }
 
         public async Task BindImages(Annoucement annoucement, List<string> fileGuidNames)
-        {            
+        {
             annoucement.Photos = new List<Photo>();
             foreach (string photoPath in fileGuidNames)
             {

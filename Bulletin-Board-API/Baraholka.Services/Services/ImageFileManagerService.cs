@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Text;
 
 namespace Baraholka.Services.Services
 {
@@ -48,7 +47,6 @@ namespace Baraholka.Services.Services
         {
             return Path.Combine(_rootFolder.FolderPath, "images", id);
         }
-
 
         public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)
         {
@@ -116,6 +114,5 @@ namespace Baraholka.Services.Services
                 }
             }
         }
-
     }
 }

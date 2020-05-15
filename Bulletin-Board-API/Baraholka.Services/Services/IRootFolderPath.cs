@@ -2,6 +2,6 @@
 {
     public interface IRootFolderPath
     {
-        string FolderPath { get;}
+        string FolderPath { get; }
     }
 }

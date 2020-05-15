@@ -61,27 +61,9 @@ namespace Baraholka.Services
             return _mapper.Map<BrandCategoryForViewDto>(brandCategory);
         }
 
-        public async Task<BrandCategoryForViewDto> CreateRelation(BrandCategoryForCreateDto brandCategoryForCreate)
-        {
-            string brandTitle = brandCategoryForCreate.Brand;
-            string categoryTitle = brandCategoryForCreate.Category;
-
-            Category categoryFromDb = await _categoryRepo.GetFirst(x => x.Title == categoryTitle)
-                ?? throw new NullReferenceException("No such category");
-
-            Brand brandFromDb = await _brandRepo.GetFirst(x => x.Title == brandTitle)
-                ?? throw new NullReferenceException("No such brand");
-
-            var filters = new Expression<Func<BrandCategory, bool>>[]
-            {
-                x => x.CategoryId == categoryFromDb.CategoryId,
-                y => y.BrandId == brandFromDb.BrandId
-            };
-
-            if (await _brandCategoryRepo.Exists(filters))
-                throw new ArgumentException($"This relation already exists: {categoryTitle} / {brandTitle}");
-
-            var brandCatetogyRelation = new BrandCategory() { BrandId = brandFromDb.BrandId, CategoryId = categoryFromDb.CategoryId };
+        public async Task<BrandCategoryForViewDto> CreateRelation(int brandId, int categoryId)
+        {            
+            var brandCatetogyRelation = new BrandCategory() { BrandId = brandId, CategoryId = categoryId };
             await _brandCategoryRepo.Create(brandCatetogyRelation);
 
             return _mapper.Map<BrandCategoryForViewDto>(brandCatetogyRelation);
@@ -100,5 +82,34 @@ namespace Baraholka.Services
 
             return true;
         }
+
+        public async Task<CategoryForViewDto> GetCategory(string title)
+        {
+            var category = await _categoryRepo.GetFirst(x => x.Title == title);
+            return _mapper.Map<CategoryForViewDto>(category);
+        }
+
+        public async Task<BrandForViewDto> GetBrand(string title)
+        {
+            var brand = await _brandRepo.GetFirst(x => x.Title == title);
+            return _mapper.Map<BrandForViewDto>(brand);
+        }
+
+        public async Task<bool> BrandCategoryExist(int brandId, int categoryId)
+        {
+            var filters = new Expression<Func<BrandCategory, bool>>[]
+            {
+                x => x.CategoryId == categoryId,
+                y => y.BrandId == brandId
+            };
+
+            return await _brandCategoryRepo.Exists(filters);                
+        }
+
+        public async Task<bool> BrandCategoryExist(int brandCategoryId)
+        {
+            return await _brandCategoryRepo.Exists(brandCategoryId);
+        }
+
     }
 }

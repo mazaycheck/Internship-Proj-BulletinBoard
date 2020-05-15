@@ -10,6 +10,7 @@ namespace Baraholka.Data.Repositories
         Task<Annoucement> GetSingleAnnoucementForViewById(int id);
 
         Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions, PageArguments paginateParams, SortingArguments orderParams);
+
         Task BindImages(Annoucement annoucement, List<string> fileGuidNames);
     }
 }

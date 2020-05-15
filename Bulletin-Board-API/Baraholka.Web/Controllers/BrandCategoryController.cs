@@ -49,35 +49,38 @@ namespace Baraholka.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BrandCategoryForCreateDto brandCategoryForCreate)
         {
-            try
+            var category = await _brandCategoryService.GetCategory(brandCategoryForCreate.Category);
+            if (category == null)
             {
-                BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(brandCategoryForCreate);
+                return NotFound("No such category");
+            }
 
-                return StatusCode(201, newBrandCategory);
-            }
-            catch (NullReferenceException ex)
+            var brand = await _brandCategoryService.GetBrand(brandCategoryForCreate.Brand);
+            if (brand == null)
             {
-                return BadRequest(ex.Message);
+                return NotFound("No such brand");
             }
-            catch (ArgumentException ex)
+
+            if(await _brandCategoryService.BrandCategoryExist(category.CategoryId, brand.BrandId))
             {
-                return Conflict(ex.Message);
+                return Conflict($"This relation already exists");
             }
+
+            BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(brandCategoryForCreate);
+            return CreatedAtAction(nameof(Get), newBrandCategory.BrandCategoryId, newBrandCategory);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
+            if (!await _brandCategoryService.BrandCategoryExist(id))
             {
-                await _brandCategoryService.DeleteRelation(id);
-                return Ok($"Removed relation with id: {id}");
+                return Conflict($"Brand-Category relation with id: {id} does not exist");
             }
-            catch (NullReferenceException ex)
-            {
-                return NotFound(ex.Message);
-            }
+
+            await _brandCategoryService.DeleteRelation(id);
+            return Ok($"Removed relation with id: {id}");            
         }
     }
 }

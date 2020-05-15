@@ -1,8 +1,6 @@
-﻿using Baraholka.Domain.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Threading.Tasks;
 
 namespace Baraholka.Services.Services
 {
