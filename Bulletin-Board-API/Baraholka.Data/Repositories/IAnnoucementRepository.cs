@@ -1,6 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Baraholka.Data.Repositories
@@ -9,6 +8,6 @@ namespace Baraholka.Data.Repositories
     {
         Task<Annoucement> GetSingleAnnoucementForViewById(int id);
 
-        IOrderedQueryable<Annoucement> GetAnnoucementsForPaging(AnnoucementFilterArguments filterOptions, PageArguments paginateParams, SortingArguments orderParams);
+        Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions, PageArguments paginateParams, SortingArguments orderParams);
     }
 }

@@ -13,6 +13,11 @@ namespace Baraholka.Domain.Models
         [Range(typeof(DateTime), "01/01/2020", "01/01/2100")]
         public DateTime RegistrationDate { get; set; }
 
+        public static object FindFirst(string nameIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual ICollection<Annoucement> Annoucements { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual ICollection<Message> MessagesSent { get; set; }

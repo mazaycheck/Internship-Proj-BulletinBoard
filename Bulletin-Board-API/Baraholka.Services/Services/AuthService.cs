@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
-using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -16,16 +15,14 @@ namespace Baraholka.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration,
+        public AuthService(IConfiguration configuration,
             UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper)
         {
-            _userRepository = userRepository;
             _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;

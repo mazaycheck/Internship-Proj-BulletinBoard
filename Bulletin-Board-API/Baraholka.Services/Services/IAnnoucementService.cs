@@ -16,7 +16,7 @@ namespace Baraholka.Services
 
         Task<bool> BrandCategoryExists(int id);
 
-        Task<AnnoucementMinimalDto> GetAnnoucementForValidateById(int id);
+        Task<AnnoucementCheckDto> GetAnnoucementForValidateById(int id);
 
         Task DeleteAnnoucementById(int id);
     }

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
@@ -21,37 +20,34 @@ namespace Baraholka.Services
         private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHost;
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IImageFileProcessor _imageFileProcessor;
-        private readonly IPageService<Annoucement> _pageService;
 
         public AnnoucementService(
             IAnnoucementRepository annoucementRepo,
             IMapper mapper, IWebHostEnvironment webHost,
-            IHttpContextAccessor contextAccessor,
             IGenericRepository<BrandCategory> brandCategoryRepo,
-            IImageFileProcessor imageFileProcessor,
-            IPageService<Annoucement> pageService
+            IImageFileProcessor imageFileProcessor
             )
         {
             _annoucementRepo = annoucementRepo;
             _annoucementRepo = annoucementRepo;
             _mapper = mapper;
             _webHost = webHost;
-            _contextAccessor = contextAccessor;
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileProcessor = imageFileProcessor;
-            _pageService = pageService;
         }
 
         public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
         {
             Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
+
             SetDefaultValues(userId, annoucement);
+
             await _annoucementRepo.Create(annoucement);
 
             List<IFormFile> images = annoucementDto.Photo;
+
             if (images != null)
             {
                 await SaveAnnoucementImages(annoucement, images);
@@ -70,31 +66,28 @@ namespace Baraholka.Services
 
         public async Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
         {
-            var collectionsToInclude = new List<Expression<Func<Annoucement, IEnumerable<object>>>>
-            {
-                annoucement => annoucement.Photos
-            };
+            var includes = new string[] { $"{nameof(Annoucement.Photos)}" };
 
-            var testIncludes = new string[] { $"{nameof(Annoucement.Photos)}" };
-
-            Annoucement annoucementFromDb = await _annoucementRepo.FindById(annoucementDto.AnnoucementId, testIncludes);
+            Annoucement annoucementFromDb = await _annoucementRepo.FindById(annoucementDto.AnnoucementId, includes);
 
             _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucementFromDb);
+
             await _annoucementRepo.Update(annoucementFromDb);
+
             List<IFormFile> images = annoucementDto.Photo;
+
             if (images != null)
             {
                 await SaveAnnoucementImages(annoucementFromDb, images);
             }
+
             return _mapper.Map<AnnoucementViewDto>(annoucementFromDb);
         }
 
         public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
                      PageArguments paginateParams, SortingArguments orderParams)
         {
-            IOrderedQueryable<Annoucement> annoucements = _annoucementRepo.GetAnnoucementsForPaging(filterOptions, paginateParams, orderParams);
-
-            PageDataContainer<Annoucement> pagedAnnoucements = await _pageService.Paginate(annoucements, paginateParams);
+            PageDataContainer<Annoucement> pagedAnnoucements = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
 
             if (pagedAnnoucements.PageData.Count == 0)
             {
@@ -116,12 +109,12 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<AnnoucementMinimalDto> GetAnnoucementForValidateById(int id)
+        public async Task<AnnoucementCheckDto> GetAnnoucementForValidateById(int id)
         {
             Annoucement annoucement = await _annoucementRepo.GetSingle(x => x.AnnoucementId == id);
             if (annoucement != null)
             {
-                return _mapper.Map<AnnoucementMinimalDto>(annoucement);
+                return _mapper.Map<AnnoucementCheckDto>(annoucement);
             }
             return null;
         }

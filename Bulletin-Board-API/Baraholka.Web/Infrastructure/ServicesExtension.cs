@@ -1,6 +1,7 @@
 ﻿using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services;
+using Baraholka.Services.Services;
 using Baraholka.Utilities;
 using Baraholka.Web.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,7 @@ namespace Baraholka.Web
             services.AddScoped<ITownService, TownService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICurrentUserAuthorized, CurrentContextUserAuthorized>();
         }
     }
 }

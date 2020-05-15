@@ -24,14 +24,12 @@ namespace Baraholka.Web.Controllers
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
             PageDataContainer<AnnoucementViewDto> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
-            if (pagedObject != null)
-            {
-                return Ok(pagedObject);
-            }
-            else
+            if (pagedObject == null)
             {
                 return NoContent();
             }
+
+            return Ok(pagedObject);
         }
 
         [AllowAnonymous]
@@ -43,6 +41,7 @@ namespace Baraholka.Web.Controllers
             {
                 return NotFound($"No annoucement with id: {id}");
             }
+
             return Ok(annoucementDto);
         }
 
@@ -58,6 +57,7 @@ namespace Baraholka.Web.Controllers
                 AnnoucementViewDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
                 return CreatedAtAction(nameof(GetById), new { id = annoucement.Id }, annoucement);
             }
+
             return BadRequest("BrandCategory Id does not exist");
         }
 
@@ -65,21 +65,23 @@ namespace Baraholka.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
-            AnnoucementMinimalDto annoucement = await _annoucementService.GetAnnoucementForValidateById(id);
-            if (annoucement != null)
+            AnnoucementCheckDto annoucement = await _annoucementService.GetAnnoucementForValidateById(id);
+
+            if (annoucement == null)
             {
-                int currentUser = User.GetUserID();
-                if (currentUser == annoucement.UserId)
-                {
-                    await _annoucementService.DeleteAnnoucementById(id);
-                    return Ok();
-                }
-                else
-                {
-                    return StatusCode(403, "You are not allowed to delete other user's annoucement!");
-                }
+                return BadRequest($"No annoucement with id: {id}");
             }
-            return BadRequest($"No annoucement with id: {id}");
+
+            int currentUser = User.GetUserID();
+
+            if (currentUser != annoucement.UserId)
+            {
+                return StatusCode(403, "You are not allowed to delete other user's annoucement!");
+            }
+
+            await _annoucementService.DeleteAnnoucementById(id);
+
+            return Ok();
         }
 
         [Authorize(Roles = "Member")]
@@ -87,29 +89,30 @@ namespace Baraholka.Web.Controllers
         [Route("update")]
         public async Task<IActionResult> Update([FromForm] AnnoucementUpdateDto annoucementDto)
         {
-            AnnoucementMinimalDto annoucement = await _annoucementService.GetAnnoucementForValidateById(annoucementDto.AnnoucementId);
-            if (annoucement != null)
+            AnnoucementCheckDto annoucement = await _annoucementService.GetAnnoucementForValidateById(annoucementDto.AnnoucementId);
+
+            if (annoucement == null)
             {
-                int currentUser = User.GetUserID();
-                if (currentUser == annoucement.UserId)
-                {
-                    bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
-                    if (result)
-                    {
-                        AnnoucementViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);
-                        return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.Id }, updatedAnnoucement);
-                    }
-                    else
-                    {
-                        BadRequest("BrandCategory Id does not exist");
-                    }
-                }
-                else
-                {
-                    return StatusCode(403, "You are not allowed to update other user's annoucement!");
-                }
+                return BadRequest($"No annoucement with id: {annoucementDto.AnnoucementId}");
             }
-            return BadRequest($"No annoucement with id: {annoucementDto.AnnoucementId}");
+
+            int currentUser = User.GetUserID();
+
+            if (currentUser != annoucement.UserId)
+            {
+                return StatusCode(403, "You are not allowed to update other user's annoucement!");
+            }
+
+            bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+
+            if (!result)
+            {
+                return BadRequest("BrandCategory Id does not exist");
+            }
+
+            AnnoucementViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);
+
+            return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.Id }, updatedAnnoucement);
         }
     }
 }

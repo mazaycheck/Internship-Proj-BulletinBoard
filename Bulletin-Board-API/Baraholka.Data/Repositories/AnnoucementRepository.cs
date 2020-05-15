@@ -13,13 +13,11 @@ namespace Baraholka.Data.Repositories
     public class AnnoucementRepository : GenericRepository<Annoucement>, IAnnoucementRepository
     {
         private readonly AppDbContext _context;
-        private readonly IPageService<Annoucement> _pageService;
         private DbSet<Annoucement> _dataSet;
 
-        public AnnoucementRepository(AppDbContext context, IPageService<Annoucement> pageService) : base(context)
+        public AnnoucementRepository(AppDbContext context) : base(context)
         {
             _context = context;
-            _pageService = pageService;
             _dataSet = _context.Annoucements;
         }
 
@@ -43,13 +41,14 @@ namespace Baraholka.Data.Repositories
             return annoucement;
         }
 
-        public IOrderedQueryable<Annoucement> GetAnnoucementsForPaging(AnnoucementFilterArguments filterOptions,
+        public async Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions,
              PageArguments paginateParams, SortingArguments orderParams)
         {
             _dataSet = _context.Annoucements;
             IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
             IQueryable<Annoucement> filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
-            return OrderAnnoucements(filteredAnnoucements, orderParams);
+            IOrderedQueryable<Annoucement> orderedAnnoucements =  OrderAnnoucements(filteredAnnoucements, orderParams);
+            return await orderedAnnoucements.GetPage(paginateParams);
         }
 
         private static IQueryable<Annoucement> IncludeProperties(DbSet<Annoucement> dataSet)
