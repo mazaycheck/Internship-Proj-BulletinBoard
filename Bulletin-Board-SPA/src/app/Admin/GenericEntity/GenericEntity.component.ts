@@ -124,7 +124,7 @@ export class GenericEntityComponent implements OnInit {
           this.refresh();
         }
     );
-  } this.temproraryEntity = new entity();
+  } this.resetTempEntity();
 }
   editCancel(entity) {
     entity.edit = false;
@@ -138,5 +138,4 @@ export class GenericEntityComponent implements OnInit {
   resetNewEntity() {
     this.newEntity = { title: ''};
   }
-
 }

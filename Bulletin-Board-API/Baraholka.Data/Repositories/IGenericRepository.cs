@@ -11,6 +11,8 @@ namespace Baraholka.Data.Repositories
     {
         IOrderedQueryable<T> GetAllForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 
+        Task<PageDataContainer<T>> GetPagedData(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams, PageArguments pageArguments);
+
         Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);
 
         Task<List<T>> GetAll(List<Expression<Func<T, object>>> references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams);

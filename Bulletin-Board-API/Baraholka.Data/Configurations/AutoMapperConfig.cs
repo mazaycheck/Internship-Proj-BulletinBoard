@@ -22,13 +22,18 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<Brand, BrandForViewDto>()
                 .ForMember(dest => dest.Categories, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()));
+                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
+                .ReverseMap();
+
+            CreateMap<Brand, BrandTitleDto>();
 
             CreateMap<Category, CategoryForViewDto>()
                 .ForMember(dest => dest.Brands, sourse => sourse
                     .MapFrom(src => src.BrandCategories.Select(x => x.Brand.Title).ToList()));
 
             CreateMap<CategoryForCreateDto, Category>();
+            CreateMap<CategoryForUpdateDto, Category>();
+            CreateMap<Category, CategoryBasicDto>().ReverseMap();
 
             CreateMap<BrandForCreateDto, Brand>();
 
@@ -72,13 +77,15 @@ namespace Baraholka.Data.Configurations
                 .ForMember(dest => dest.Roles, sourse => sourse
                     .MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()));
 
+            CreateMap<User, UserServiceDto>().ReverseMap();
+
             CreateMap<PageDataContainer<User>, PageDataContainer<UserForModeratorView>>();
 
             CreateMap<Town, TownForPublicViewDto>();
-            CreateMap<Town, TownForAdminViewDto>();
+            CreateMap<Town, TownServiceDto>().ReverseMap();
             CreateMap<TownForCreateDto, Town>();
             CreateMap<TownForUpdateDto, Town>();
-            CreateMap<PageDataContainer<Town>, PageDataContainer<TownForAdminViewDto>>();
+            CreateMap<PageDataContainer<Town>, PageDataContainer<TownServiceDto>>();
         }
     }
 }

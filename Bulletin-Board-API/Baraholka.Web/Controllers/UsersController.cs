@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -47,15 +46,13 @@ namespace Baraholka.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            try
+            var user = await _userService.FindUserByID(id);
+            if (user == null)
             {
-                await _userService.DeleteUser(id);
-                return Ok();
+                return NotFound("No such user");
             }
-            catch (NullReferenceException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _userService.DeleteUser(id);
+            return Ok();
         }
     }
 }

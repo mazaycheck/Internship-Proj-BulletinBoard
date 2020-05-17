@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -35,15 +34,13 @@ namespace Baraholka.Web.Controllers
         [Route("editroles")]
         public async Task<IActionResult> EditRoles([FromBody] UserRolesForModifyDto userRolesForModifyDto)
         {
-            try
+            var userExists = await _rolesService.UserExists(userRolesForModifyDto.Email);
+            if (userExists)
             {
                 UserForModeratorView updatedUser = await _rolesService.UpdateUserRoles(userRolesForModifyDto);
                 return Ok(updatedUser);
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest("No such user");
         }
     }
 }

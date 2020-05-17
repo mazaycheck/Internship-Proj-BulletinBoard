@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -61,12 +60,12 @@ namespace Baraholka.Web.Controllers
                 return NotFound("No such brand");
             }
 
-            if(await _brandCategoryService.BrandCategoryExist(category.CategoryId, brand.BrandId))
+            if (await _brandCategoryService.BrandCategoryExists(category.CategoryId, brand.BrandId))
             {
                 return Conflict($"This relation already exists");
             }
 
-            BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(brandCategoryForCreate);
+            BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(category.CategoryId, brand.BrandId);
             return CreatedAtAction(nameof(Get), newBrandCategory.BrandCategoryId, newBrandCategory);
         }
 
@@ -74,13 +73,13 @@ namespace Baraholka.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!await _brandCategoryService.BrandCategoryExist(id))
+            if (!await _brandCategoryService.BrandCategoryExists(id))
             {
                 return Conflict($"Brand-Category relation with id: {id} does not exist");
             }
 
             await _brandCategoryService.DeleteRelation(id);
-            return Ok($"Removed relation with id: {id}");            
+            return Ok($"Removed relation with id: {id}");
         }
     }
 }

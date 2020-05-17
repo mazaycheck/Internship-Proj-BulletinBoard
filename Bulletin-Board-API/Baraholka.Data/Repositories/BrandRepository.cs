@@ -17,7 +17,7 @@ namespace Baraholka.Data.Repositories
             _context = context;
         }
 
-        public IOrderedQueryable<Brand> GetBrands(BrandFilterArguments filterOptions, SortingArguments sortingArguments)
+        public async Task<PageDataContainer<Brand>> GetPagedBrands(BrandFilterArguments filterOptions, SortingArguments sortingArguments, PageArguments pageArguments)
         {
             var filters = new List<Expression<Func<Brand, bool>>>()
             {
@@ -34,8 +34,9 @@ namespace Baraholka.Data.Repositories
             };
 
             IOrderedQueryable<Brand> query = GetAllForPaging(includes, filters, orderParameters);
+            PageDataContainer<Brand> pagedBrands = await query.GetPageAsync(pageArguments);
 
-            return query;
+            return pagedBrands;
         }
 
         public async Task<Brand> GetSingleBrand(int id)
@@ -53,7 +54,7 @@ namespace Baraholka.Data.Repositories
             return await GetSingle(includes, conditions);
         }
 
-        public async Task UpdateWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd)
+        public async Task UpdateBrandWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd)
         {
             var categories = categoriesToAdd.Select(x =>
             {
@@ -73,7 +74,7 @@ namespace Baraholka.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveCategories(int brandId, IEnumerable<string> categoriesToRemove)
+        public async Task RemoveCategoriesFromBrand(int brandId, IEnumerable<string> categoriesToRemove)
         {
             var categories = categoriesToRemove.Select(x => _context.Categories.Where(p => p.Title == x).FirstOrDefault());
 

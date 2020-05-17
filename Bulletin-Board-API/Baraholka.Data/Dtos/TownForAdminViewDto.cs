@@ -1,6 +1,6 @@
 ﻿namespace Baraholka.Data.Dtos
 {
-    public class TownForAdminViewDto
+    public class TownServiceDto
     {
         public int TownId { get; set; }
         public string Title { get; set; }

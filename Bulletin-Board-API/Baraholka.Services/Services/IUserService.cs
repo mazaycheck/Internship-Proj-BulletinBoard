@@ -8,6 +8,8 @@ namespace Baraholka.Services
     {
         Task DeleteUser(int id);
 
+        Task<UserServiceDto> FindUserByID(int id);
+
         Task<UserForPublicDetail> GetUser(int id);
 
         Task<PageDataContainer<UserForModeratorView>> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string query);

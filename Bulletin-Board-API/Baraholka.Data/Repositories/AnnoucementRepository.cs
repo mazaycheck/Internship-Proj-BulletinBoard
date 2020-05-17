@@ -47,7 +47,7 @@ namespace Baraholka.Data.Repositories
             IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
             IQueryable<Annoucement> filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
             IOrderedQueryable<Annoucement> orderedAnnoucements = OrderAnnoucements(filteredAnnoucements, orderParams);
-            return await orderedAnnoucements.GetPage(paginateParams);
+            return await orderedAnnoucements.GetPageAsync(paginateParams);
         }
 
         private static IQueryable<Annoucement> IncludeProperties(DbSet<Annoucement> dataSet)

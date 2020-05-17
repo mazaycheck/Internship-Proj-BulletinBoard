@@ -34,8 +34,8 @@ namespace Baraholka.Services
 
             var filters = new List<Expression<Func<BrandCategory, bool>>>()
             {
-                x => x.Category.Title.Contains(categoryTitle ?? ""),
-                y => y.Brand.Title.Contains(brandTitle ?? "")
+                x => x.Category.Title.ToLower().Contains(categoryTitle.ToLower() ?? ""),
+                y => y.Brand.Title.ToLower().Contains(brandTitle.ToLower() ?? "")
             };
 
             var orderParams = new List<OrderParams<BrandCategory>>
@@ -62,7 +62,7 @@ namespace Baraholka.Services
         }
 
         public async Task<BrandCategoryForViewDto> CreateRelation(int brandId, int categoryId)
-        {            
+        {
             var brandCatetogyRelation = new BrandCategory() { BrandId = brandId, CategoryId = categoryId };
             await _brandCategoryRepo.Create(brandCatetogyRelation);
 
@@ -85,17 +85,19 @@ namespace Baraholka.Services
 
         public async Task<CategoryForViewDto> GetCategory(string title)
         {
-            var category = await _categoryRepo.GetFirst(x => x.Title == title);
+            var lowerTitle = title.ToLower();
+            var category = await _categoryRepo.GetFirst(x => x.Title.ToLower() == lowerTitle);
             return _mapper.Map<CategoryForViewDto>(category);
         }
 
         public async Task<BrandForViewDto> GetBrand(string title)
         {
-            var brand = await _brandRepo.GetFirst(x => x.Title == title);
+            var lowerTitle = title.ToLower();
+            var brand = await _brandRepo.GetFirst(x => x.Title.ToLower() == lowerTitle);
             return _mapper.Map<BrandForViewDto>(brand);
         }
 
-        public async Task<bool> BrandCategoryExist(int brandId, int categoryId)
+        public async Task<bool> BrandCategoryExists(int brandId, int categoryId)
         {
             var filters = new Expression<Func<BrandCategory, bool>>[]
             {
@@ -103,13 +105,12 @@ namespace Baraholka.Services
                 y => y.BrandId == brandId
             };
 
-            return await _brandCategoryRepo.Exists(filters);                
+            return await _brandCategoryRepo.Exists(filters);
         }
 
-        public async Task<bool> BrandCategoryExist(int brandCategoryId)
+        public async Task<bool> BrandCategoryExists(int brandCategoryId)
         {
             return await _brandCategoryRepo.Exists(brandCategoryId);
         }
-
     }
 }

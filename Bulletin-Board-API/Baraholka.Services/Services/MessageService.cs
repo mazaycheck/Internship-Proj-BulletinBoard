@@ -11,12 +11,12 @@ namespace Baraholka.Services
 {
     public class MessageService : IMessageService
     {
-        private readonly IGenericRepository<Message> _repo;
+        private readonly IGenericRepository<Message> _messageRepo;
         private readonly IMapper _mapper;
 
         public MessageService(IGenericRepository<Message> repo, IMapper mapper)
         {
-            _repo = repo;
+            _messageRepo = repo;
             _mapper = mapper;
         }
 
@@ -24,7 +24,7 @@ namespace Baraholka.Services
         {
             var messageEntity = _mapper.Map<Message>(messageDto);
             messageEntity.DateTimeSent = DateTime.Now;
-            await _repo.Create(messageEntity);
+            await _messageRepo.Create(messageEntity);
             return _mapper.Map<MessageForDetailDto>(messageEntity);
         }
 
@@ -35,90 +35,97 @@ namespace Baraholka.Services
             {
                 m => m.MessageId == id
             };
-            var messageFromDb = await _repo.GetSingle(includes, conditions);
+            var messageFromDb = await _messageRepo.GetSingle(includes, conditions);
             var messageDto = _mapper.Map<MessageForDetailDto>(messageFromDb);
             return messageDto;
         }
 
-        public async Task<List<MessageForDetailDto>> GetMessageFromConversation(int userOneId, int userTwoId)
+        public async Task<List<MessageForDetailDto>> GetMessages(string messagesType, int userId)
+        {
+            MessageboxType boxValue;
+            var parseResult = Enum.TryParse(messagesType, true, out boxValue);
+
+            if (boxValue == MessageboxType.inbox)
+                return await GetMessagesInbox(userId);
+            else if (boxValue == MessageboxType.outbox)
+                return await GetMessagesOutbox(userId);
+            else if (boxValue == MessageboxType.unread)
+                return await GetMessagesUnread(userId);
+            else if (boxValue == MessageboxType.inbox)
+                return await GetMessagesInbox(userId);
+
+            return null;
+        }
+
+        private async Task<List<MessageForDetailDto>> GetMessages(List<Expression<Func<Message, bool>>> filters)
         {
             var includes = new string[] { $"{nameof(Message.Sender)}", $"{nameof(Message.Reciever)}" };
+
+            var oderparams = new List<OrderParams<Message>>
+            {
+                new OrderParams<Message>{ OrderBy = (m) => m.DateTimeSent }
+            };
+
+            List<Message> messagesFromDb = await _messageRepo.GetAll(includes, filters, oderparams);
+            List<MessageForDetailDto> messages = _mapper.Map<List<Message>, List<MessageForDetailDto>>(messagesFromDb);
+            return messages;
+        }
+
+        public async Task<List<MessageForDetailDto>> GetMessageThread(int userOneId, int userTwoId)
+        {
             var filters = new List<Expression<Func<Message, bool>>>
             {
                 message =>
                 (message.SenderId == userOneId && message.RecieverId == userTwoId) ||
                 (message.SenderId == userTwoId && message.RecieverId == userOneId)
             };
-            var oderparams = new List<OrderParams<Message>>
-            {
-                new OrderParams<Message>{ OrderBy = (m) => m.DateTimeSent }
-            };
 
-            List<Message> messagesFromDb = await _repo.GetAll(includes, filters, oderparams);
-            List<MessageForDetailDto> messages = _mapper.Map<List<Message>, List<MessageForDetailDto>>(messagesFromDb);
-            return messages;
+            return await GetMessages(filters);
         }
 
-        public async Task<List<MessageForDetailDto>> GetMessagesInbox(int userId)
+        private async Task<List<MessageForDetailDto>> GetMessagesInbox(int userId)
         {
-            var includes = new string[] { $"{nameof(Message.Sender)}", $"{nameof(Message.Reciever)}" };
             var filters = new List<Expression<Func<Message, bool>>>
             {
                 message => message.RecieverId == userId,
             };
-            var oderparams = new List<OrderParams<Message>>
-            {
-                new OrderParams<Message>{ OrderBy = (m) => m.DateTimeSent, Descending = true }
-            };
 
-            List<Message> messagesFromDb = await _repo.GetAll(includes, filters, oderparams);
-            List<MessageForDetailDto> messages = _mapper.Map<List<Message>, List<MessageForDetailDto>>(messagesFromDb);
-
-            return messages;
+            return await GetMessages(filters);
         }
 
         public async Task<List<MessageForDetailDto>> GetMessagesOutbox(int userId)
         {
-            var includes = new string[] { $"{nameof(Message.Sender)}", $"{nameof(Message.Reciever)}" };
             var filters = new List<Expression<Func<Message, bool>>>
             {
                 message => message.SenderId == userId,
             };
-            var oderparams = new List<OrderParams<Message>>
-            {
-                new OrderParams<Message>{ OrderBy = (m) => m.DateTimeSent, Descending = true }
-            };
-
-            List<Message> messagesFromDb = await _repo.GetAll(includes, filters, oderparams);
-            List<MessageForDetailDto> messages = _mapper.Map<List<Message>, List<MessageForDetailDto>>(messagesFromDb);
-
-            return messages;
+            return await GetMessages(filters);
         }
 
-        public async Task<List<MessageForDetailDto>> GetMessagesUnread(int userId)
+        private async Task<List<MessageForDetailDto>> GetMessagesUnread(int userId)
         {
-            var includes = new string[] { $"{nameof(Message.Sender)}", $"{nameof(Message.Reciever)}" };
             var filters = new List<Expression<Func<Message, bool>>>
             {
                 message => message.RecieverId == userId && message.IsRead == false,
             };
-            var oderparams = new List<OrderParams<Message>>
-            {
-                new OrderParams<Message>{ OrderBy = (m) => m.DateTimeSent, Descending = true }
-            };
 
-            List<Message> messagesFromDb = await _repo.GetAll(includes, filters, oderparams);
-            List<MessageForDetailDto> messages = _mapper.Map<List<Message>, List<MessageForDetailDto>>(messagesFromDb);
-
-            return messages;
+            return await GetMessages(filters);
         }
 
         public async void MarkAsRead(int messageId)
         {
-            var message = await _repo.FindById(messageId);
+            var message = await _messageRepo.FindById(messageId);
             message.IsRead = true;
             message.DateTimeRead = DateTime.Now;
-            await _repo.Save();
+            await _messageRepo.Save();
         }
+    }
+
+    public enum MessageboxType
+    {
+        inbox,
+        outbox,
+        unread,
+        thread
     }
 }

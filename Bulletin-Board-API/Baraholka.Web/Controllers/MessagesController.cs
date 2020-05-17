@@ -1,5 +1,6 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,118 +10,94 @@ using System.Threading.Tasks;
 namespace Baraholka.Web.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class MessagesController : ControllerBase
     {
-        private readonly IMessageService _service;
+        private readonly IMessageService _messageService;
 
         public MessagesController(IMessageService service)
         {
-            _service = service;
+            _messageService = service;
         }
 
         [HttpGet]
         [Route("box/{messagebox}")]
         public async Task<ActionResult> GetMessages([FromRoute]string messagebox)
         {
-            if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+            int authorizedUserID = User.GetUserID();
+            List<MessageForDetailDto> messages = await _messageService.GetMessages(messagebox, authorizedUserID);
+            if (messages != null)
             {
-                var tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                List<MessageForDetailDto> messages;
-                switch (messagebox)
-                {
-                    case "unread": messages = await _service.GetMessagesUnread(tokenUserId); break;
-                    case "inbox": messages = await _service.GetMessagesInbox(tokenUserId); break;
-                    case "outbox": messages = await _service.GetMessagesOutbox(tokenUserId); break;
-                    default: messages = await _service.GetMessagesUnread(tokenUserId); break;
-                }
-                if (messages != null)
-                {
-                    return Ok(messages);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return Ok(messages);
             }
-            return Unauthorized();
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]
         [Route("thread/{withuserId}")]
         public async Task<ActionResult> GetMessagesThread([FromRoute] int withuserId)
         {
-            if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-            {
-                var tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                List<MessageForDetailDto> messages;
-                messages = await _service.GetMessageFromConversation(userOneId: tokenUserId, userTwoId: withuserId);
+            int authorizedUserID = User.GetUserID();
 
-                if (messages != null)
-                {
-                    return Ok(messages);
-                }
-                else
-                {
-                    return NotFound();
-                }
+            List<MessageForDetailDto> messages = await _messageService.GetMessageThread(userOneId: authorizedUserID, userTwoId: withuserId);
+
+            if (messages != null)
+            {
+                return Ok(messages);
             }
-            return Unauthorized();
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById([FromRoute]int id)
         {
-            var message = await _service.GetById(id);
+            var message = await _messageService.GetById(id);
             if (message == null)
             {
                 return NotFound();
             }
 
             int tokenUserId;
-            if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+
+            tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (message.SenderId == tokenUserId || message.RecieverId == tokenUserId)
             {
-                tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                if (message.SenderId == tokenUserId || message.RecieverId == tokenUserId)
-                {
-                    return Ok(message);
-                }
+                return Ok(message);
             }
-            return Unauthorized();
+            return Forbid("You are not allowed to get this message");
         }
 
         [HttpPut("{messageId}")]
-        public async Task<IActionResult> PutMessage([FromRoute] int messageId)
+        public async Task<IActionResult> MarkRead([FromRoute] int messageId)
         {
-            if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+            int authorizedUserID = User.GetUserID();
+
+            var messageFromDb = await _messageService.GetById(messageId);
+            if (messageFromDb == null)
+                return NotFound();
+            if (messageFromDb.RecieverId == authorizedUserID)
             {
-                int tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var messageFromDb = await _service.GetById(messageId);
-                if (messageFromDb == null)
-                    return NotFound();
-                if (messageFromDb.RecieverId == tokenUserId)
-                {
-                    _service.MarkAsRead(messageId);
-                    return Ok();
-                }
+                _messageService.MarkAsRead(messageId);
+                return Ok();
             }
-            return Unauthorized();
+            return Forbid("You are not allowed to mark this message as read");
         }
 
         [HttpPost]
         public async Task<ActionResult> PostMessage(MessageForCreateDto messageDto)
         {
-            if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-            {
-                int tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                messageDto.SenderId = tokenUserId;
-                var newMessage = await _service.CreateMessage(messageDto);
-                return CreatedAtAction("GetById", new { id = newMessage.MessageId }, newMessage);
-            }
-            else
-            {
-                return Unauthorized();
-            }
+            int authorizedUserID = User.GetUserID();
+            messageDto.SenderId = authorizedUserID;
+
+            var newMessage = await _messageService.CreateMessage(messageDto);
+            return CreatedAtAction("GetById", new { id = newMessage.MessageId }, newMessage);
         }
     }
 }

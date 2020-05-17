@@ -6,16 +6,18 @@ namespace Baraholka.Services
 {
     public interface ITownService
     {
-        Task<TownForAdminViewDto> CreateTown(TownForCreateDto townDto);
+        Task<TownServiceDto> CreateTown(TownForCreateDto townDto);
 
-        Task DeleteTown(int id);
+        Task DeleteTown(TownServiceDto townDto);
 
-        Task<TownForAdminViewDto> GetTownForAdmin(int id);
+        Task<bool> Exists(string title);
 
-        Task<PageDataContainer<TownForAdminViewDto>> GetTownsForAdmin(string filter, PageArguments pageArguments);
+        Task<TownServiceDto> FindTown(int id);
+
+        Task<PageDataContainer<TownServiceDto>> GetTownsForAdmin(string filter, PageArguments pageArguments);
 
         Task<List<TownForPublicViewDto>> GetTownsForPublic();
 
-        Task<TownForAdminViewDto> UpdateTown(TownForUpdateDto townDto);
+        Task<TownServiceDto> UpdateTown(TownForUpdateDto townDto);
     }
 }

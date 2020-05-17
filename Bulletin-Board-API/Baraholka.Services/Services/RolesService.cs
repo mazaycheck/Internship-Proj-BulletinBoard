@@ -34,11 +34,6 @@ namespace Baraholka.Services
             var newRoles = userRolesForModifyDto.Roles;
             var user = await _userManager.FindByEmailAsync(email);
 
-            if (user == null)
-            {
-                throw new ArgumentException($"No such user with email: {email}");
-            }
-
             foreach (var role in newRoles)
             {
                 if (!await _roleManager.RoleExistsAsync(role))
@@ -71,6 +66,11 @@ namespace Baraholka.Services
             {
                 throw new Exception("Could not remove roles");
             }
+        }
+
+        public async Task<bool> UserExists(string email)
+        {
+            return await _userManager.Users.AnyAsync(u => u.Email == email);
         }
     }
 }

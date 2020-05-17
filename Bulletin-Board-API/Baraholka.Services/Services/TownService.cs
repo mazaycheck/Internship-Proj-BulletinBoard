@@ -2,10 +2,8 @@
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
-using Baraholka.Web.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -13,15 +11,13 @@ namespace Baraholka.Services
 {
     public class TownService : ITownService
     {
-        private readonly IGenericRepository<Town> _repository;
+        private readonly IGenericRepository<Town> _townRepository;
         private readonly IMapper _mapper;
-        private readonly IPageService<Town> _pageService;
 
-        public TownService(IGenericRepository<Town> repository, IMapper mapper, IPageService<Town> pageService)
+        public TownService(IGenericRepository<Town> repository, IMapper mapper)
         {
-            _repository = repository;
+            _townRepository = repository;
             _mapper = mapper;
-            _pageService = pageService;
         }
 
         public async Task<List<TownForPublicViewDto>> GetTownsForPublic()
@@ -35,12 +31,12 @@ namespace Baraholka.Services
                 new OrderParams<Town>{ OrderBy = (town) => town.Title, Descending = false}
             };
 
-            List<Town> towns = await _repository.GetAll(references, filters, orderParams);
+            List<Town> towns = await _townRepository.GetAll(references, filters, orderParams);
 
             return _mapper.Map<List<Town>, List<TownForPublicViewDto>>(towns);
         }
 
-        public async Task<PageDataContainer<TownForAdminViewDto>> GetTownsForAdmin(string filter, PageArguments pageArguments)
+        public async Task<PageDataContainer<TownServiceDto>> GetTownsForAdmin(string filter, PageArguments pageArguments)
         {
             var references = new string[0];
 
@@ -54,45 +50,28 @@ namespace Baraholka.Services
                 new OrderParams<Town>{ OrderBy = (town) => town.Title, Descending = false}
             };
 
-            IOrderedQueryable<Town> allTowns = _repository.GetAllForPaging(references, filters, orderParams);
-
-            PageDataContainer<Town> pagedTowns = await _pageService.Paginate(allTowns, pageArguments);
+            PageDataContainer<Town> pagedTowns = await _townRepository.GetPagedData(references, filters, orderParams, pageArguments);
 
             if (pagedTowns.PageData.Count == 0)
             {
                 return null;
             }
 
-            return _mapper.Map<PageDataContainer<TownForAdminViewDto>>(pagedTowns);
+            return _mapper.Map<PageDataContainer<TownServiceDto>>(pagedTowns);
         }
 
-        public async Task<TownForAdminViewDto> GetTownForAdmin(int id)
+        public async Task<TownServiceDto> CreateTown(TownForCreateDto townDto)
         {
-            var town = await _repository.FindById(id);
-            if (town != null)
-            {
-                return _mapper.Map<TownForAdminViewDto>(town);
-            }
-            return null;
-        }
-
-        public async Task<TownForAdminViewDto> CreateTown(TownForCreateDto townDto)
-        {
-            if (await _repository.Exists(x => x.Title == townDto.Title))
-            {
-                throw new ArgumentException($"Such town already exists : {townDto.Title}");
-            }
-
             Town townToCreate = _mapper.Map<Town>(townDto);
-            await _repository.Create(townToCreate);
-            return _mapper.Map<TownForAdminViewDto>(townToCreate);
+            await _townRepository.Create(townToCreate);
+            return _mapper.Map<TownServiceDto>(townToCreate);
         }
 
-        public async Task<TownForAdminViewDto> UpdateTown(TownForUpdateDto townDto)
+        public async Task<TownServiceDto> UpdateTown(TownForUpdateDto townDto)
         {
             Town townToUpdate = _mapper.Map<Town>(townDto);
 
-            var townFromDb = await _repository.GetFirst(x => x.Title == townDto.Title);
+            var townFromDb = await _townRepository.GetFirst(x => x.Title == townDto.Title);
 
             if (townFromDb != null)
             {
@@ -101,26 +80,36 @@ namespace Baraholka.Services
                     throw new ArgumentException($"Such town already exists: {townDto.Title}");
                 }
                 _mapper.Map(townToUpdate, townFromDb);
-                await _repository.Save();
-                return _mapper.Map<TownForAdminViewDto>(townFromDb);
+                await _townRepository.Save();
+                return _mapper.Map<TownServiceDto>(townFromDb);
             }
             else
             {
-                await _repository.Update(townToUpdate);
+                await _townRepository.Update(townToUpdate);
             }
 
-            return _mapper.Map<TownForAdminViewDto>(townToUpdate);
+            return _mapper.Map<TownServiceDto>(townToUpdate);
         }
 
-        public async Task DeleteTown(int id)
+        public async Task DeleteTown(TownServiceDto townDto)
         {
-            var town = await _repository.FindById(id);
-            if (town == null)
-            {
-                throw new NullReferenceException($"No such town with id: {id}");
-            }
+            var townToDelete = _mapper.Map<Town>(townDto);
+            await _townRepository.Delete(townToDelete);
+        }
 
-            await _repository.Delete(town);
+        public async Task<bool> Exists(string title)
+        {
+            return await _townRepository.Exists(x => x.Title == title);
+        }
+
+        public async Task<TownServiceDto> FindTown(int id)
+        {
+            var town = await _townRepository.GetSingle(x => x.TownId == id);
+            if (town != null)
+            {
+                return _mapper.Map<TownServiceDto>(town);
+            }
+            return null;
         }
     }
 }

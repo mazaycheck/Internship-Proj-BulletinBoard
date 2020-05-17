@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -37,7 +36,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            TownForAdminViewDto town = await _townService.GetTownForAdmin(id);
+            TownServiceDto town = await _townService.FindTown(id);
             if (town == null)
             {
                 return NotFound($"No town with id: {id}");
@@ -49,45 +48,34 @@ namespace Baraholka.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] TownForCreateDto town)
         {
-            try
+            if (await _townService.Exists(town.Title))
             {
-                TownForAdminViewDto newTown = await _townService.CreateTown(town);
-                return StatusCode(201, newTown);
+                return Conflict($"Such town already exists");
             }
-            catch (ArgumentException ex)
-            {
-                return Conflict(ex.Message);
-            }
+
+            TownServiceDto newTown = await _townService.CreateTown(town);
+            return StatusCode(201, newTown);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] TownForUpdateDto town)
         {
-            try
-            {
-                TownForAdminViewDto updatedTown = await _townService.UpdateTown(town);
-                return StatusCode(201, updatedTown);
-            }
-            catch (ArgumentException ex)
-            {
-                return Conflict(ex.Message);
-            }
+            TownServiceDto updatedTown = await _townService.UpdateTown(town);
+            return StatusCode(201, updatedTown);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
+            var town = await _townService.FindTown(id);
+            if (town == null)
             {
-                await _townService.DeleteTown(id);
-                return Ok();
+                return NotFound("No such town");
             }
-            catch (NullReferenceException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _townService.DeleteTown(town);
+            return Ok();
         }
     }
 }

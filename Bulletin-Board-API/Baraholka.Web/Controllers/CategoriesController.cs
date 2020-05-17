@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -44,47 +43,36 @@ namespace Baraholka.Web.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CategoryForCreateDto cat)
+        public async Task<IActionResult> Post([FromBody] CategoryForCreateDto categoryDto)
         {
-            try
+            if (await _categoryService.Exists(categoryDto.Title))
             {
-                CategoryForViewDto category = await _categoryService.CreateCategory(cat);
-                return StatusCode(201, category);
+                return Conflict("Such category already exists");
             }
-            catch (ArgumentException ex)
-            {
-                return Conflict(ex.Message);
-            }
+            CategoryForViewDto category = await _categoryService.CreateCategory(categoryDto);
+            return StatusCode(201, category);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] CategoryForCreateDto categoryForUpdate)
+        public async Task<IActionResult> Put([FromBody] CategoryForUpdateDto categoryForUpdate)
         {
-            try
-            {
-                CategoryForViewDto category = await _categoryService.CreateCategory(categoryForUpdate);
-                return StatusCode(201, category);
-            }
-            catch (ArgumentException ex)
-            {
-                return Conflict(ex.Message);
-            }
+            CategoryForViewDto category = await _categoryService.UpdateCategory(categoryForUpdate);
+            return StatusCode(201, category);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _categoryService.DeleteCategory(id);
-                return Ok();
-            }
-            catch (NullReferenceException)
+            var category = await _categoryService.GetCategoryById(id);
+            if (category == null)
             {
                 return NotFound($"No such category with id: {id}");
             }
+
+            await _categoryService.DeleteCategory(category);
+            return Ok();
         }
     }
 }

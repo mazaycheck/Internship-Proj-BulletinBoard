@@ -31,6 +31,19 @@ namespace Baraholka.Data.Repositories
             return;
         }
 
+        public async virtual Task Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+            return;
+        }
+
+        public async Task<int> Save()
+        {
+            var count = await _context.SaveChangesAsync();
+            return count;
+        }
+
         public async Task<bool> Exists(int entityId)
         {
             var entity = await _context.Set<T>().FindAsync(entityId);
@@ -129,19 +142,6 @@ namespace Baraholka.Data.Repositories
             return entity;
         }
 
-        public async Task<int> Save()
-        {
-            var count = await _context.SaveChangesAsync();
-            return count;
-        }
-
-        public async virtual Task Update(T entity)
-        {
-            _context.Set<T>().Update(entity);
-            await _context.SaveChangesAsync();
-            return;
-        }
-
         public IOrderedQueryable<T> GetAllForPaging(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();
@@ -158,6 +158,22 @@ namespace Baraholka.Data.Repositories
             return orderedQuery;
         }
 
+        public async Task<PageDataContainer<T>> GetPagedData(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams, PageArguments pageArguments)
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+            query = references.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            query = filters.Aggregate(query, (current, filterProperty) => current.Where(filterProperty));
+            var firstOrderParam = orderParams[0];
+            var orderedQuery = firstOrderParam.Descending ? query.OrderByDescending(firstOrderParam.OrderBy) : query.OrderBy(firstOrderParam.OrderBy);
+
+            if (orderParams.Count > 1)
+            {
+                orderedQuery = orderParams.Skip(1).Aggregate(orderedQuery, (current, orderParam) => orderParam.Descending ? current.ThenByDescending(orderParam.OrderBy) : current.ThenBy(orderParam.OrderBy));
+            }
+
+            return await orderedQuery.GetPageAsync(pageArguments);
+        }
+
         public async Task<List<T>> GetAll(string[] references, List<Expression<Func<T, bool>>> filters, List<OrderParams<T>> orderParams)
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();
@@ -168,7 +184,10 @@ namespace Baraholka.Data.Repositories
 
             if (orderParams.Count > 1)
             {
-                orderedQuery = orderParams.Skip(1).Aggregate(orderedQuery, (current, orderParam) => orderParam.Descending ? current.ThenByDescending(orderParam.OrderBy) : current.ThenBy(orderParam.OrderBy));
+                orderedQuery = orderParams.Skip(1).Aggregate(orderedQuery, (current, orderParam) =>
+                    orderParam.Descending ?
+                    current.ThenByDescending(orderParam.OrderBy) :
+                    current.ThenBy(orderParam.OrderBy));
             }
 
             return await orderedQuery.ToListAsync();

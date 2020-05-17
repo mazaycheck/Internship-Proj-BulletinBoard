@@ -9,7 +9,7 @@ namespace Baraholka.Data
 {
     public static class PageExtensions
     {
-        public static async Task<PageDataContainer<T>> GetPage<T>(this IOrderedQueryable<T> queryAbleData, PageArguments pageParams)
+        public static async Task<PageDataContainer<T>> GetPageAsync<T>(this IOrderedQueryable<T> queryAbleData, PageArguments pageParams)
         {
             int maxPageSize = 50;
             int TotalEntries = queryAbleData.Count();

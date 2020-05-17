@@ -24,6 +24,7 @@ namespace Baraholka.Web.Controllers
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
             PageDataContainer<AnnoucementViewDto> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
+
             if (pagedObject == null)
             {
                 return NoContent();
@@ -37,6 +38,7 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
             AnnoucementViewDto annoucementDto = await _annoucementService.GetAnnoucementForViewById(id);
+
             if (annoucementDto == null)
             {
                 return NotFound($"No annoucement with id: {id}");
@@ -51,6 +53,7 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> Add([FromForm] AnnoucementCreateDto annoucementDto)
         {
             bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+
             if (result)
             {
                 int userId = User.GetUserID();
@@ -107,7 +110,7 @@ namespace Baraholka.Web.Controllers
 
             if (!result)
             {
-                return BadRequest("BrandCategory Id does not exist");
+                return BadRequest("BrandCategory does not exist");
             }
 
             AnnoucementViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);

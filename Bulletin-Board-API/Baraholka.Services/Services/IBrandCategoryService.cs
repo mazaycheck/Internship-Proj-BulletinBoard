@@ -6,9 +6,7 @@ namespace Baraholka.Services
 {
     public interface IBrandCategoryService
     {
-        Task<bool> BrandCategoryExist(int brandId, int categoryId);
-
-        Task<BrandCategoryForViewDto> CreateRelation(BrandCategoryForCreateDto brandCategoryForCreate);
+        Task<bool> BrandCategoryExists(int brandId, int categoryId);
 
         Task<bool> DeleteRelation(int brandCategoryId);
 
@@ -19,6 +17,9 @@ namespace Baraholka.Services
         Task<List<BrandCategoryForViewDto>> GetAllRelations(string category, string brand);
 
         Task<BrandCategoryForViewDto> GetRelationById(int id);
-        Task<bool> BrandCategoryExist(int brandCategoryId);
+
+        Task<bool> BrandCategoryExists(int brandCategoryId);
+
+        Task<BrandCategoryForViewDto> CreateRelation(int brandId, int categoryId);
     }
 }

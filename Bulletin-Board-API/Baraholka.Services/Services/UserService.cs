@@ -2,10 +2,8 @@
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
-using Baraholka.Web.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -13,25 +11,22 @@ namespace Baraholka.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly IPageService<User> _pageService;
 
-        public UserService(IUserRepository repository, IMapper mapper, IPageService<User> pageService)
+        public UserService(IUserRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _userRepository = repository;
             _mapper = mapper;
-            _pageService = pageService;
         }
 
         public async Task<PageDataContainer<UserForModeratorView>> GetUsers(PageArguments pageArguments, string query)
         {
-            IOrderedQueryable<User> users = _repository.PrepareUsersForPaging(query);
+            PageDataContainer<User> pagedUsers = await _userRepository.GetPagedUsers(query, pageArguments);
 
-            PageDataContainer<User> pagedUseres = await _pageService.Paginate(users, pageArguments);
-            if (pagedUseres.PageData.Count > 0)
+            if (pagedUsers.PageData.Count > 0)
             {
-                PageDataContainer<UserForModeratorView> pagedUserDtos = _mapper.Map<PageDataContainer<UserForModeratorView>>(pagedUseres);
+                PageDataContainer<UserForModeratorView> pagedUserDtos = _mapper.Map<PageDataContainer<UserForModeratorView>>(pagedUsers);
                 return pagedUserDtos;
             }
 
@@ -45,7 +40,7 @@ namespace Baraholka.Services
             {
                 u => u.Id == id
             };
-            var user = await _repository.GetSingle(includes, conditions);
+            var user = await _userRepository.GetSingle(includes, conditions);
             if (user == null)
             {
                 return null;
@@ -55,12 +50,18 @@ namespace Baraholka.Services
 
         public async Task DeleteUser(int id)
         {
-            var user = await _repository.FindById(id);
+            var user = await _userRepository.FindById(id);
             if (user == null)
             {
                 throw new NullReferenceException("No such user");
             }
-            await _repository.Delete(user);
+            await _userRepository.Delete(user);
+        }
+
+        public async Task<UserServiceDto> FindUserByID(int id)
+        {
+            var user = await _userRepository.GetSingle(x => x.Id == id);
+            return _mapper.Map<UserServiceDto>(user);
         }
     }
 }

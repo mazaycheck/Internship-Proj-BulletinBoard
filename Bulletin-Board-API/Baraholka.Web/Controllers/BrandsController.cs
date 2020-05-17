@@ -1,10 +1,7 @@
 ﻿using Baraholka.Data.Dtos;
-using Baraholka.Domain.Models;
 using Baraholka.Services;
-using Baraholka.Web.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -16,7 +13,7 @@ namespace Baraholka.Web.Controllers
     {
         private readonly IBrandService _brandService;
 
-        public BrandsController(IBrandService brandService, IPageService<Brand> pageService)
+        public BrandsController(IBrandService brandService)
         {
             _brandService = brandService;
         }
@@ -49,16 +46,12 @@ namespace Baraholka.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BrandForCreateDto brand)
         {
-            try
+            if (await _brandService.BrandExist(brand.Title))
             {
-                BrandForViewDto newBrand = await _brandService.CreateBrand(brand);
+                return Conflict("Such brand already exists");
             }
-            catch (ArgumentException ex)
-            {
-                return Conflict(ex.Message);
-            }
-
-            return StatusCode(201, brand);
+            BrandForViewDto newBrand = await _brandService.CreateBrand(brand);
+            return StatusCode(201, newBrand);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -66,33 +59,27 @@ namespace Baraholka.Web.Controllers
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] BrandForUpdateDto brandForUpdate)
         {
-            try
+            var brandFromDb = await _brandService.GetBrand(brandForUpdate.BrandId);
+
+            if (brandFromDb == null)
             {
-                await _brandService.UpdateBrand(brandForUpdate);
-                return Ok();
+                return NotFound("No such brand");
             }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            await _brandService.UpdateBrand(brandForUpdate);
+            return Ok();
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
+            var brandFromDb = await _brandService.GetBrand(id);
+            if (brandFromDb == null)
             {
-                await _brandService.DeleteBrand(id);
+                return NotFound("No such brand");
             }
-            catch (NullReferenceException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _brandService.DeleteBrand(brandFromDb);
 
             return Ok();
         }

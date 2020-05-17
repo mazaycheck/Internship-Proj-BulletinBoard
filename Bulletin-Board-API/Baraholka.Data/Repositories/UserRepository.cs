@@ -2,7 +2,6 @@
 using Baraholka.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace Baraholka.Data.Repositories
         {
         }
 
-        public IOrderedQueryable<User> PrepareUsersForPaging(string filter)
+        public async Task<PageDataContainer<User>> GetPagedUsers(string filter, PageArguments pageArguments)
         {
             var filters = new List<Expression<Func<User, bool>>>()
             {
@@ -31,9 +30,7 @@ namespace Baraholka.Data.Repositories
                 new OrderParams<User> { OrderBy = (x) => x.UserName, Descending = false }
             };
 
-            IOrderedQueryable<User> query = GetAllForPaging(includes, filters, orderParameters);
-
-            return query;
+            return await GetPagedData(includes, filters, orderParameters, pageArguments);
         }
 
         public async Task<User> GetByEmail(string email)
