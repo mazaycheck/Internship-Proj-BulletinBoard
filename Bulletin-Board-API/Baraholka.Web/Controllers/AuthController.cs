@@ -2,7 +2,6 @@
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -23,13 +22,12 @@ namespace Baraholka.Web.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginDto userLoginDto)
         {
-            
             var jwtToken = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
             if (!string.IsNullOrWhiteSpace(jwtToken))
             {
                 return Ok(new { token = jwtToken });
             }
-            
+
             return Unauthorized("Could not login");
         }
 
@@ -41,7 +39,7 @@ namespace Baraholka.Web.Controllers
             {
                 return Conflict("Such user already exists");
             }
-            var createdUser = await _authService.Register(userRegisterDto);         
+            var createdUser = await _authService.Register(userRegisterDto);
             return Ok(createdUser);
         }
     }

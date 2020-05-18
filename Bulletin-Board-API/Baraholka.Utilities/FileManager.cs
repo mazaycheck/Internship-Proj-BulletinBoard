@@ -1,5 +1,4 @@
-﻿using Baraholka.Domain.Models;
-using Baraholka.Utilities;
+﻿using Baraholka.Utilities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,41 +10,30 @@ namespace Baraholka.Services.Services
     public class FileManager : IFileManager
     {
         private readonly IImageFileProcessor _imageFileProcessor;
-        private readonly IRootFolderPath _rootFolder;
 
-        public FileManager(IImageFileProcessor imageFileProcessor, IRootFolderPath rootFolder)
+        public FileManager(IImageFileProcessor imageFileProcessor)
         {
             _imageFileProcessor = imageFileProcessor;
-            _rootFolder = rootFolder;
         }
 
-        private void AddPhotosToAnnoucement(Annoucement annoucement, List<string> listOfImgUrls)
-        {
-            annoucement.Photos = new List<Photo>();
-            foreach (string photoPath in listOfImgUrls)
-            {
-                annoucement.Photos.Add(new Photo() { PhotoUrl = photoPath });
-            }
-        }
-
-        public List<string> UploadImages(List<IFormFile> formImages, string folderName)
+        public List<string> UploadImages(List<IFormFile> formImages, string rootFolder, string folderName)
         {
             List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
-            var path = GetImagesFolderPath(folderName);
+            var path = GetImagesFolderPath(rootFolder, folderName);
             List<string> listOfImgUrls = UploadImageFilesOnServer(images, path);
             return listOfImgUrls;
         }
 
-        public void DeleteOldImages(int annoucementId)
+        public void DeleteOldImages(string rootFolder, int annoucementId)
         {
-            string annoucementIdImageFolder = GetImagesFolderPath($"{annoucementId}");
+            string annoucementIdImageFolder = GetImagesFolderPath(rootFolder, $"{annoucementId}");
 
             DeleteFolder(annoucementIdImageFolder);
         }
 
-        private string GetImagesFolderPath(string id)
+        private string GetImagesFolderPath(string rootFolder, string id)
         {
-            return Path.Combine(_rootFolder.FolderPath, "images", id);
+            return Path.Combine(rootFolder, "images", id);
         }
 
         public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)

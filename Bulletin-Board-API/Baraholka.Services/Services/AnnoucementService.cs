@@ -3,6 +3,7 @@ using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -16,18 +17,23 @@ namespace Baraholka.Services
         private readonly IMapper _mapper;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IFileManager _imageFileManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string _rootPath;
 
         public AnnoucementService(
             IAnnoucementRepository annoucementRepo,
             IMapper mapper,
             IGenericRepository<BrandCategory> brandCategoryRepo,
-            IFileManager imageFileManager
+            IFileManager imageFileManager,
+            IWebHostEnvironment webHostEnvironment
             )
         {
             _annoucementRepo = annoucementRepo;
             _mapper = mapper;
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileManager = imageFileManager;
+            _webHostEnvironment = webHostEnvironment;
+            _rootPath = webHostEnvironment.WebRootPath;
         }
 
         public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
@@ -70,7 +76,7 @@ namespace Baraholka.Services
 
             if (images != null)
             {
-                _imageFileManager.DeleteOldImages(annoucementFromDb.AnnoucementId);
+                _imageFileManager.DeleteOldImages(_rootPath, annoucementFromDb.AnnoucementId);
 
                 await SaveAnnoucementImages(annoucementFromDb, images);
             }
@@ -117,7 +123,7 @@ namespace Baraholka.Services
         {
             await _annoucementRepo.Delete(new Annoucement() { AnnoucementId = id });
 
-            _imageFileManager.DeleteOldImages(id);
+            _imageFileManager.DeleteOldImages(_webHostEnvironment.WebRootPath, id);
         }
 
         public async Task<bool> BrandCategoryExists(int brandCategoryId)
@@ -127,7 +133,7 @@ namespace Baraholka.Services
 
         private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
         {
-            List<string> fileGuidNames = _imageFileManager.UploadImages(images, folderName: $"{annoucement.AnnoucementId}");
+            List<string> fileGuidNames = _imageFileManager.UploadImages(images, _rootPath, folderName: $"{annoucement.AnnoucementId}");
 
             await _annoucementRepo.BindImages(annoucement, fileGuidNames);
         }

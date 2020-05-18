@@ -40,8 +40,6 @@ namespace Baraholka.Web
             services.AddScoped<ITownService, TownService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ICurrentUserAuthorized, CurrentContextUserAuthorized>();
-            services.AddScoped<IRootFolderPath, WebRootFolderPath>();
             services.AddScoped<IFileManager, FileManager>();
         }
 

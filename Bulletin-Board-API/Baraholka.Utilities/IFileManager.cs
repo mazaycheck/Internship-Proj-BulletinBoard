@@ -6,10 +6,10 @@ namespace Baraholka.Services.Services
 {
     public interface IFileManager
     {
-        void DeleteOldImages(int annoucementId);
+        void DeleteOldImages(string rootFolder, int annoucementId);
 
         void SaveResizedImages(Image imageFromForm, string filePath, int width, int height);
 
-        List<string> UploadImages(List<IFormFile> formImages, string folderName);
+        List<string> UploadImages(List<IFormFile> formImages, string rootFolder, string folderName);
     }
 }
