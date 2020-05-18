@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
+using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Domain.Models;
 using System.Linq;
 
@@ -15,6 +16,49 @@ namespace Baraholka.Data.Configurations
                 .ForMember(dest => dest.CreateDate, sourse => sourse.Ignore())
                 .ForMember(dest => dest.ExpirationDate, sourse => sourse.Ignore())
                 .ForMember(dest => dest.Photos, sourse => sourse.Ignore());
+            CreateMap<Annoucement, AnnoucementServiceDto>().ReverseMap();
+
+            CreateMap<Annoucement, AnnoucementForViewDto>()
+                .ForMember(dest => dest.Id, sourse => sourse
+                    .MapFrom(src => src.AnnoucementId))
+                .ForMember(dest => dest.Date, sourse => sourse
+                    .MapFrom(src => src.CreateDate))
+                .ForMember(dest => dest.UserId, sourse => sourse
+                    .MapFrom(src => src.UserId))
+                 .ForMember(dest => dest.Category, sourse => sourse
+                    .MapFrom(src => src.BrandCategory.Category.Title))
+                 .ForMember(dest => dest.Brand, sourse => sourse
+                    .MapFrom(src => src.BrandCategory.Brand.Title))
+                 .ForMember(dest => dest.Town, sourse => sourse
+                    .MapFrom(src => src.User.Town.Title))
+                 .ForMember(dest => dest.PhotoUrls, sourse => sourse
+                    .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
+
+            CreateMap<AnnoucementServiceDto, AnnoucementForViewDto>()
+                .ForMember(dest => dest.Id, sourse => sourse
+                    .MapFrom(src => src.AnnoucementId))
+                .ForMember(dest => dest.Date, sourse => sourse
+                    .MapFrom(src => src.CreateDate))
+                .ForMember(dest => dest.UserId, sourse => sourse
+                    .MapFrom(src => src.UserId))
+                 .ForMember(dest => dest.Category, sourse => sourse
+                    .MapFrom(src => src.BrandCategory.Category.Title))
+                 .ForMember(dest => dest.Brand, sourse => sourse
+                    .MapFrom(src => src.BrandCategory.Brand.Title))
+                 .ForMember(dest => dest.Town, sourse => sourse
+                    .MapFrom(src => src.User.Town.Title))
+                 .ForMember(dest => dest.PhotoUrls, sourse => sourse
+                    .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
+
+
+
+
+
+            CreateMap<Annoucement, AnnoucementUserInfoDto>()
+                .ForMember(dest => dest.Id, sourse => sourse
+                    .MapFrom(src => src.AnnoucementId)).ReverseMap();
+
+            CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementForViewDto>>();
 
             CreateMap<BrandCategory, BrandCategoryForViewDto>()
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
@@ -37,27 +81,7 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<BrandForCreateDto, Brand>();
 
-            CreateMap<Annoucement, AnnoucementViewDto>()
-                .ForMember(dest => dest.Id, sourse => sourse
-                    .MapFrom(src => src.AnnoucementId))
-                .ForMember(dest => dest.Date, sourse => sourse
-                    .MapFrom(src => src.CreateDate))
-                .ForMember(dest => dest.UserId, sourse => sourse
-                    .MapFrom(src => src.UserId))
-                 .ForMember(dest => dest.Category, sourse => sourse
-                    .MapFrom(src => src.BrandCategory.Category.Title))
-                 .ForMember(dest => dest.Brand, sourse => sourse
-                    .MapFrom(src => src.BrandCategory.Brand.Title))
-                 .ForMember(dest => dest.Town, sourse => sourse
-                    .MapFrom(src => src.User.Town.Title))
-                 .ForMember(dest => dest.PhotoUrls, sourse => sourse
-                    .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
-
-            CreateMap<Annoucement, AnnoucementUserInfoDto>()
-                .ForMember(dest => dest.Id, sourse => sourse
-                    .MapFrom(src => src.AnnoucementId)).ReverseMap();
-
-            CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementViewDto>>();
+            
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandForViewDto>>();
 
             CreateMap<MessageForCreateDto, Message>();
@@ -86,6 +110,8 @@ namespace Baraholka.Data.Configurations
             CreateMap<TownForCreateDto, Town>();
             CreateMap<TownForUpdateDto, Town>();
             CreateMap<PageDataContainer<Town>, PageDataContainer<TownServiceDto>>();
+
+            
         }
     }
 }

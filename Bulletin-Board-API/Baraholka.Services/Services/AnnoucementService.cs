@@ -43,7 +43,7 @@ namespace Baraholka.Services
             _imageFolders = _configuration.GetSection("AppSettings:ImageFolders").Get<List<ImageFolder>>();
         }
 
-        public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
+        public async Task<AnnoucementForViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
         {
             Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
 
@@ -58,7 +58,7 @@ namespace Baraholka.Services
                 await SaveAnnoucementImages(annoucement, images, _imageFolders);
             }
 
-            return _mapper.Map<AnnoucementViewDto>(annoucement);
+            return _mapper.Map<AnnoucementForViewDto>(annoucement);
         }
 
         private void SetDefaultValuesForCreate(int userId, Annoucement annoucement)
@@ -69,7 +69,7 @@ namespace Baraholka.Services
             annoucement.IsActive = true;
         }
 
-        public async Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
+        public async Task<AnnoucementForViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
         {
             var includes = new string[] { $"{nameof(Annoucement.Photos)}" };
 
@@ -88,10 +88,10 @@ namespace Baraholka.Services
                 await SaveAnnoucementImages(annoucementFromDb, images, _imageFolders);
             }
 
-            return _mapper.Map<AnnoucementViewDto>(annoucementFromDb);
+            return _mapper.Map<AnnoucementForViewDto>(annoucementFromDb);
         }
 
-        public async Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+        public async Task<PageDataContainer<AnnoucementForViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
                      PageArguments paginateParams, SortingArguments orderParams)
         {
             PageDataContainer<Annoucement> pagedAnnoucements = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
@@ -100,17 +100,17 @@ namespace Baraholka.Services
             {
                 return null;
             }
-            PageDataContainer<AnnoucementViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementViewDto>>(pagedAnnoucements);
+            PageDataContainer<AnnoucementForViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementForViewDto>>(pagedAnnoucements);
 
             return pagedViewData;
         }
 
-        public async Task<AnnoucementViewDto> GetAnnoucementForViewById(int id)
+        public async Task<AnnoucementForViewDto> GetAnnoucementForViewById(int id)
         {
             Annoucement annoucement = await _annoucementRepo.GetSingleAnnoucementForViewById(id);
             if (annoucement != null)
             {
-                var annoucementForView = _mapper.Map<AnnoucementViewDto>(annoucement);
+                var annoucementForView = _mapper.Map<AnnoucementForViewDto>(annoucement);
                 return annoucementForView;
             }
             return null;

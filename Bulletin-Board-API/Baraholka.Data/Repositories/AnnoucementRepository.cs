@@ -1,4 +1,5 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,11 +13,13 @@ namespace Baraholka.Data.Repositories
     public class AnnoucementRepository : GenericRepository<Annoucement>, IAnnoucementRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
         private DbSet<Annoucement> _dataSet;
 
-        public AnnoucementRepository(AppDbContext context) : base(context)
+        public AnnoucementRepository(AppDbContext context, IMapper mapper) : base(context)
         {
             _context = context;
+            _mapper = mapper;
             _dataSet = _context.Annoucements;
         }
 

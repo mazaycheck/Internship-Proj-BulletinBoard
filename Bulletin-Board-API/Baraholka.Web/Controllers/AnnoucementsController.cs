@@ -23,7 +23,7 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<AnnoucementViewDto> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<AnnoucementForViewDto> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
 
             if (pagedObject == null)
             {
@@ -37,7 +37,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
-            AnnoucementViewDto annoucementDto = await _annoucementService.GetAnnoucementForViewById(id);
+            AnnoucementForViewDto annoucementDto = await _annoucementService.GetAnnoucementForViewById(id);
 
             if (annoucementDto == null)
             {
@@ -57,7 +57,7 @@ namespace Baraholka.Web.Controllers
             if (result)
             {
                 int userId = User.GetUserID();
-                AnnoucementViewDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
+                AnnoucementForViewDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
                 return CreatedAtAction(nameof(GetById), new { id = annoucement.Id }, annoucement);
             }
 
@@ -113,7 +113,7 @@ namespace Baraholka.Web.Controllers
                 return BadRequest("BrandCategory does not exist");
             }
 
-            AnnoucementViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);
+            AnnoucementForViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);
 
             return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.Id }, updatedAnnoucement);
         }

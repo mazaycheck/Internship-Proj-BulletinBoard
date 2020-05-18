@@ -5,14 +5,14 @@ namespace Baraholka.Services
 {
     public interface IAnnoucementService
     {
-        Task<PageDataContainer<AnnoucementViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+        Task<PageDataContainer<AnnoucementForViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
             PageArguments paginateParams, SortingArguments orderParams);
 
-        Task<AnnoucementViewDto> GetAnnoucementForViewById(int id);
+        Task<AnnoucementForViewDto> GetAnnoucementForViewById(int id);
 
-        Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId);
+        Task<AnnoucementForViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId);
 
-        Task<AnnoucementViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto);
+        Task<AnnoucementForViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto);
 
         Task<bool> BrandCategoryExists(int id);
 
