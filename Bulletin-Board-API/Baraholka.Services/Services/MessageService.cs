@@ -45,16 +45,19 @@ namespace Baraholka.Services
             MessageboxType boxValue;
             var parseResult = Enum.TryParse(messagesType, true, out boxValue);
 
+            if (!parseResult)
+            {
+                throw new Exception("No such message box");
+            }
+
             if (boxValue == MessageboxType.inbox)
                 return await GetMessagesInbox(userId);
             else if (boxValue == MessageboxType.outbox)
                 return await GetMessagesOutbox(userId);
             else if (boxValue == MessageboxType.unread)
                 return await GetMessagesUnread(userId);
-            else if (boxValue == MessageboxType.inbox)
-                return await GetMessagesInbox(userId);
-
-            return null;
+            else
+                return await GetMessagesInbox(userId);            
         }
 
         private async Task<List<MessageForDetailDto>> GetMessages(List<Expression<Func<Message, bool>>> filters)

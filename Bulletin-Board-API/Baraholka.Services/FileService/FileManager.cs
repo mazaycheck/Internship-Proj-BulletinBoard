@@ -8,12 +8,12 @@ using System.IO;
 
 namespace Baraholka.Services.Services
 {
-    public class ImageFileManagerService : IImageFileManagerService
+    public class FileManager : IFileManager
     {
         private readonly IImageFileProcessor _imageFileProcessor;
         private readonly IRootFolderPath _rootFolder;
 
-        public ImageFileManagerService(IImageFileProcessor imageFileProcessor, IRootFolderPath rootFolder)
+        public FileManager(IImageFileProcessor imageFileProcessor, IRootFolderPath rootFolder)
         {
             _imageFileProcessor = imageFileProcessor;
             _rootFolder = rootFolder;

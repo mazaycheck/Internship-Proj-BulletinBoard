@@ -29,7 +29,7 @@ namespace Baraholka.Services
             _mapper = mapper;
         }
 
-        public async Task<User> Login(string email, string password)
+        public async Task<string> Login(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
@@ -37,10 +37,10 @@ namespace Baraholka.Services
                 var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
                 if (result.Succeeded)
                 {
-                    return user;
+                    return await CreateToken(user);
                 }
             }
-            throw new UnauthorizedAccessException("Cannot login");
+            return null;
         }
 
         public async Task<UserForPublicDetail> Register(UserRegisterDto userRegisterDto)
@@ -65,7 +65,7 @@ namespace Baraholka.Services
             }
         }
 
-        public async Task<string> CreateToken(User user)
+        private async Task<string> CreateToken(User user)
         {
             var claims = new List<Claim>
             {
@@ -93,6 +93,11 @@ namespace Baraholka.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescritor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<bool> UserExists(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
         }
     }
 }

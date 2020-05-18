@@ -15,13 +15,13 @@ namespace Baraholka.Services
         private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
-        private readonly IImageFileManagerService _imageFileManager;
+        private readonly IFileManager _imageFileManager;
 
         public AnnoucementService(
             IAnnoucementRepository annoucementRepo,
             IMapper mapper,
             IGenericRepository<BrandCategory> brandCategoryRepo,
-            IImageFileManagerService imageFileManager
+            IFileManager imageFileManager
             )
         {
             _annoucementRepo = annoucementRepo;

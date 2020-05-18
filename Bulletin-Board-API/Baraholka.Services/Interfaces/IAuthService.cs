@@ -6,10 +6,10 @@ namespace Baraholka.Services
 {
     public interface IAuthService
     {
-        Task<User> Login(string email, string password);
+        Task<string> Login(string email, string password);
 
         Task<UserForPublicDetail> Register(UserRegisterDto userRegisterDto);
-
-        Task<string> CreateToken(User user);
+        
+        Task<bool> UserExists(string email);
     }
 }

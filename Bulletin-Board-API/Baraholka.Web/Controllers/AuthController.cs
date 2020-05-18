@@ -23,32 +23,25 @@ namespace Baraholka.Web.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginDto userLoginDto)
         {
-            try
+            
+            var jwtToken = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
+            if (!string.IsNullOrWhiteSpace(jwtToken))
             {
-                var user = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
-                var jwtToken = await _authService.CreateToken(user);
                 return Ok(new { token = jwtToken });
             }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized(e);
-            }
+            
+            return Unauthorized("Could not login");
         }
 
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody]UserRegisterDto userRegisterDto)
         {
-            UserForPublicDetail createdUser;
-            try
+            if (await _authService.UserExists(userRegisterDto.Email))
             {
-                createdUser = await _authService.Register(userRegisterDto);
+                return Conflict("Such user already exists");
             }
-            catch (ArgumentException a)
-            {
-                return StatusCode(409, a.Message);
-            }
-
+            var createdUser = await _authService.Register(userRegisterDto);         
             return Ok(createdUser);
         }
     }

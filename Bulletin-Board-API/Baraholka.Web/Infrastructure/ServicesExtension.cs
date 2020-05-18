@@ -42,7 +42,7 @@ namespace Baraholka.Web
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICurrentUserAuthorized, CurrentContextUserAuthorized>();
             services.AddScoped<IRootFolderPath, WebRootFolderPath>();
-            services.AddScoped<IImageFileManagerService, ImageFileManagerService>();
+            services.AddScoped<IFileManager, FileManager>();
         }
 
         public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
