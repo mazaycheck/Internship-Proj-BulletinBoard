@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace Baraholka.Services.Services
 {
@@ -16,11 +17,11 @@ namespace Baraholka.Services.Services
             _imageFileProcessor = imageFileProcessor;
         }
 
-        public List<string> UploadImages(List<IFormFile> formImages, string rootFolder, string folderName)
+        public List<string> UploadImages(List<IFormFile> formImages, string rootFolder, string folderName, List<ImageFolder> imageFolders)
         {
             List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
             var path = GetImagesFolderPath(rootFolder, folderName);
-            List<string> listOfImgUrls = UploadImageFilesOnServer(images, path);
+            List<string> listOfImgUrls = UploadImageFilesOnServer(images, path, imageFolders);
             return listOfImgUrls;
         }
 
@@ -36,28 +37,21 @@ namespace Baraholka.Services.Services
             return Path.Combine(rootFolder, "images", id);
         }
 
-        public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder)
+        public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder, List<ImageFolder> folders)
         {
             var listOfImgUrls = new List<string>();
 
-            string smallImageFolder = Path.Combine(annoucementIdImageFolder, "small");
-            string mediumImageFolder = Path.Combine(annoucementIdImageFolder, "medium");
-            string largeImageFolder = Path.Combine(annoucementIdImageFolder, "large");
-
-            CreateDirectories(annoucementIdImageFolder, smallImageFolder, mediumImageFolder, largeImageFolder);
+            CreateDirectories(annoucementIdImageFolder, folders.Select(x => x.FolderName).ToArray());
 
             for (int i = 0; i < annoucementPhotoFiles.Count; i++)
             {
                 Image imageFile = annoucementPhotoFiles[i];
                 string guidFileName = Guid.NewGuid().ToString() + ".jpg";
-
-                string largeImageFilePath = Path.Combine(largeImageFolder, guidFileName);
-                string mediumImageFilePath = Path.Combine(mediumImageFolder, guidFileName);
-                string smallImageFilePath = Path.Combine(smallImageFolder, guidFileName);
-
-                SaveResizedImages(imageFile, largeImageFilePath, 1000, 1000);
-                SaveResizedImages(imageFile, mediumImageFilePath, 500, 500);
-                SaveResizedImages(imageFile, smallImageFilePath, 200, 200);
+                folders.ForEach(f =>
+                {
+                    string filePath = Path.Combine(annoucementIdImageFolder, f.FolderName, guidFileName);
+                    SaveResizedImages(imageFile, filePath, f.Resolution);
+                });
 
                 listOfImgUrls.Add(guidFileName);
             }
@@ -65,26 +59,38 @@ namespace Baraholka.Services.Services
             return listOfImgUrls;
         }
 
-        public void SaveResizedImages(Image imageFromForm, string filePath, int width, int height)
+        private void CreateDirectories(string annoucementIdImageFolder, string[] folders)
+        {
+            CreateDirectory(annoucementIdImageFolder);
+            foreach (var folder in folders)
+            {
+                var folderName = Path.Combine(annoucementIdImageFolder, folder);
+                CreateDirectory(folderName);
+            }
+        }
+
+        private static string GetFullPath(string folder, string guidFileName)
+        {
+            return Path.Combine(folder, guidFileName);
+        }
+
+        public void SaveResizedImages(Image imageFromForm, string filePath, int size)
         {
             Image imageResized;
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                imageResized = _imageFileProcessor.ResizeImage(imageFromForm, new Size(width, height));
+                imageResized = _imageFileProcessor.ResizeImage(imageFromForm, new Size(size, size));
                 System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Jpeg;
                 imageResized.Save(fileStream, format);
             }
         }
 
-        private void CreateDirectories(params string[] directories)
+        private void CreateDirectory(string directoryName)
         {
-            foreach (var dir in directories)
+            if (!Directory.Exists(directoryName))
             {
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
+                Directory.CreateDirectory(directoryName);
             }
         }
 

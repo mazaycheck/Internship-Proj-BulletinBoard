@@ -8,12 +8,6 @@ namespace Baraholka.Utilities
     {
         List<Image> ConvertIFormFileToImage(List<IFormFile> formFiles);
 
-        void DeleteFolder(string imagesPath);
-
         Image ResizeImage(Image imgToResize, Size size);
-
-        void SaveResizedImages(Image imageFromForm, string filePath, int width, int height);
-
-        List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder);
     }
 }

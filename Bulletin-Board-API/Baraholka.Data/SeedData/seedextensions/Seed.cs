@@ -1,4 +1,5 @@
 ﻿using Baraholka.Domain.Models;
+using Baraholka.Services.Services;
 using Baraholka.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -55,11 +56,10 @@ namespace Baraholka.Data.Seed
             }
         }
 
-        public static void SeedAnnoucements(AppDbContext context, string rootpath)
+        public static void SeedAnnoucements(AppDbContext context)
         {
             if (!context.Annoucements.Any())
             {
-                AnnoucementData.RootPath = rootpath;
                 foreach (var item in AnnoucementData.GetData(10))
                 {
                     context.Annoucements.Add(item);
@@ -69,7 +69,7 @@ namespace Baraholka.Data.Seed
             }
         }
 
-        public static void SeedPhotos(AppDbContext context, string rootPath, IImageFileProcessor imageFileProcessor)
+        public static void SeedPhotos(AppDbContext context, string rootPath, List<ImageFolder> folders, IImageFileProcessor imageFileProcessor, IFileManager fileManager)
         {
             if (!context.Photos.Any())
             {
@@ -77,13 +77,13 @@ namespace Baraholka.Data.Seed
                 foreach (Annoucement item in annoucements)
                 {
                     var category = GetCategoryFromAnnoucement(item.BrandCategoryId);
-                    item.Photos = GetPhotos(category, item.AnnoucementId, rootPath, imageFileProcessor);
+                    item.Photos = GetPhotos(category, item.AnnoucementId, rootPath, folders, imageFileProcessor, fileManager);
                 }
                 context.SaveChanges();
             }
         }
 
-        private static List<Photo> GetPhotos(Categories category, int annoucementId, string rootPath, IImageFileProcessor imageFileProcessor)
+        private static List<Photo> GetPhotos(Categories category, int annoucementId, string rootPath, List<ImageFolder> folders, IImageFileProcessor imageFileProcessor, IFileManager fileManager)
         {
             var seedRoot = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SeedData");
             var seedFolder = Path.Combine(seedRoot, "seedimages");
@@ -102,7 +102,7 @@ namespace Baraholka.Data.Seed
             }
             string annoucementIdImageFolder = Path.Combine(rootPath, "images", $"{annoucementId}");
 
-            var imgUrls = imageFileProcessor.UploadImageFilesOnServer(listOfImages, annoucementIdImageFolder);
+            var imgUrls = fileManager.UploadImageFilesOnServer(listOfImages, annoucementIdImageFolder, folders);
 
             return imgUrls.Select(x => new Photo() { PhotoUrl = x }).ToList();
         }

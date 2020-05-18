@@ -3,8 +3,10 @@ using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services.Services;
+using Baraholka.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,22 +20,27 @@ namespace Baraholka.Services
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IFileManager _imageFileManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
         private readonly string _rootPath;
+        private List<ImageFolder> _imageFolders;
 
         public AnnoucementService(
-            IAnnoucementRepository annoucementRepo,
-            IMapper mapper,
-            IGenericRepository<BrandCategory> brandCategoryRepo,
-            IFileManager imageFileManager,
-            IWebHostEnvironment webHostEnvironment
-            )
+                IAnnoucementRepository annoucementRepo,
+                IMapper mapper,
+                IGenericRepository<BrandCategory> brandCategoryRepo,
+                IFileManager imageFileManager,
+                IWebHostEnvironment webHostEnvironment,
+                IConfiguration configuration
+                )
         {
             _annoucementRepo = annoucementRepo;
             _mapper = mapper;
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileManager = imageFileManager;
             _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
             _rootPath = webHostEnvironment.WebRootPath;
+            _imageFolders = _configuration.GetSection("AppSettings:ImageFolders").Get<List<ImageFolder>>();
         }
 
         public async Task<AnnoucementViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
@@ -48,7 +55,7 @@ namespace Baraholka.Services
 
             if (images != null)
             {
-                await SaveAnnoucementImages(annoucement, images);
+                await SaveAnnoucementImages(annoucement, images, _imageFolders);
             }
 
             return _mapper.Map<AnnoucementViewDto>(annoucement);
@@ -78,7 +85,7 @@ namespace Baraholka.Services
             {
                 _imageFileManager.DeleteOldImages(_rootPath, annoucementFromDb.AnnoucementId);
 
-                await SaveAnnoucementImages(annoucementFromDb, images);
+                await SaveAnnoucementImages(annoucementFromDb, images, _imageFolders);
             }
 
             return _mapper.Map<AnnoucementViewDto>(annoucementFromDb);
@@ -131,9 +138,9 @@ namespace Baraholka.Services
             return await _brandCategoryRepo.Exists(brandCategoryId);
         }
 
-        private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images)
+        private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images, List<ImageFolder> imageFolders)
         {
-            List<string> fileGuidNames = _imageFileManager.UploadImages(images, _rootPath, folderName: $"{annoucement.AnnoucementId}");
+            List<string> fileGuidNames = _imageFileManager.UploadImages(images, _rootPath, folderName: $"{annoucement.AnnoucementId}", imageFolders);
 
             await _annoucementRepo.BindImages(annoucement, fileGuidNames);
         }
