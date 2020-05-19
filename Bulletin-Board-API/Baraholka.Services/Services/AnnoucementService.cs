@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
+using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services.Services;
 using Baraholka.Utilities;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Baraholka.Services.Models;
 
 namespace Baraholka.Services
 {
@@ -19,118 +18,94 @@ namespace Baraholka.Services
         private readonly IMapper _mapper;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IFileManager _imageFileManager;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _configuration;
+        private readonly IRootPathProvider _rootPathProvider;
+        
         private readonly string _rootPath;
-        private List<ImageFolder> _imageFolders;
+        private readonly List<ImageFolderConfig> _imageFolders;
 
         public AnnoucementService(
                 IAnnoucementRepository annoucementRepo,
                 IMapper mapper,
                 IGenericRepository<BrandCategory> brandCategoryRepo,
                 IFileManager imageFileManager,
-                IWebHostEnvironment webHostEnvironment,
-                IConfiguration configuration
+                IRootPathProvider rootPathProvider,                
+                IImageFolderFactory folderFactory
                 )
         {
             _annoucementRepo = annoucementRepo;
             _mapper = mapper;
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileManager = imageFileManager;
-            _webHostEnvironment = webHostEnvironment;
-            _configuration = configuration;
-            _rootPath = webHostEnvironment.WebRootPath;
-            _imageFolders = _configuration.GetSection("AppSettings:ImageFolders").Get<List<ImageFolder>>();
+            _rootPathProvider = rootPathProvider;
+            
+            _imageFolders = folderFactory.GetFolderConfigs();
+            _rootPath = _rootPathProvider.GetRootPath();
         }
 
-        public async Task<AnnoucementForViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId)
+        public async Task<AnnoucementModel> CreateAnnoucement(AnnoucementCreateModel annoucementDto, int userId)
         {
-            Annoucement annoucement = _mapper.Map<Annoucement>(annoucementDto);
-
-            SetDefaultValuesForCreate(userId, annoucement);
-
-            await _annoucementRepo.Create(annoucement);
+            AnnoucementDto annoucementToCreate = _mapper.Map<AnnoucementDto>(annoucementDto);
+            annoucementToCreate.UserId = userId;
+            AnnoucementDto createdAnnoucement = await _annoucementRepo.CreateAnnoucement(annoucementToCreate);
 
             List<IFormFile> images = annoucementDto.Photo;
 
             if (images != null)
             {
-                await SaveAnnoucementImages(annoucement, images, _imageFolders);
+                await SaveAnnoucementImages(createdAnnoucement.AnnoucementId, images, _imageFolders);
             }
 
-            return _mapper.Map<AnnoucementForViewDto>(annoucement);
+            return _mapper.Map<AnnoucementModel>(createdAnnoucement);
         }
 
-        private void SetDefaultValuesForCreate(int userId, Annoucement annoucement)
+        public async Task<AnnoucementModel> UpdateAnnoucement(AnnoucementUpdateModel annoucementDto, int userId)
         {
-            annoucement.UserId = userId;
-            annoucement.CreateDate = DateTime.Now;
-            annoucement.ExpirationDate = DateTime.Now.AddDays(30);
-            annoucement.IsActive = true;
-        }
-
-        public async Task<AnnoucementForViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto)
-        {
-            var includes = new string[] { $"{nameof(Annoucement.Photos)}" };
-
-            Annoucement annoucementFromDb = await _annoucementRepo.FindById(annoucementDto.AnnoucementId, includes);
-
-            _mapper.Map<AnnoucementUpdateDto, Annoucement>(annoucementDto, annoucementFromDb);
-
-            await _annoucementRepo.Update(annoucementFromDb);
+            AnnoucementDto annoucementSourse = _mapper.Map<AnnoucementDto>(annoucementDto);
+            annoucementSourse.UserId = userId;
+            AnnoucementDto updatedAnnoucement = await _annoucementRepo.UpdateAnnoucement(annoucementSourse);
 
             List<IFormFile> images = annoucementDto.Photo;
 
             if (images != null)
             {
-                _imageFileManager.DeleteOldImages(_rootPath, annoucementFromDb.AnnoucementId);
+                _imageFileManager.DeleteOldImages(_rootPath, updatedAnnoucement.AnnoucementId);
 
-                await SaveAnnoucementImages(annoucementFromDb, images, _imageFolders);
+                await SaveAnnoucementImages(updatedAnnoucement.AnnoucementId, images, _imageFolders);
             }
 
-            return _mapper.Map<AnnoucementForViewDto>(annoucementFromDb);
+            return _mapper.Map<AnnoucementModel>(updatedAnnoucement);
         }
 
-        public async Task<PageDataContainer<AnnoucementForViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
-                     PageArguments paginateParams, SortingArguments orderParams)
+        public async Task<PageDataContainer<AnnoucementModel>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+             PageArguments paginateParams, SortingArguments orderParams)
         {
-            PageDataContainer<Annoucement> pagedAnnoucements = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
+            PageDataContainer<AnnoucementDto> pagedAnnoucements = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
 
             if (pagedAnnoucements.PageData.Count == 0)
             {
                 return null;
             }
-            PageDataContainer<AnnoucementForViewDto> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementForViewDto>>(pagedAnnoucements);
+            PageDataContainer<AnnoucementModel> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementModel>>(pagedAnnoucements);
 
             return pagedViewData;
         }
 
-        public async Task<AnnoucementForViewDto> GetAnnoucementForViewById(int id)
+        public async Task<AnnoucementModel> GetAnnoucement(int id)
         {
-            Annoucement annoucement = await _annoucementRepo.GetSingleAnnoucementForViewById(id);
+            AnnoucementDto annoucement = await _annoucementRepo.GetSingleAnnoucementForView(id);
             if (annoucement != null)
             {
-                var annoucementForView = _mapper.Map<AnnoucementForViewDto>(annoucement);
+                var annoucementForView = _mapper.Map<AnnoucementModel>(annoucement);
                 return annoucementForView;
             }
             return null;
         }
 
-        public async Task<AnnoucementUserInfoDto> GetAnnoucementUserInfo(int id)
-        {
-            Annoucement annoucement = await _annoucementRepo.GetSingle(x => x.AnnoucementId == id);
-            if (annoucement != null)
-            {
-                return _mapper.Map<AnnoucementUserInfoDto>(annoucement);
-            }
-            return null;
-        }
-
-        public async Task DeleteAnnoucementById(int id)
+        public async Task DeleteAnnoucement(int id)
         {
             await _annoucementRepo.Delete(new Annoucement() { AnnoucementId = id });
 
-            _imageFileManager.DeleteOldImages(_webHostEnvironment.WebRootPath, id);
+            _imageFileManager.DeleteOldImages(_rootPath, id);
         }
 
         public async Task<bool> BrandCategoryExists(int brandCategoryId)
@@ -138,11 +113,11 @@ namespace Baraholka.Services
             return await _brandCategoryRepo.Exists(brandCategoryId);
         }
 
-        private async Task SaveAnnoucementImages(Annoucement annoucement, List<IFormFile> images, List<ImageFolder> imageFolders)
+        private async Task SaveAnnoucementImages(int annoucementId, List<IFormFile> images, List<ImageFolderConfig> imageFolders)
         {
-            List<string> fileGuidNames = _imageFileManager.UploadImages(images, _rootPath, folderName: $"{annoucement.AnnoucementId}", imageFolders);
+            List<string> fileGuidNames = _imageFileManager.UploadImageFiles(images, _rootPath, folderName: $"{annoucementId}", imageFolders);
 
-            await _annoucementRepo.BindImages(annoucement, fileGuidNames);
+            await _annoucementRepo.SaveImageFileNames(annoucementId, fileGuidNames);
         }
     }
 }

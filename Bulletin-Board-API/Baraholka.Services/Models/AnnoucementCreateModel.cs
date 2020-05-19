@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class AnnoucementCreateDto
+    public class AnnoucementCreateModel
     {
         [Required]
         [MaxLength(100, ErrorMessage = "Maximum title lengh is 100 characters")]

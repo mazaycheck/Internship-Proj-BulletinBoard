@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
+using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,7 +24,7 @@ namespace Baraholka.Data.Repositories
             _dataSet = _context.Annoucements;
         }
 
-        public async Task<Annoucement> GetSingleAnnoucementForViewById(int id)
+        public async Task<AnnoucementDto> GetSingleAnnoucementForView(int id)
         {
             var includes = new string[]
             {
@@ -40,17 +41,53 @@ namespace Baraholka.Data.Repositories
 
             var annoucement = await GetSingle(includes, filters);
 
-            return annoucement;
+            return _mapper.Map<AnnoucementDto>(annoucement);
         }
 
-        public async Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions,
+        public async Task<AnnoucementDto> GetSingleAnnoucement(int id)
+        {
+            var annoucement = await GetSingle(x => x.AnnoucementId == id);
+            return _mapper.Map<AnnoucementDto>(annoucement);
+        }
+
+        public async Task<PageDataContainer<AnnoucementDto>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions,
              PageArguments paginateParams, SortingArguments orderParams)
         {
             _dataSet = _context.Annoucements;
             IQueryable<Annoucement> annoucements = IncludeProperties(_dataSet);
             IQueryable<Annoucement> filteredAnnoucements = ApplySeachQuery(annoucements, filterOptions);
             IOrderedQueryable<Annoucement> orderedAnnoucements = OrderAnnoucements(filteredAnnoucements, orderParams);
-            return await orderedAnnoucements.GetPageAsync(paginateParams);
+            var pagedAnnoucements = await orderedAnnoucements.GetPageAsync(paginateParams);
+            return _mapper.Map<PageDataContainer<AnnoucementDto>>(pagedAnnoucements);
+        }
+
+        public async Task<AnnoucementDto> CreateAnnoucement(AnnoucementDto annoucementDto)
+        {
+            Annoucement annoucementToCreate = _mapper.Map<Annoucement>(annoucementDto);
+
+            annoucementToCreate.CreateDate = DateTime.Now;
+            annoucementToCreate.ExpirationDate = DateTime.Now.AddDays(30);
+            annoucementToCreate.IsActive = true;
+
+            Annoucement createdAnnoucement = await CreateAndReturn(annoucementToCreate);
+            return _mapper.Map<AnnoucementDto>(createdAnnoucement);
+        }
+
+        public async Task<AnnoucementDto> UpdateAnnoucement(AnnoucementDto annoucementDto)
+        {
+            Annoucement annoucementFromDb = await GetSingle(a => a.AnnoucementId == annoucementDto.AnnoucementId);
+            Action<IMappingOperationOptions<AnnoucementDto, Annoucement>> mappingOptions = x =>
+                x.BeforeMap((src, dest) =>
+                {
+                    src.CreateDate = dest.CreateDate;
+                    src.ExpirationDate = dest.ExpirationDate;
+                    src.IsActive = dest.IsActive;
+                });
+            _mapper.Map<AnnoucementDto, Annoucement>(annoucementDto, annoucementFromDb, mappingOptions);
+
+            Annoucement createdAnnoucement = await UpdateAndReturn(annoucementFromDb);
+
+            return _mapper.Map<AnnoucementDto>(createdAnnoucement);
         }
 
         private static IQueryable<Annoucement> IncludeProperties(DbSet<Annoucement> dataSet)
@@ -114,12 +151,15 @@ namespace Baraholka.Data.Repositories
             return orderedAnnoucements;
         }
 
-        public async Task BindImages(Annoucement annoucement, List<string> fileGuidNames)
+        public async Task SaveImageFileNames(int annoucementId, List<string> fileGuidNames)
         {
-            annoucement.Photos = new List<Photo>();
+            var includes = new string[] { $"{nameof(Annoucement.Photos)}" };
+            var annoucementFromDb = await FindById(annoucementId, includes);
+
+            annoucementFromDb.Photos = new List<Photo>();
             foreach (string photoPath in fileGuidNames)
             {
-                annoucement.Photos.Add(new Photo() { PhotoUrl = photoPath });
+                annoucementFromDb.Photos.Add(new Photo() { PhotoUrl = photoPath });
             }
 
             await Save();

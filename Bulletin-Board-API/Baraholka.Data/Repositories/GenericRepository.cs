@@ -24,6 +24,13 @@ namespace Baraholka.Data.Repositories
             return;
         }
 
+        public async virtual Task<T> CreateAndReturn(T entity)
+        {
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
         public virtual async Task Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
@@ -36,6 +43,13 @@ namespace Baraholka.Data.Repositories
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
             return;
+        }
+
+        public async Task<T> UpdateAndReturn(T entity)
+        {
+            _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<int> Save()

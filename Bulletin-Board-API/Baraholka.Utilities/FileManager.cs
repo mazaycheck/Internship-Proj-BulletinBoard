@@ -17,7 +17,7 @@ namespace Baraholka.Services.Services
             _imageFileProcessor = imageFileProcessor;
         }
 
-        public List<string> UploadImages(List<IFormFile> formImages, string rootFolder, string folderName, List<ImageFolder> imageFolders)
+        public List<string> UploadImageFiles(List<IFormFile> formImages, string rootFolder, string folderName, List<ImageFolderConfig> imageFolders)
         {
             List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
             var path = GetImagesFolderPath(rootFolder, folderName);
@@ -37,7 +37,7 @@ namespace Baraholka.Services.Services
             return Path.Combine(rootFolder, "images", id);
         }
 
-        public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder, List<ImageFolder> folders)
+        public List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder, List<ImageFolderConfig> folders)
         {
             var listOfImgUrls = new List<string>();
 

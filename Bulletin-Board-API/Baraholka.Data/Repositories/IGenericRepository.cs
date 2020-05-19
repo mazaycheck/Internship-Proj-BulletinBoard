@@ -42,5 +42,7 @@ namespace Baraholka.Data.Repositories
         Task Delete(T entity);
 
         Task<int> Save();
+        Task<T> CreateAndReturn(T entity);
+        Task<T> UpdateAndReturn(T entity);
     }
 }

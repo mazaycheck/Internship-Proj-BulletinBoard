@@ -3,6 +3,7 @@ using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Baraholka.Services.Models;
 
 namespace Baraholka.Web.Controllers
 {
@@ -23,7 +24,7 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<AnnoucementForViewDto> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<AnnoucementModel> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
 
             if (pagedObject == null)
             {
@@ -37,7 +38,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
-            AnnoucementForViewDto annoucementDto = await _annoucementService.GetAnnoucementForViewById(id);
+            AnnoucementModel annoucementDto = await _annoucementService.GetAnnoucement(id);
 
             if (annoucementDto == null)
             {
@@ -50,14 +51,14 @@ namespace Baraholka.Web.Controllers
         [Authorize(Roles = "Member")]
         [HttpPost]
         [Route("new")]
-        public async Task<IActionResult> Add([FromForm] AnnoucementCreateDto annoucementDto)
+        public async Task<IActionResult> Add([FromForm] AnnoucementCreateModel annoucementDto)
         {
-            bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+            bool exists = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
 
-            if (result)
+            if (exists)
             {
                 int userId = User.GetUserID();
-                AnnoucementForViewDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
+                AnnoucementModel annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
                 return CreatedAtAction(nameof(GetById), new { id = annoucement.Id }, annoucement);
             }
 
@@ -68,7 +69,7 @@ namespace Baraholka.Web.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
-            AnnoucementUserInfoDto annoucement = await _annoucementService.GetAnnoucementUserInfo(id);
+            AnnoucementModel annoucement = await _annoucementService.GetAnnoucement(id);
 
             if (annoucement == null)
             {
@@ -82,7 +83,7 @@ namespace Baraholka.Web.Controllers
                 return StatusCode(403, "You are not allowed to delete other user's annoucement!");
             }
 
-            await _annoucementService.DeleteAnnoucementById(id);
+            await _annoucementService.DeleteAnnoucement(id);
 
             return Ok();
         }
@@ -90,9 +91,9 @@ namespace Baraholka.Web.Controllers
         [Authorize(Roles = "Member")]
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update([FromForm] AnnoucementUpdateDto annoucementDto)
+        public async Task<IActionResult> Update([FromForm] AnnoucementUpdateModel annoucementDto)
         {
-            AnnoucementUserInfoDto annoucement = await _annoucementService.GetAnnoucementUserInfo(annoucementDto.AnnoucementId);
+            AnnoucementModel annoucement = await _annoucementService.GetAnnoucement(annoucementDto.AnnoucementId);
 
             if (annoucement == null)
             {
@@ -113,7 +114,7 @@ namespace Baraholka.Web.Controllers
                 return BadRequest("BrandCategory does not exist");
             }
 
-            AnnoucementForViewDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto);
+            AnnoucementModel updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto, currentUser);
 
             return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.Id }, updatedAnnoucement);
         }

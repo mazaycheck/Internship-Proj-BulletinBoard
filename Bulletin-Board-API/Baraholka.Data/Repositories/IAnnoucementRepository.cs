@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Domain.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,10 +8,16 @@ namespace Baraholka.Data.Repositories
 {
     public interface IAnnoucementRepository : IGenericRepository<Annoucement>
     {
-        Task<Annoucement> GetSingleAnnoucementForViewById(int id);
+        Task<PageDataContainer<AnnoucementDto>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions, PageArguments paginateParams, SortingArguments orderParams);
 
-        Task<PageDataContainer<Annoucement>> GetPagedAnnoucements(AnnoucementFilterArguments filterOptions, PageArguments paginateParams, SortingArguments orderParams);
+        Task SaveImageFileNames(int annoucementId, List<string> fileGuidNames);
 
-        Task BindImages(Annoucement annoucement, List<string> fileGuidNames);
+        Task<AnnoucementDto> GetSingleAnnoucementForView(int id);
+
+        Task<AnnoucementDto> CreateAnnoucement(AnnoucementDto annoucementDto);
+
+        Task<AnnoucementDto> UpdateAnnoucement(AnnoucementDto annoucementDto);
+
+        Task<AnnoucementDto> GetSingleAnnoucement(int id);
     }
 }

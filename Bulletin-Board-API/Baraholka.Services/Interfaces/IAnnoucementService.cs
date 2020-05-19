@@ -1,23 +1,22 @@
 ﻿using Baraholka.Data.Dtos;
 using System.Threading.Tasks;
+using Baraholka.Services.Models;
 
 namespace Baraholka.Services
 {
     public interface IAnnoucementService
     {
-        Task<PageDataContainer<AnnoucementForViewDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+        Task<PageDataContainer<AnnoucementModel>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
             PageArguments paginateParams, SortingArguments orderParams);
 
-        Task<AnnoucementForViewDto> GetAnnoucementForViewById(int id);
+        Task<AnnoucementModel> GetAnnoucement(int id);
 
-        Task<AnnoucementForViewDto> CreateAnnoucement(AnnoucementCreateDto annoucementDto, int userId);
+        Task<AnnoucementModel> CreateAnnoucement(AnnoucementCreateModel annoucementDto, int userId);
 
-        Task<AnnoucementForViewDto> UpdateAnnoucement(AnnoucementUpdateDto annoucementDto);
+        Task<AnnoucementModel> UpdateAnnoucement(AnnoucementUpdateModel annoucementDto, int userId);
 
         Task<bool> BrandCategoryExists(int id);
 
-        Task<AnnoucementUserInfoDto> GetAnnoucementUserInfo(int id);
-
-        Task DeleteAnnoucementById(int id);
+        Task DeleteAnnoucement(int id);
     }
 }

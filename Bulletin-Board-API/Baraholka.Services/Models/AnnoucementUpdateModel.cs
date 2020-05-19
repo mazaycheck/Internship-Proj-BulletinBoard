@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class AnnoucementUpdateDto
+    public class AnnoucementUpdateModel
     {
         [Required]
         public int AnnoucementId { get; set; }

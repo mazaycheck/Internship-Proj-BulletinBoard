@@ -34,7 +34,7 @@ namespace Baraholka.Web.Infrastructure
                     context.Database.Migrate();
                     Seed.SeedUsers(userManager, roleManager);
                     Seed.SeedAnnoucements(context);
-                    var imageFolders = configuration.GetSection("AppSettings:ImageFolders").Get<List<ImageFolder>>();
+                    var imageFolders = configuration.GetSection("AppSettings:ImageFolders").Get<List<ImageFolderConfig>>();
                     Seed.SeedPhotos(context, environment.WebRootPath, imageFolders, imageProcessor, filemanager);
                 }
                 catch (Exception e)

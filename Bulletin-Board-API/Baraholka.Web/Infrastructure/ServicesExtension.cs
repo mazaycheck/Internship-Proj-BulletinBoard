@@ -41,6 +41,8 @@ namespace Baraholka.Web
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFileManager, FileManager>();
+            services.AddScoped<IImageFolderFactory, ImageFolderFactory>();
+            services.AddScoped<IRootPathProvider, RootPathProvider>();
         }
 
         public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Baraholka.Data;
 using Baraholka.Data.Configurations;
+using Baraholka.Utilities;
 using Baraholka.Web.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SignalRChat.Hubs;
+using System.Collections.Generic;
 
 namespace Baraholka.Web
 {
@@ -28,9 +30,11 @@ namespace Baraholka.Web
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
+            services.AddAutoMapper(typeof(AutoMapperConfig).Assembly, typeof(ServiceMappingProfile).Assembly);
 
             services.AddHttpContextAccessor();
+            
+            services.Configure<List<ImageFolderConfig>>(Configuration.GetSection("AppSettings:ImageFolders"));
 
             services.RegisterDependencyInjectionProviders();
 

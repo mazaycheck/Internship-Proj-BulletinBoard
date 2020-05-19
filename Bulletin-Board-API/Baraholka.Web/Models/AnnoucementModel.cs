@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Web.Models
 {
-    public class AnnoucementForViewDto
+    public class AnnoucementModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
