@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class CategoryForUpdateDto
+    public class CategoryUpdateModel
     {
         [Required]
         public int CategoryId { get; set; }

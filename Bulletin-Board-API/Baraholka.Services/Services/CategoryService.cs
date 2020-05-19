@@ -1,109 +1,68 @@
 ﻿using AutoMapper;
-using Baraholka.Data.Dtos;
+using Baraholka.Data.Dtos.Category;
 using Baraholka.Data.Repositories;
-using Baraholka.Domain.Models;
-using System;
+using Baraholka.Services.Models;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoryService(IGenericRepository<Category> repository, IMapper mapper)
+        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
-            _categoryRepository = repository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
-        public async Task<List<CategoryForViewDto>> GetAllCategories(string filter)
+        public async Task<List<CategoryModel>> GetAllCategories(string filter)
         {
-            var includes = new string[]
-            {
-                $"{nameof(Category.BrandCategories)}.{nameof(Brand)}",
-            };
-
-            var orderParams = new List<OrderParams<Category>>
-            {
-                new OrderParams<Category> { OrderBy = (x) => x.Title, Descending = false }
-            };
-
-            var lowerFilter = filter?.ToLower() ?? "";
-            var filters = new List<Expression<Func<Category, bool>>>
-            {
-                category => category.Title.ToLower().Contains(lowerFilter)
-            };
-
-            List<Category> categories = await _categoryRepository.GetAll(includes, filters, orderParams);
-
+            var categories = await _categoryRepository.GetCategories(filter);
             if (categories.Count == 0)
             {
                 return null;
             }
 
-            return _mapper.Map<List<Category>, List<CategoryForViewDto>>(categories);
+            return _mapper.Map<List<CategoryDto>, List<CategoryModel>>(categories);
         }
 
-        public async Task<CategoryForViewDto> GetCategory(int id)
+        public async Task<CategoryModel> GetCategory(int id)
         {
-            var includes = new string[]
-            {
-                $"{nameof(Category.BrandCategories)}.{nameof(Brand)}",
-            };
-            var conditions = new List<Expression<Func<Category, bool>>>
-            {
-                x => x.CategoryId == id
-            };
-
-            Category category = await _categoryRepository.GetSingle(includes, conditions);
+            CategoryDto category = await _categoryRepository.GetCategory(id);
 
             if (category == null)
             {
                 return null;
             }
 
-            return _mapper.Map<CategoryForViewDto>(category);
+            return _mapper.Map<CategoryModel>(category);
         }
 
-        public async Task<CategoryForViewDto> CreateCategory(CategoryForCreateDto newCategory)
+        public async Task<CategoryModel> CreateCategory(CategoryCreateModel categoryCreateModel)
         {
-            Category category = _mapper.Map<Category>(newCategory);
-            await _categoryRepository.Create(category);
-            return _mapper.Map<CategoryForViewDto>(category);
+            CategoryDto category = _mapper.Map<CategoryDto>(categoryCreateModel);
+            CategoryDto newCategory = await _categoryRepository.CreateCategory(category);
+            return _mapper.Map<CategoryModel>(newCategory);
         }
 
-        public async Task<CategoryForViewDto> UpdateCategory(CategoryForUpdateDto categoryForUpdate)
+        public async Task<CategoryModel> UpdateCategory(CategoryUpdateModel categoryUpdateModel)
         {
-            var categoryFromDb = await _categoryRepository.GetSingle(x => x.CategoryId == categoryForUpdate.CategoryId);
-            if (categoryFromDb.Title != categoryForUpdate.Title && await Exists(categoryForUpdate.Title))
-            {
-                throw new Exception("Duplicate title");
-            }
-
-            Category category = _mapper.Map<Category>(categoryForUpdate);
-            await _categoryRepository.Update(category);
-            return _mapper.Map<CategoryForViewDto>(category);
+            CategoryDto category = _mapper.Map<CategoryDto>(categoryUpdateModel);
+            await _categoryRepository.UpdateCategory(category);
+            return _mapper.Map<CategoryModel>(category);
         }
 
-        public async Task DeleteCategory(CategoryBasicDto categoryDto)
+        public async Task DeleteCategory(int categoryId)
         {
-            var categoryToDelete = _mapper.Map<Category>(categoryDto);
-            await _categoryRepository.Delete(categoryToDelete);
+            await _categoryRepository.DeleteCategory(categoryId);
         }
 
         public async Task<bool> Exists(string title)
         {
             return await _categoryRepository.Exists(category => category.Title.ToLower().Contains(title.ToLower()));
-        }
-
-        public async Task<CategoryBasicDto> GetCategoryById(int id)
-        {
-            var category = await _categoryRepository.GetSingle(x => x.CategoryId ==  id);
-            return _mapper.Map<CategoryBasicDto>(category);
         }
     }
 }

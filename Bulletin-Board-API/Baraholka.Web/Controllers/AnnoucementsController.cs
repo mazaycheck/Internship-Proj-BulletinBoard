@@ -1,9 +1,9 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Services;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Baraholka.Services.Models;
 
 namespace Baraholka.Web.Controllers
 {

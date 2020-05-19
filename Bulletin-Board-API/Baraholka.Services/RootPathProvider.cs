@@ -10,6 +10,7 @@ namespace Baraholka.Services
         {
             _webHost = webHost;
         }
+
         public string GetRootPath()
         {
             return _webHost.WebRootPath;

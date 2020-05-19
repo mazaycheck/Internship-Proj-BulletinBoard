@@ -2,6 +2,7 @@
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
+using Baraholka.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -83,11 +84,11 @@ namespace Baraholka.Services
             return true;
         }
 
-        public async Task<CategoryForViewDto> GetCategory(string title)
+        public async Task<CategoryModel> GetCategory(string title)
         {
             var lowerTitle = title.ToLower();
             var category = await _categoryRepo.GetFirst(x => x.Title.ToLower() == lowerTitle);
-            return _mapper.Map<CategoryForViewDto>(category);
+            return _mapper.Map<CategoryModel>(category);
         }
 
         public async Task<BrandForViewDto> GetBrand(string title)

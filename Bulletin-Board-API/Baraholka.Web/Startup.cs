@@ -33,7 +33,7 @@ namespace Baraholka.Web
             services.AddAutoMapper(typeof(AutoMapperConfig).Assembly, typeof(ServiceMappingProfile).Assembly);
 
             services.AddHttpContextAccessor();
-            
+
             services.Configure<List<ImageFolderConfig>>(Configuration.GetSection("AppSettings:ImageFolders"));
 
             services.RegisterDependencyInjectionProviders();

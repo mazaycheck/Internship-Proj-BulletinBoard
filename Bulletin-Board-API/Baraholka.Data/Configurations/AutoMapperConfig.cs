@@ -25,12 +25,6 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<Brand, BrandTitleDto>();
 
-            CreateMap<Category, CategoryForViewDto>()
-                .ForMember(dest => dest.Brands, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Brand.Title).ToList()));
-
-            CreateMap<CategoryForCreateDto, Category>();
-            CreateMap<CategoryForUpdateDto, Category>();
             CreateMap<Category, CategoryBasicDto>().ReverseMap();
 
             CreateMap<BrandForCreateDto, Brand>();

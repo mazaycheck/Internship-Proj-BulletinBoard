@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class CategoryForViewDto
+    public class CategoryModel
     {
         public int CategoryId { get; set; }
         public string Title { get; set; }

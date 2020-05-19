@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace Baraholka.Services
 
         Task<BrandForViewDto> GetBrand(string title);
 
-        Task<CategoryForViewDto> GetCategory(string title);
+        Task<CategoryModel> GetCategory(string title);
 
         Task<List<BrandCategoryForViewDto>> GetAllRelations(string category, string brand);
 

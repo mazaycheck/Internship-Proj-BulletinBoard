@@ -39,10 +39,12 @@ namespace Baraholka.Data.Repositories
 
         Task Update(T entity);
 
+        Task<T> CreateAndReturn(T entity);
+
+        Task<T> UpdateAndReturn(T entity);
+
         Task Delete(T entity);
 
         Task<int> Save();
-        Task<T> CreateAndReturn(T entity);
-        Task<T> UpdateAndReturn(T entity);
     }
 }

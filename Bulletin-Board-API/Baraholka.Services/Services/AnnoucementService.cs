@@ -3,12 +3,12 @@ using Baraholka.Data.Dtos;
 using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
+using Baraholka.Services.Models;
 using Baraholka.Services.Services;
 using Baraholka.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Baraholka.Services.Models;
 
 namespace Baraholka.Services
 {
@@ -19,7 +19,7 @@ namespace Baraholka.Services
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IFileManager _imageFileManager;
         private readonly IRootPathProvider _rootPathProvider;
-        
+
         private readonly string _rootPath;
         private readonly List<ImageFolderConfig> _imageFolders;
 
@@ -28,7 +28,7 @@ namespace Baraholka.Services
                 IMapper mapper,
                 IGenericRepository<BrandCategory> brandCategoryRepo,
                 IFileManager imageFileManager,
-                IRootPathProvider rootPathProvider,                
+                IRootPathProvider rootPathProvider,
                 IImageFolderFactory folderFactory
                 )
         {
@@ -37,7 +37,7 @@ namespace Baraholka.Services
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileManager = imageFileManager;
             _rootPathProvider = rootPathProvider;
-            
+
             _imageFolders = folderFactory.GetFolderConfigs();
             _rootPath = _rootPathProvider.GetRootPath();
         }

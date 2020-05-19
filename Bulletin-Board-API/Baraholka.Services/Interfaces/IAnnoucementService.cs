@@ -1,6 +1,6 @@
 ﻿using Baraholka.Data.Dtos;
-using System.Threading.Tasks;
 using Baraholka.Services.Models;
+using System.Threading.Tasks;
 
 namespace Baraholka.Services
 {

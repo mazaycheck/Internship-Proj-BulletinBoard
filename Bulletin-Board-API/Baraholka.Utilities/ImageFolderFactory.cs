@@ -12,6 +12,6 @@ namespace Baraholka.Utilities
             Folders = config.Value;
         }
 
-        public List<ImageFolderConfig> GetFolderConfigs() => Folders;        
+        public List<ImageFolderConfig> GetFolderConfigs() => Folders;
     }
 }
