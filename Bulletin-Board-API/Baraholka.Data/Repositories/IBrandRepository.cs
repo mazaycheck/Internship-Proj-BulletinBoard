@@ -1,6 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Baraholka.Data.Repositories
@@ -11,14 +10,10 @@ namespace Baraholka.Data.Repositories
 
         Task<BrandDto> GetBrand(int id);
 
-        Task UpdateBrandWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd);
-
-        Task RemoveCategoriesFromBrand(int brandId, IEnumerable<string> categoriesToRemove);
-
         Task<BrandDto> CreateBrand(BrandDto brandDto);
 
         Task DeleteBrand(int brandId);
 
-        Task<BrandDto> UpdateBrand(BrandDto brandDto);
+        Task<BrandDto> UpdateBrand(BrandDto brandDto, string[] categories);
     }
 }

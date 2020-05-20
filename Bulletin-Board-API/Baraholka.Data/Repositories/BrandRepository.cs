@@ -39,7 +39,7 @@ namespace Baraholka.Data.Repositories
 
             IOrderedQueryable<Brand> query = GetAllForPaging(includes, filters, orderParameters);
             PageDataContainer<Brand> pagedBrands = await query.GetPageAsync(pageArguments);
-            
+
             return _mapper.Map<PageDataContainer<BrandDto>>(pagedBrands);
         }
 
@@ -58,7 +58,7 @@ namespace Baraholka.Data.Repositories
 
             return _mapper.Map<BrandDto>(brandFromDb);
         }
-   
+
         public async Task<BrandDto> CreateBrand(BrandDto brandDto)
         {
             var brandToCreate = _mapper.Map<Brand>(brandDto);
@@ -71,12 +71,54 @@ namespace Baraholka.Data.Repositories
             await Delete(new Brand { BrandId = brandId });
         }
 
-        public async Task<BrandDto> UpdateBrand(BrandDto brandDto)
+        public async Task<BrandDto> UpdateBrand(BrandDto brandDto, string[] categories)
+        {
+            var updatedBrand = await UpdateBrandProperties(brandDto);
+
+            updatedBrand = _mapper.Map<BrandDto>(await UpdateAssociatedCategories(brandDto.BrandId, categories));
+
+            return _mapper.Map<BrandDto>(updatedBrand);
+        }
+
+        public async Task<BrandDto> UpdateBrandProperties(BrandDto brandDto)
         {
             var brandForUpdate = _mapper.Map<Brand>(brandDto);
             var updatedBrand = await UpdateAndReturn(brandForUpdate);
 
             return _mapper.Map<BrandDto>(updatedBrand);
+        }
+
+        private async Task<Brand> UpdateAssociatedCategories(int brandId, string[] newCategories)
+        {
+            var brandFromDb = await GetBrand(brandId);
+
+            string[] oldCategories = brandFromDb.BrandCategories.Select(x => x.Category.Title).ToArray();
+
+            if (!oldCategories.SequenceEqual(newCategories))
+            {
+                await ComputeCategoryDifferences(brandFromDb.BrandId, newCategories, oldCategories);
+            }
+            return await FindById(brandFromDb.BrandId);
+        }
+
+        private async Task ComputeCategoryDifferences(int brandId, string[] newCategories, string[] oldCategories)
+        {
+            var categoriesToAdd = newCategories.Except(oldCategories);
+
+            if (categoriesToAdd.Count() > 0)
+                try
+                {
+                    await UpdateBrandWithNewCategories(brandId, categoriesToAdd);
+                }
+                catch (NullReferenceException ex)
+                {
+                    throw new ArgumentException("Invalid category", ex.Message);
+                }
+
+            var categoriesToRemove = oldCategories.Except(newCategories);
+
+            if (categoriesToRemove.Count() > 0)
+                await RemoveCategoriesFromBrand(brandId, categoriesToRemove);
         }
 
         public async Task UpdateBrandWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd)
@@ -102,7 +144,7 @@ namespace Baraholka.Data.Repositories
         public async Task RemoveCategoriesFromBrand(int brandId, IEnumerable<string> categoriesToRemove)
         {
             var categories = categoriesToRemove.Select(x => _context.Categories.Where(p => p.Title == x).FirstOrDefault());
- 
+
             foreach (var category in categories)
             {
                 var brandcategory = await _context.BrandCategories.Where(p => p.CategoryId == category.CategoryId && p.BrandId == brandId).FirstOrDefaultAsync();

@@ -17,12 +17,11 @@ namespace Baraholka.Data.Configurations
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
                 .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
 
-            
             CreateMap<Brand, BrandDto>().ReverseMap();
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandDto>>();
 
             CreateMap<Category, CategoryBasicDto>().ReverseMap();
-            
+
             CreateMap<MessageForCreateDto, Message>();
             CreateMap<Message, MessageForDetailDto>()
                 .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))

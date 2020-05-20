@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Baraholka.Services.Models;
+using System.Threading.Tasks;
 
 namespace Baraholka.Services
 {
@@ -51,66 +49,24 @@ namespace Baraholka.Services
             await _brandRepo.DeleteBrand(brandId);
         }
 
-        public async Task<BrandDto> UpdateBrand(BrandUpdateModel brandForUpdate)
+        public async Task<BrandModel> UpdateBrand(BrandUpdateModel brandUpdateModel)
         {
-            BrandDto brandForUpdateDto = _mapper.Map<BrandDto>(brandForUpdate);
+            BrandDto brandDto = _mapper.Map<BrandDto>(brandUpdateModel);
 
+            BrandDto updatedBrandFromDb = await _brandRepo.UpdateBrand(brandDto, brandUpdateModel.Categories);
+
+            return _mapper.Map<BrandModel>(updatedBrandFromDb);
+        }
+
+        public async Task<bool> UpdatedBrandExists(BrandUpdateModel brandForUpdate)
+        {
             BrandDto brandFromDb = await _brandRepo.GetBrand(brandForUpdate.BrandId);
 
-            await UpdateBrandProperties(brandFromDb, brandForUpdateDto);
-
-            await UpdatedAssociatedCategories(brandFromDb, brandForUpdate.Categories);
-
-            brandFromDb = await _brandRepo.GetBrand(brandForUpdate.BrandId);
-
-            return _mapper.Map<BrandDto>(brandFromDb);
-        }
-
-        private async Task UpdatedAssociatedCategories(BrandDto brandFromDb, string[] newCategories)
-        {
-            string[] oldCategories = brandFromDb.BrandCategories.Select(x => x.Category.Title).ToArray();
-
-            if (!oldCategories.SequenceEqual(newCategories))
+            if (brandFromDb.Title != brandForUpdate.Title && await BrandExist(brandForUpdate.Title))
             {
-                await AddOrRemoveCategoriesOfBrand(brandFromDb, newCategories, oldCategories);
+                return true;
             }
-        }
-
-        private async Task UpdateBrandProperties(BrandDto brandFromDb, BrandDto brandForUpdateDto)
-        {            
-            if (brandFromDb.Title != brandForUpdateDto.Title)
-            {
-                if(!await BrandExist(brandForUpdateDto.Title))
-                {                    
-                    await _brandRepo.UpdateBrand(brandForUpdateDto);
-                }                    
-                else
-                {
-                    throw new Exception("Brand already exists");
-                }
-            }
-        }
-
-        private async Task AddOrRemoveCategoriesOfBrand(BrandDto brand, string[] newCategories, string[] oldCategories)
-        {
-            var brandId = brand.BrandId;
-
-            var categoriesToAdd = newCategories.Except(oldCategories);
-
-            if (categoriesToAdd.Count() > 0)
-                try
-                {
-                    await _brandRepo.UpdateBrandWithNewCategories(brandId, categoriesToAdd);
-                }
-                catch (NullReferenceException ex)
-                {
-                    throw new ArgumentException("Invalid category", ex.Message);
-                }
-
-            var categoriesToRemove = oldCategories.Except(newCategories);
-
-            if (categoriesToRemove.Count() > 0)
-                await _brandRepo.RemoveCategoriesFromBrand(brandId, categoriesToRemove);
+            return false;
         }
 
         public async Task<bool> BrandExist(string title)

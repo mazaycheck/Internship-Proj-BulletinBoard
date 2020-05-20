@@ -7,7 +7,8 @@ namespace Baraholka.Services.Models
         [Required]
         public int BrandId { get; set; }
 
-        [MaxLength(100)]
+        [Required]
+        [StringLength(50, MinimumLength = 2)]
         public string Title { get; set; }
 
         public string[] Categories { get; set; }

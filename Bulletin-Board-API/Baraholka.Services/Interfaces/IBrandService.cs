@@ -1,6 +1,6 @@
 ﻿using Baraholka.Data.Dtos;
-using System.Threading.Tasks;
 using Baraholka.Services.Models;
+using System.Threading.Tasks;
 
 namespace Baraholka.Services
 {
@@ -9,7 +9,7 @@ namespace Baraholka.Services
         Task<PageDataContainer<BrandModel>> GetAllBrands(BrandFilterArguments filterArguments,
              PageArguments pageArguments, SortingArguments sortingArguments);
 
-        Task<BrandDto> UpdateBrand(BrandUpdateModel brandForUpdate);
+        Task<BrandModel> UpdateBrand(BrandUpdateModel brandForUpdate);
 
         Task DeleteBrand(int brandId);
 
@@ -18,5 +18,7 @@ namespace Baraholka.Services
         Task<BrandModel> CreateBrand(BrandCreateModel brand);
 
         Task<bool> BrandExist(string brand);
+
+        Task<bool> UpdatedBrandExists(BrandUpdateModel brandForUpdate);
     }
 }

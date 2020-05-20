@@ -1,9 +1,9 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Services;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Baraholka.Services.Models;
 
 namespace Baraholka.Web.Controllers
 {
@@ -67,8 +67,13 @@ namespace Baraholka.Web.Controllers
                 return NotFound("No such brand");
             }
 
-            await _brandService.UpdateBrand(brandForUpdate);
-            return Ok();
+            if (await _brandService.UpdatedBrandExists(brandForUpdate))
+            {
+                return Conflict("This brand already exists");
+            }
+
+            BrandModel updatedBrand = await _brandService.UpdateBrand(brandForUpdate);
+            return Ok(updatedBrand);
         }
 
         [Authorize(Roles = "Admin, Moderator")]

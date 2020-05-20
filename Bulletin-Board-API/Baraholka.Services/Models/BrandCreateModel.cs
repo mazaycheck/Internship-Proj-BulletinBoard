@@ -5,7 +5,7 @@ namespace Baraholka.Services.Models
     public class BrandCreateModel
     {
         [Required]
-        [MaxLength(100)]
+        [StringLength(50, MinimumLength = 2)]
         public string Title { get; set; }
     }
 }

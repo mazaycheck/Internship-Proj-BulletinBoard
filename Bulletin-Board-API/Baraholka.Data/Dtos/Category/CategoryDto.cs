@@ -1,5 +1,4 @@
-﻿
-using Baraholka.Domain.Models;
+﻿using Baraholka.Domain.Models;
 using System.Collections.Generic;
 
 namespace Baraholka.Data.Dtos
