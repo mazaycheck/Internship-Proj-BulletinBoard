@@ -1,33 +1,41 @@
-﻿using Baraholka.Utilities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 
-namespace Baraholka.Services.Services
+namespace Baraholka.Utilities
 {
     public class ImageFileManager : IImageFileManager
     {
         private readonly IImageFileProcessor _imageFileProcessor;
+        private readonly IRootPathProvider _rootPathProvider;
+        private readonly string _rootPath;
+        private readonly List<ImageFolderConfig> _imageFolders;
 
-        public ImageFileManager(IImageFileProcessor imageFileProcessor)
+        public ImageFileManager(
+            IImageFileProcessor imageFileProcessor,
+            IRootPathProvider rootPathProvider,
+            IImageFolderConfigAccessor folderConfigAccessor)
         {
             _imageFileProcessor = imageFileProcessor;
+            _rootPathProvider = rootPathProvider;
+            _imageFolders = folderConfigAccessor.GetFolderConfigs();
+            _rootPath = _rootPathProvider.GetRootPath();
         }
 
-        public List<string> UploadImageFiles(List<IFormFile> formImages, string rootFolder, string folderName, List<ImageFolderConfig> imageFolders)
+        public List<string> UploadImageFiles(List<IFormFile> formImages, string folderName)
         {
             List<Image> images = _imageFileProcessor.ConvertIFormFileToImage(formImages);
-            var path = GetImagesFolderPath(rootFolder, folderName);
-            List<string> listOfImgUrls = UploadImageFilesOnServer(images, path, imageFolders);
+            var path = GetImagesFolderPath(_rootPath, folderName);
+            List<string> listOfImgUrls = UploadImageFilesOnServer(images, path, _imageFolders);
             return listOfImgUrls;
         }
 
-        public void DeleteOldImages(string rootFolder, int annoucementId)
+        public void DeleteOldImages(int annoucementId)
         {
-            string annoucementIdImageFolder = GetImagesFolderPath(rootFolder, $"{annoucementId}");
+            string annoucementIdImageFolder = GetImagesFolderPath(_rootPath, $"{annoucementId}");
 
             DeleteFolder(annoucementIdImageFolder);
         }

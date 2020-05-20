@@ -1,4 +1,4 @@
-﻿namespace Baraholka.Services
+﻿namespace Baraholka.Utilities
 {
     public interface IRootPathProvider
     {

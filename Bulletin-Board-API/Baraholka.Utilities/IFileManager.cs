@@ -1,18 +1,17 @@
-﻿using Baraholka.Utilities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Baraholka.Services.Services
+namespace Baraholka.Utilities
 {
     public interface IImageFileManager
     {
-        void DeleteOldImages(string rootFolder, int annoucementId);
-
         void SaveResizedImages(Image imageFromForm, string filePath, int size);
 
         List<string> UploadImageFilesOnServer(List<Image> annoucementPhotoFiles, string annoucementIdImageFolder, List<ImageFolderConfig> folders);
 
-        List<string> UploadImageFiles(List<IFormFile> formImages, string rootFolder, string folderName, List<ImageFolderConfig> imageFolders);
+        void DeleteOldImages(int annoucementId);
+
+        List<string> UploadImageFiles(List<IFormFile> formImages, string folderName);
     }
 }

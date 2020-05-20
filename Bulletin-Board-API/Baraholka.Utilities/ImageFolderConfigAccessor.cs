@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Baraholka.Utilities
 {
-    public class ImageFolderFactory : IImageFolderConfigAccessor
+    public class ImageFolderConfigAccessor : IImageFolderConfigAccessor
     {
         public readonly List<ImageFolderConfig> Folders;
 
-        public ImageFolderFactory(IOptions<List<ImageFolderConfig>> config)
+        public ImageFolderConfigAccessor(IOptions<List<ImageFolderConfig>> config)
         {
             Folders = config.Value;
         }

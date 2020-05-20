@@ -2,7 +2,6 @@
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services;
-using Baraholka.Services.Services;
 using Baraholka.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +41,7 @@ namespace Baraholka.Web
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IImageFileManager, ImageFileManager>();
-            services.AddScoped<IImageFolderConfigAccessor, ImageFolderFactory>();
+            services.AddScoped<IImageFolderConfigAccessor, ImageFolderConfigAccessor>();
             services.AddScoped<IRootPathProvider, RootPathProvider>();
         }
 
