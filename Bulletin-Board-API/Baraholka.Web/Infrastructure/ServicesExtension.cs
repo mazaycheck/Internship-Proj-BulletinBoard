@@ -41,8 +41,8 @@ namespace Baraholka.Web
             services.AddScoped<ITownService, TownService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IFileManager, FileManager>();
-            services.AddScoped<IImageFolderFactory, ImageFolderFactory>();
+            services.AddScoped<IImageFileManager, ImageFileManager>();
+            services.AddScoped<IImageFolderConfigAccessor, ImageFolderFactory>();
             services.AddScoped<IRootPathProvider, RootPathProvider>();
         }
 

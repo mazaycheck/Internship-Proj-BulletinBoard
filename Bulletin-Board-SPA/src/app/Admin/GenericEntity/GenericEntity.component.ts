@@ -36,7 +36,6 @@ export class GenericEntityComponent implements OnInit {
   pageClicked($event: PageEvent) {
     this.queryOptions.pageNumber = $event.pageIndex + 1;
     this.queryOptions.pageSize = $event.pageSize;
-    // this.globals.pageSize = $event.pageSize;
     this.refresh();
   }
 

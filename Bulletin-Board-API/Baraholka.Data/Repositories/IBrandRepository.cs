@@ -7,12 +7,18 @@ namespace Baraholka.Data.Repositories
 {
     public interface IBrandRepository : IGenericRepository<Brand>
     {
-        Task<PageDataContainer<Brand>> GetPagedBrands(BrandFilterArguments filterOptions, SortingArguments sortingArguments, PageArguments pageArguments);
+        Task<PageDataContainer<BrandDto>> GetPagedBrands(BrandFilterArguments filterOptions, SortingArguments sortingArguments, PageArguments pageArguments);
 
-        Task<Brand> GetSingleBrand(int id);
+        Task<BrandDto> GetBrand(int id);
 
         Task UpdateBrandWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd);
 
         Task RemoveCategoriesFromBrand(int brandId, IEnumerable<string> categoriesToRemove);
+
+        Task<BrandDto> CreateBrand(BrandDto brandDto);
+
+        Task DeleteBrand(int brandId);
+
+        Task<BrandDto> UpdateBrand(BrandDto brandDto);
     }
 }

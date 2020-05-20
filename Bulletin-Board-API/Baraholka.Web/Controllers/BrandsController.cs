@@ -3,6 +3,7 @@ using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Baraholka.Services.Models;
 
 namespace Baraholka.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> Get([FromQuery]BrandFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<BrandForViewDto> brands = await _brandService.GetAllBrands(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<BrandModel> brands = await _brandService.GetAllBrands(filterArgs, pageArgs, sortingArgs);
             if (brands != null)
             {
                 return Ok(brands);
@@ -33,10 +34,10 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            BrandForViewDto brandDto = await _brandService.GetBrand(id);
+            BrandModel brandDto = await _brandService.GetBrand(id);
             if (brandDto == null)
             {
-                return NotFound(id);
+                return NotFound($"No such brand with id: {id}");
             }
 
             return Ok(brandDto);
@@ -44,20 +45,20 @@ namespace Baraholka.Web.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BrandForCreateDto brand)
+        public async Task<IActionResult> Post([FromBody] BrandCreateModel brand)
         {
             if (await _brandService.BrandExist(brand.Title))
             {
                 return Conflict("Such brand already exists");
             }
-            BrandForViewDto newBrand = await _brandService.CreateBrand(brand);
+            BrandModel newBrand = await _brandService.CreateBrand(brand);
             return StatusCode(201, newBrand);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update([FromBody] BrandForUpdateDto brandForUpdate)
+        public async Task<IActionResult> Update([FromBody] BrandUpdateModel brandForUpdate)
         {
             var brandFromDb = await _brandService.GetBrand(brandForUpdate.BrandId);
 
@@ -79,7 +80,7 @@ namespace Baraholka.Web.Controllers
             {
                 return NotFound("No such brand");
             }
-            await _brandService.DeleteBrand(brandFromDb);
+            await _brandService.DeleteBrand(id);
 
             return Ok();
         }

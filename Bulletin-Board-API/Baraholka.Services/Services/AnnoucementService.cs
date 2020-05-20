@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
-using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Services.Models;
@@ -17,7 +16,7 @@ namespace Baraholka.Services
         private readonly IAnnoucementRepository _annoucementRepo;
         private readonly IMapper _mapper;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
-        private readonly IFileManager _imageFileManager;
+        private readonly IImageFileManager _imageFileManager;
         private readonly IRootPathProvider _rootPathProvider;
 
         private readonly string _rootPath;
@@ -27,9 +26,10 @@ namespace Baraholka.Services
                 IAnnoucementRepository annoucementRepo,
                 IMapper mapper,
                 IGenericRepository<BrandCategory> brandCategoryRepo,
-                IFileManager imageFileManager,
+                IImageFileManager imageFileManager,
+                // move
                 IRootPathProvider rootPathProvider,
-                IImageFolderFactory folderFactory
+                IImageFolderConfigAccessor folderFactory
                 )
         {
             _annoucementRepo = annoucementRepo;

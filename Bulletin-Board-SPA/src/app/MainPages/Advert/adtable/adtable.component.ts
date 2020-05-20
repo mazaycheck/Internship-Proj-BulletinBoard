@@ -58,11 +58,7 @@ export class AdtableComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    // // tslint:disable-next-line: forin
-    // if (changes.optionSelected) {
-    //   this.queryOptions.category = this.optionSelected;
-    //   this.refresh();
-    // }
+
   }
 
   onOptionSelected(option: string) {

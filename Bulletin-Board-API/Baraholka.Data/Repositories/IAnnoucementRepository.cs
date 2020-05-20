@@ -1,5 +1,4 @@
 ﻿using Baraholka.Data.Dtos;
-using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Domain.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;

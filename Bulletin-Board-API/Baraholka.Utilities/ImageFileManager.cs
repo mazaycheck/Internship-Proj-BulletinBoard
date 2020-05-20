@@ -8,11 +8,11 @@ using System.Linq;
 
 namespace Baraholka.Services.Services
 {
-    public class FileManager : IFileManager
+    public class ImageFileManager : IImageFileManager
     {
         private readonly IImageFileProcessor _imageFileProcessor;
 
-        public FileManager(IImageFileProcessor imageFileProcessor)
+        public ImageFileManager(IImageFileProcessor imageFileProcessor)
         {
             _imageFileProcessor = imageFileProcessor;
         }
@@ -102,7 +102,7 @@ namespace Baraholka.Services.Services
                 {
                     Directory.Delete(imagesPath, true);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw new Exception($"Could not delete Folder with images on {imagesPath}");
                 }

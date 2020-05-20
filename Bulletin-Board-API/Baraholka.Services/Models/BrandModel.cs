@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class BrandForViewDto
+    public class BrandModel
     {
         public int BrandId { get; set; }
         public string Title { get; set; }

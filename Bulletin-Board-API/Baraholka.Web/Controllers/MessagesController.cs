@@ -16,9 +16,9 @@ namespace Baraholka.Web.Controllers
     {
         private readonly IMessageService _messageService;
 
-        public MessagesController(IMessageService service)
+        public MessagesController(IMessageService messageService)
         {
-            _messageService = service;
+            _messageService = messageService;
         }
 
         [HttpGet]

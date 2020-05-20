@@ -1,12 +1,11 @@
-﻿
-using Baraholka.Domain.Models;
+﻿using Baraholka.Domain.Models;
 using System.Collections.Generic;
 
 namespace Baraholka.Data.Dtos
 {
-    public class CategoryDto
+    public class BrandDto
     {
-        public int CategoryId { get; set; }
+        public int BrandId { get; set; }
         public string Title { get; set; }
         public ICollection<BrandCategory> BrandCategories { get; set; }
     }

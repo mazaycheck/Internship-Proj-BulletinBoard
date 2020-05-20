@@ -9,8 +9,6 @@ namespace Baraholka.Data.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        private readonly AppDbContext _context;
-
         public UserRepository(AppDbContext context) : base(context)
         {
         }

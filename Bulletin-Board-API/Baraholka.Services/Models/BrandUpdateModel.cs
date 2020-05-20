@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class BrandForUpdateDto
+    public class BrandUpdateModel
     {
         [Required]
         public int BrandId { get; set; }

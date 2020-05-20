@@ -2,7 +2,7 @@
 
 namespace Baraholka.Utilities
 {
-    public interface IImageFolderFactory
+    public interface IImageFolderConfigAccessor
     {
         List<ImageFolderConfig> GetFolderConfigs();
     }

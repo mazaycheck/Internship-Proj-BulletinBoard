@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Baraholka.Services.Services
 {
-    public interface IFileManager
+    public interface IImageFileManager
     {
         void DeleteOldImages(string rootFolder, int annoucementId);
 

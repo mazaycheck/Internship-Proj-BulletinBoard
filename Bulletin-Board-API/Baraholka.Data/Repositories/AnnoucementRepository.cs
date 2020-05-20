@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
-using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;

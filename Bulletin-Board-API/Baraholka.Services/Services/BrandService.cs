@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
-using Baraholka.Domain.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Baraholka.Services.Models;
 
 namespace Baraholka.Services
 {
@@ -19,57 +19,79 @@ namespace Baraholka.Services
             _mapper = mapper;
         }
 
-        public async Task<PageDataContainer<BrandForViewDto>> GetAllBrands(BrandFilterArguments filterArguments,
+        public async Task<PageDataContainer<BrandModel>> GetAllBrands(BrandFilterArguments filterArguments,
             PageArguments pageArguments, SortingArguments sortingArguments)
         {
-            PageDataContainer<Brand> pagedBrands = await _brandRepo.GetPagedBrands(filterArguments, sortingArguments, pageArguments);
+            PageDataContainer<BrandDto> pagedBrands = await _brandRepo.GetPagedBrands(filterArguments, sortingArguments, pageArguments);
 
             if (pagedBrands.PageData.Count > 0)
             {
-                PageDataContainer<BrandForViewDto> pagedBrandDtos = _mapper.Map<PageDataContainer<BrandForViewDto>>(pagedBrands);
+                PageDataContainer<BrandModel> pagedBrandDtos = _mapper.Map<PageDataContainer<BrandModel>>(pagedBrands);
                 return pagedBrandDtos;
             }
 
             return null;
         }
 
-        public async Task<BrandForViewDto> GetBrand(int id)
+        public async Task<BrandModel> GetBrand(int id)
         {
-            Brand brand = await _brandRepo.GetSingleBrand(id);
-            return _mapper.Map<BrandForViewDto>(brand);
+            BrandDto brand = await _brandRepo.GetBrand(id);
+            return _mapper.Map<BrandModel>(brand);
         }
 
-        public async Task<BrandForViewDto> CreateBrand(BrandForCreateDto brandForCreate)
+        public async Task<BrandModel> CreateBrand(BrandCreateModel brandForCreate)
         {
-            Brand brand = _mapper.Map<Brand>(brandForCreate);
-            await _brandRepo.Create(brand);
-            return _mapper.Map<BrandForViewDto>(brand);
+            BrandDto brand = _mapper.Map<BrandDto>(brandForCreate);
+            BrandDto newBrand = await _brandRepo.CreateBrand(brand);
+            return _mapper.Map<BrandModel>(newBrand);
         }
 
-        public async Task DeleteBrand(BrandForViewDto brand)
+        public async Task DeleteBrand(int brandId)
         {
-            await _brandRepo.Delete(_mapper.Map<Brand>(brand));
+            await _brandRepo.DeleteBrand(brandId);
         }
 
-        public async Task UpdateBrand(BrandForUpdateDto brandForUpdate)
+        public async Task<BrandDto> UpdateBrand(BrandUpdateModel brandForUpdate)
         {
-            Brand brandFromDb = await _brandRepo.GetSingleBrand(brandForUpdate.BrandId);
+            BrandDto brandForUpdateDto = _mapper.Map<BrandDto>(brandForUpdate);
 
-            if (brandFromDb.Title != brandForUpdate.Title)
+            BrandDto brandFromDb = await _brandRepo.GetBrand(brandForUpdate.BrandId);
+
+            await UpdateBrandProperties(brandFromDb, brandForUpdateDto);
+
+            await UpdatedAssociatedCategories(brandFromDb, brandForUpdate.Categories);
+
+            brandFromDb = await _brandRepo.GetBrand(brandForUpdate.BrandId);
+
+            return _mapper.Map<BrandDto>(brandFromDb);
+        }
+
+        private async Task UpdatedAssociatedCategories(BrandDto brandFromDb, string[] newCategories)
+        {
+            string[] oldCategories = brandFromDb.BrandCategories.Select(x => x.Category.Title).ToArray();
+
+            if (!oldCategories.SequenceEqual(newCategories))
             {
-                brandFromDb.Title = brandForUpdate.Title;
-                await _brandRepo.Save();
-            }
-
-            string[] categoriesOfBrandFromDb = brandFromDb.BrandCategories.Select(x => x.Category.Title).ToArray();
-
-            if (!categoriesOfBrandFromDb.SequenceEqual(brandForUpdate.Categories))
-            {
-                await AddOrRemoveCategoriesOfBrand(brandFromDb, brandForUpdate.Categories, categoriesOfBrandFromDb);
+                await AddOrRemoveCategoriesOfBrand(brandFromDb, newCategories, oldCategories);
             }
         }
 
-        private async Task AddOrRemoveCategoriesOfBrand(Brand brand, string[] newCategories, string[] oldCategories)
+        private async Task UpdateBrandProperties(BrandDto brandFromDb, BrandDto brandForUpdateDto)
+        {            
+            if (brandFromDb.Title != brandForUpdateDto.Title)
+            {
+                if(!await BrandExist(brandForUpdateDto.Title))
+                {                    
+                    await _brandRepo.UpdateBrand(brandForUpdateDto);
+                }                    
+                else
+                {
+                    throw new Exception("Brand already exists");
+                }
+            }
+        }
+
+        private async Task AddOrRemoveCategoriesOfBrand(BrandDto brand, string[] newCategories, string[] oldCategories)
         {
             var brandId = brand.BrandId;
 
@@ -93,7 +115,7 @@ namespace Baraholka.Services
 
         public async Task<bool> BrandExist(string title)
         {
-            return await _brandRepo.Exists(brand => brand.Title.ToLower().Contains(title.ToLower()));
+            return await _brandRepo.Exists(brand => brand.Title.ToLower().Equals(title.ToLower()));
         }
     }
 }

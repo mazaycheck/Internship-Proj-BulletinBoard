@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
-using Baraholka.Data.Dtos.Annoucement;
-using Baraholka.Data.Dtos.Category;
 using Baraholka.Domain.Models;
 using Baraholka.Services.Models;
 using System.Linq;
@@ -49,12 +47,19 @@ namespace Baraholka.Data.Configurations
             CreateMap<CategoryCreateModel, CategoryDto>();
             CreateMap<CategoryUpdateModel, CategoryDto>();
 
-            CreateMap<Category, CategoryModel>()
-                .ForMember(dest => dest.Brands, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Brand.Title).ToList()));
+            CreateMap<BrandDto, BrandModel>()
+                .ForMember(dest => dest.Categories, sourse => sourse
+                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
+                .ReverseMap();
 
-            CreateMap<CategoryCreateModel, Category>();
-            CreateMap<CategoryUpdateModel, Category>();
+            CreateMap<PageDataContainer<BrandDto>, PageDataContainer<BrandModel>>();
+            CreateMap<BrandCreateModel, BrandDto>();
+            CreateMap<BrandUpdateModel, BrandDto>();
+
+            CreateMap<Brand, BrandModel>()
+                .ForMember(dest => dest.Categories, sourse => sourse
+                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
+                .ReverseMap();
         }
     }
 }

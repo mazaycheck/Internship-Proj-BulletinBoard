@@ -69,7 +69,7 @@ namespace Baraholka.Data.Seed
             }
         }
 
-        public static void SeedPhotos(AppDbContext context, string rootPath, List<ImageFolderConfig> folders, IImageFileProcessor imageFileProcessor, IFileManager fileManager)
+        public static void SeedPhotos(AppDbContext context, string rootPath, List<ImageFolderConfig> folders, IImageFileProcessor imageFileProcessor, IImageFileManager fileManager)
         {
             if (!context.Photos.Any())
             {
@@ -83,7 +83,7 @@ namespace Baraholka.Data.Seed
             }
         }
 
-        private static List<Photo> GetPhotos(Categories category, int annoucementId, string rootPath, List<ImageFolderConfig> folders, IImageFileProcessor imageFileProcessor, IFileManager fileManager)
+        private static List<Photo> GetPhotos(Categories category, int annoucementId, string rootPath, List<ImageFolderConfig> folders, IImageFileProcessor imageFileProcessor, IImageFileManager fileManager)
         {
             var seedRoot = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SeedData");
             var seedFolder = Path.Combine(seedRoot, "seedimages");

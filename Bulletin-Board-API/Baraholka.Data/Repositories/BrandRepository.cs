@@ -1,5 +1,7 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +13,15 @@ namespace Baraholka.Data.Repositories
     public class BrandRepository : GenericRepository<Brand>, IBrandRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public BrandRepository(AppDbContext context) : base(context)
+        public BrandRepository(AppDbContext context, IMapper mapper) : base(context)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<PageDataContainer<Brand>> GetPagedBrands(BrandFilterArguments filterOptions, SortingArguments sortingArguments, PageArguments pageArguments)
+        public async Task<PageDataContainer<BrandDto>> GetPagedBrands(BrandFilterArguments filterOptions, SortingArguments sortingArguments, PageArguments pageArguments)
         {
             var filters = new List<Expression<Func<Brand, bool>>>()
             {
@@ -35,11 +39,11 @@ namespace Baraholka.Data.Repositories
 
             IOrderedQueryable<Brand> query = GetAllForPaging(includes, filters, orderParameters);
             PageDataContainer<Brand> pagedBrands = await query.GetPageAsync(pageArguments);
-
-            return pagedBrands;
+            
+            return _mapper.Map<PageDataContainer<BrandDto>>(pagedBrands);
         }
 
-        public async Task<Brand> GetSingleBrand(int id)
+        public async Task<BrandDto> GetBrand(int id)
         {
             var includes = new string[]
             {
@@ -50,8 +54,29 @@ namespace Baraholka.Data.Repositories
             {
                 x => x.BrandId == id
             };
+            var brandFromDb = await GetSingle(includes, conditions);
 
-            return await GetSingle(includes, conditions);
+            return _mapper.Map<BrandDto>(brandFromDb);
+        }
+   
+        public async Task<BrandDto> CreateBrand(BrandDto brandDto)
+        {
+            var brandToCreate = _mapper.Map<Brand>(brandDto);
+            var createdBrand = await CreateAndReturn(brandToCreate);
+            return _mapper.Map<BrandDto>(createdBrand);
+        }
+
+        public async Task DeleteBrand(int brandId)
+        {
+            await Delete(new Brand { BrandId = brandId });
+        }
+
+        public async Task<BrandDto> UpdateBrand(BrandDto brandDto)
+        {
+            var brandForUpdate = _mapper.Map<Brand>(brandDto);
+            var updatedBrand = await UpdateAndReturn(brandForUpdate);
+
+            return _mapper.Map<BrandDto>(updatedBrand);
         }
 
         public async Task UpdateBrandWithNewCategories(int brandId, IEnumerable<string> categoriesToAdd)
@@ -77,11 +102,12 @@ namespace Baraholka.Data.Repositories
         public async Task RemoveCategoriesFromBrand(int brandId, IEnumerable<string> categoriesToRemove)
         {
             var categories = categoriesToRemove.Select(x => _context.Categories.Where(p => p.Title == x).FirstOrDefault());
-
-            List<BrandCategory> brandCategoriesToRemove = categories
-                .Select(x => _context.BrandCategories.Where(p => p.CategoryId == x.CategoryId && p.BrandId == brandId).FirstOrDefault()).ToList();
-
-            _context.BrandCategories.RemoveRange(brandCategoriesToRemove);
+ 
+            foreach (var category in categories)
+            {
+                var brandcategory = await _context.BrandCategories.Where(p => p.CategoryId == category.CategoryId && p.BrandId == brandId).FirstOrDefaultAsync();
+                _context.BrandCategories.Remove(brandcategory);
+            }
 
             await _context.SaveChangesAsync();
         }

@@ -30,7 +30,7 @@ namespace Baraholka.Web.Infrastructure
                     var environment = services.GetRequiredService<IWebHostEnvironment>();
                     var imageProcessor = services.GetRequiredService<IImageFileProcessor>();
                     var configuration = services.GetRequiredService<IConfiguration>();
-                    var filemanager = services.GetRequiredService<IFileManager>();
+                    var filemanager = services.GetRequiredService<IImageFileManager>();
                     context.Database.Migrate();
                     Seed.SeedUsers(userManager, roleManager);
                     Seed.SeedAnnoucements(context);

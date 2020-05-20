@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class BrandForCreateDto
+    public class BrandCreateModel
     {
         [Required]
         [MaxLength(100)]

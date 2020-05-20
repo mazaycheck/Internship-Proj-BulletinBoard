@@ -11,16 +11,16 @@ namespace Baraholka.Services
 
         Task<bool> DeleteRelation(int brandCategoryId);
 
-        Task<BrandForViewDto> GetBrand(string title);
+        Task<BrandModel> GetBrand(string title);
 
         Task<CategoryModel> GetCategory(string title);
 
-        Task<List<BrandCategoryForViewDto>> GetAllRelations(string category, string brand);
+        Task<List<BrandCategoryModel>> GetAllRelations(string category, string brand);
 
-        Task<BrandCategoryForViewDto> GetRelationById(int id);
+        Task<BrandCategoryModel> GetRelationById(int id);
 
         Task<bool> BrandCategoryExists(int brandCategoryId);
 
-        Task<BrandCategoryForViewDto> CreateRelation(int brandId, int categoryId);
+        Task<BrandCategoryModel> CreateRelation(int brandId, int categoryId);
     }
 }

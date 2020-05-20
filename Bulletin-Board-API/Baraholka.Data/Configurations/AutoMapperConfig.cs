@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
-using Baraholka.Data.Dtos.Annoucement;
 using Baraholka.Domain.Models;
 using System.Linq;
 
@@ -14,23 +13,16 @@ namespace Baraholka.Data.Configurations
             CreateMap<AnnoucementDto, Annoucement>();
             CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementDto>>();
 
-            CreateMap<BrandCategory, BrandCategoryForViewDto>()
+            CreateMap<BrandCategory, BrandCategoryModel>()
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
                 .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
 
-            CreateMap<Brand, BrandForViewDto>()
-                .ForMember(dest => dest.Categories, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
-                .ReverseMap();
-
-            CreateMap<Brand, BrandTitleDto>();
+            
+            CreateMap<Brand, BrandDto>().ReverseMap();
+            CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandDto>>();
 
             CreateMap<Category, CategoryBasicDto>().ReverseMap();
-
-            CreateMap<BrandForCreateDto, Brand>();
-
-            CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandForViewDto>>();
-
+            
             CreateMap<MessageForCreateDto, Message>();
             CreateMap<Message, MessageForDetailDto>()
                 .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))

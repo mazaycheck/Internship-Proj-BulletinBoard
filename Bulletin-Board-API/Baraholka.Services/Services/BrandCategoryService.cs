@@ -25,7 +25,7 @@ namespace Baraholka.Services
             _categoryRepo = categoryRepo;
         }
 
-        public async Task<List<BrandCategoryForViewDto>> GetAllRelations(string categoryTitle, string brandTitle)
+        public async Task<List<BrandCategoryModel>> GetAllRelations(string categoryTitle, string brandTitle)
         {
             var includes = new List<Expression<Func<BrandCategory, object>>>()
             {
@@ -46,10 +46,10 @@ namespace Baraholka.Services
             };
 
             List<BrandCategory> brandCategories = await _brandCategoryRepo.GetAll(includes, filters, orderParams);
-            return _mapper.Map<List<BrandCategory>, List<BrandCategoryForViewDto>>(brandCategories);
+            return _mapper.Map<List<BrandCategory>, List<BrandCategoryModel>>(brandCategories);
         }
 
-        public async Task<BrandCategoryForViewDto> GetRelationById(int id)
+        public async Task<BrandCategoryModel> GetRelationById(int id)
         {
             var includes = new List<Expression<Func<BrandCategory, object>>>
             {
@@ -59,15 +59,15 @@ namespace Baraholka.Services
 
             BrandCategory brandCategory = await _brandCategoryRepo.FindById(id, includes, null);
 
-            return _mapper.Map<BrandCategoryForViewDto>(brandCategory);
+            return _mapper.Map<BrandCategoryModel>(brandCategory);
         }
 
-        public async Task<BrandCategoryForViewDto> CreateRelation(int brandId, int categoryId)
+        public async Task<BrandCategoryModel> CreateRelation(int brandId, int categoryId)
         {
             var brandCatetogyRelation = new BrandCategory() { BrandId = brandId, CategoryId = categoryId };
             await _brandCategoryRepo.Create(brandCatetogyRelation);
 
-            return _mapper.Map<BrandCategoryForViewDto>(brandCatetogyRelation);
+            return _mapper.Map<BrandCategoryModel>(brandCatetogyRelation);
         }
 
         public async Task<bool> DeleteRelation(int brandCategoryId)
@@ -91,11 +91,11 @@ namespace Baraholka.Services
             return _mapper.Map<CategoryModel>(category);
         }
 
-        public async Task<BrandForViewDto> GetBrand(string title)
+        public async Task<BrandModel> GetBrand(string title)
         {
             var lowerTitle = title.ToLower();
             var brand = await _brandRepo.GetFirst(x => x.Title.ToLower() == lowerTitle);
-            return _mapper.Map<BrandForViewDto>(brand);
+            return _mapper.Map<BrandModel>(brand);
         }
 
         public async Task<bool> BrandCategoryExists(int brandId, int categoryId)

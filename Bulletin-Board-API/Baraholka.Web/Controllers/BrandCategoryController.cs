@@ -46,7 +46,7 @@ namespace Baraholka.Web.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BrandCategoryForCreateDto brandCategoryForCreate)
+        public async Task<IActionResult> Post([FromBody] BrandCategoryCreateModel brandCategoryForCreate)
         {
             var category = await _brandCategoryService.GetCategory(brandCategoryForCreate.Category);
             if (category == null)
@@ -65,7 +65,7 @@ namespace Baraholka.Web.Controllers
                 return Conflict($"This relation already exists");
             }
 
-            BrandCategoryForViewDto newBrandCategory = await _brandCategoryService.CreateRelation(category.CategoryId, brand.BrandId);
+            BrandCategoryModel newBrandCategory = await _brandCategoryService.CreateRelation(category.CategoryId, brand.BrandId);
             return CreatedAtAction(nameof(Get), newBrandCategory.BrandCategoryId, newBrandCategory);
         }
 

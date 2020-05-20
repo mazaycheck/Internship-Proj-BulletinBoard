@@ -1,6 +1,6 @@
 ﻿namespace Baraholka.Data.Dtos
 {
-    public class BrandCategoryForViewDto
+    public class BrandCategoryModel
     {
         public int BrandCategoryId { get; set; }
         public int BrandId { get; set; }

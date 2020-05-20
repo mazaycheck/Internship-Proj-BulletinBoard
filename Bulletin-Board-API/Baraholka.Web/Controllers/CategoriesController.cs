@@ -62,7 +62,7 @@ namespace Baraholka.Web.Controllers
             {
                 if (await _categoryService.Exists(categoryForUpdate.Title))
                 {
-                    return Conflict("Such category already exists");
+                    return Conflict("This category already exists");
                 }
             }
 

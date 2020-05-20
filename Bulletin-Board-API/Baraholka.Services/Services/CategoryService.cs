@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Baraholka.Data.Dtos.Category;
+using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Services.Models;
 using System.Collections.Generic;
