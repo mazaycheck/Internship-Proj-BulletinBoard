@@ -15,57 +15,38 @@ namespace Baraholka.Services
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IGenericRepository<Category> _categoryRepo;
         private readonly IGenericRepository<Brand> _brandRepo;
+        private readonly IBrandCategoryRepository _brandCategoryRepository;
         private readonly IMapper _mapper;
 
-        public BrandCategoryService(IGenericRepository<BrandCategory> repo, IMapper mapper, IGenericRepository<Category> categoryRepo, IGenericRepository<Brand> brandRepo)
+        public BrandCategoryService(IGenericRepository<BrandCategory> repo, IMapper mapper, IGenericRepository<Category> categoryRepo, IGenericRepository<Brand> brandRepo, IBrandCategoryRepository brandCategoryRepository)
         {
             _brandCategoryRepo = repo;
             _mapper = mapper;
             _brandRepo = brandRepo;
+            _brandCategoryRepository = brandCategoryRepository;
             _categoryRepo = categoryRepo;
         }
 
-        public async Task<List<BrandCategoryModel>> GetAllRelations(string categoryTitle, string brandTitle)
+        public async Task<List<BrandCategoryModel>> GetAllRelations(string categoryFilter, string brandFilter)
         {
-            var includes = new List<Expression<Func<BrandCategory, object>>>()
-            {
-                x => x.Category,
-                y => y.Brand
-            };
 
-            var filters = new List<Expression<Func<BrandCategory, bool>>>()
-            {
-                x => x.Category.Title.ToLower().Contains(categoryTitle.ToLower() ?? ""),
-                y => y.Brand.Title.ToLower().Contains(brandTitle.ToLower() ?? "")
-            };
+            categoryFilter = categoryFilter?.ToLower() ?? string.Empty;
+            brandFilter = brandFilter?.ToLower() ?? string.Empty;
 
-            var orderParams = new List<OrderParams<BrandCategory>>
-            {
-                new OrderParams<BrandCategory>{ OrderBy = (x) => x.Category.Title},
-                new OrderParams<BrandCategory>{ OrderBy = (x) => x.Brand.Title}
-            };
-
-            List<BrandCategory> brandCategories = await _brandCategoryRepo.GetAll(includes, filters, orderParams);
-            return _mapper.Map<List<BrandCategory>, List<BrandCategoryModel>>(brandCategories);
+            var allRelations = await _brandCategoryRepository.GetAllBrandCategories(categoryFilter, brandFilter);
+            return _mapper.Map<List<BrandCategoryDto>, List<BrandCategoryModel>>(allRelations);
         }
 
         public async Task<BrandCategoryModel> GetRelationById(int id)
         {
-            var includes = new List<Expression<Func<BrandCategory, object>>>
-            {
-                p => p.Brand,
-                k => k.Category
-            };
-
-            BrandCategory brandCategory = await _brandCategoryRepo.FindById(id, includes, null);
+            BrandCategoryDto brandCategory = await _brandCategoryRepository.GetBrandCategory(id);
 
             return _mapper.Map<BrandCategoryModel>(brandCategory);
         }
 
         public async Task<BrandCategoryModel> CreateRelation(int brandId, int categoryId)
-        {
-            var brandCatetogyRelation = new BrandCategory() { BrandId = brandId, CategoryId = categoryId };
-            await _brandCategoryRepo.Create(brandCatetogyRelation);
+        {            
+            var brandCatetogyRelation =  await _brandCategoryRepository.CreateBrandCategory(brandId, categoryId);
 
             return _mapper.Map<BrandCategoryModel>(brandCatetogyRelation);
         }

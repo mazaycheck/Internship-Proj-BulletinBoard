@@ -1,8 +1,5 @@
 ﻿using Baraholka.Data;
-using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
-using Baraholka.Services;
-using Baraholka.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,41 +7,15 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web
 {
-    public static class ServicesExtension
-    {
-        public static void RegisterDependencyInjectionProviders(this IServiceCollection services)
-        {
-            services.AddScoped<IAnnoucementRepository, AnnoucementRepository>();
-            services.AddScoped<IAnnoucementService, AnnoucementService>();
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IBrandCategoryService, BrandCategoryService>();
-            services.AddScoped<IBrandRepository, BrandRepository>();
-            services.AddScoped<IBrandService, BrandService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IGenericRepository<Annoucement>, GenericRepository<Annoucement>>();
-            services.AddScoped<IGenericRepository<Brand>, GenericRepository<Brand>>();
-            services.AddScoped<IGenericRepository<BrandCategory>, GenericRepository<BrandCategory>>();
-            services.AddScoped<IGenericRepository<Category>, GenericRepository<Category>>();
-            services.AddScoped<IGenericRepository<Message>, GenericRepository<Message>>();
-            services.AddScoped<IGenericRepository<Town>, GenericRepository<Town>>();
-            services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
-            services.AddScoped<IImageFileProcessor, ImageFileProcessor>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IRolesService, RolesService>();
-            services.AddScoped<ITownService, TownService>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IImageFileManager, ImageFileManager>();
-            services.AddScoped<IImageFolderConfigAccessor, ImageFolderConfigAccessor>();
-            services.AddScoped<IRootPathProvider, RootPathProvider>();
-        }
-
+    public static class ServiceConfigurations
+    {        
         public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -117,6 +88,43 @@ namespace Baraholka.Web
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
+            });
+        }
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(options => {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                        Reference = new OpenApiReference
+                            {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                        }
+                    });
+
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Baraholka API", Version = "v1" });
             });
         }
     }

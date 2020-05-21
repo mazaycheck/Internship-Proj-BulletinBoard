@@ -60,6 +60,10 @@ namespace Baraholka.Data.Configurations
                 .ForMember(dest => dest.Categories, sourse => sourse
                     .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
                 .ReverseMap();
+
+            CreateMap<BrandCategoryDto, BrandCategoryModel>()
+                .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
+                .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
         }
     }
 }
