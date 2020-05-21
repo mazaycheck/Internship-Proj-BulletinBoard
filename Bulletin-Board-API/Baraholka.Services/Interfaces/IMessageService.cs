@@ -6,14 +6,14 @@ namespace Baraholka.Services
 {
     public interface IMessageService
     {
-        public Task<MessageForDetailDto> GetById(int id);
+        public Task<MessageModel> GetById(int id);
 
-        public Task<List<MessageForDetailDto>> GetMessageThread(int userOneId, int userTwoId);
+        public Task<List<MessageModel>> GetMessageThread(int userOneId, int userTwoId);
 
-        public Task<MessageForDetailDto> CreateMessage(MessageForCreateDto message);
+        public Task<MessageModel> CreateMessage(MessageCreateModel message, int userId);
 
-        public void MarkAsRead(int messageId);
+        public Task<MessageModel> MarkMessageAsRead(int messageId);
 
-        Task<List<MessageForDetailDto>> GetMessages(string messagebox, int tokenUserId);
+        Task<List<MessageModel>> GetMessagesByType(string messagebox, int tokenUserId);
     }
 }

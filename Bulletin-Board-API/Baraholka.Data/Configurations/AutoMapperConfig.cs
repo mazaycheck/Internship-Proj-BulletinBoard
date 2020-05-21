@@ -15,19 +15,8 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<BrandCategory, BrandCategoryDto>().ReverseMap();
 
-            CreateMap<BrandCategory, BrandCategoryModel>()
-                .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
-                .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
-
             CreateMap<Brand, BrandDto>().ReverseMap();
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandDto>>();
-
-            CreateMap<Category, CategoryBasicDto>().ReverseMap();
-
-            CreateMap<MessageForCreateDto, Message>();
-            CreateMap<Message, MessageForDetailDto>()
-                .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))
-                .ForMember(dest => dest.RecieverName, sourse => sourse.MapFrom(src => src.Reciever.UserName));
 
             CreateMap<User, UserForPublicDetail>()
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
@@ -50,6 +39,10 @@ namespace Baraholka.Data.Configurations
             CreateMap<TownForCreateDto, Town>();
             CreateMap<TownForUpdateDto, Town>();
             CreateMap<PageDataContainer<Town>, PageDataContainer<TownServiceDto>>();
+            CreateMap<Message, MessageDto>();
+            CreateMap<MessageDto, Message>()
+                .ForMember(dest => dest.Sender, src => src.Ignore())
+                .ForMember(dest => dest.Reciever, src => src.Ignore());
         }
     }
 }

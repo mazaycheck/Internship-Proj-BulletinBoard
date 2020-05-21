@@ -19,6 +19,7 @@ namespace Baraholka.Web.Infrastructure
             services.AddScoped<IBrandCategoryRepository, BrandCategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IGenericRepository<Annoucement>, GenericRepository<Annoucement>>();
             services.AddScoped<IGenericRepository<Brand>, GenericRepository<Brand>>();
             services.AddScoped<IGenericRepository<BrandCategory>, GenericRepository<BrandCategory>>();

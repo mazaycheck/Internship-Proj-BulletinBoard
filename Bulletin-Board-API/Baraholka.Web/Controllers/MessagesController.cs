@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace Baraholka.Web.Controllers
         public async Task<ActionResult> GetMessages([FromRoute]string messagebox)
         {
             int authorizedUserID = User.GetUserID();
-            List<MessageForDetailDto> messages = await _messageService.GetMessages(messagebox, authorizedUserID);
+            List<MessageModel> messages = await _messageService.GetMessagesByType(messagebox, authorizedUserID);
             if (messages != null)
             {
                 return Ok(messages);
@@ -43,7 +44,7 @@ namespace Baraholka.Web.Controllers
         {
             int authorizedUserID = User.GetUserID();
 
-            List<MessageForDetailDto> messages = await _messageService.GetMessageThread(userOneId: authorizedUserID, userTwoId: withuserId);
+            List<MessageModel> messages = await _messageService.GetMessageThread(userOneId: authorizedUserID, userTwoId: withuserId);
 
             if (messages != null)
             {
@@ -84,19 +85,18 @@ namespace Baraholka.Web.Controllers
                 return NotFound();
             if (messageFromDb.RecieverId == authorizedUserID)
             {
-                _messageService.MarkAsRead(messageId);
-                return Ok();
+                var message = await _messageService.MarkMessageAsRead(messageId);
+                return Ok(message);
             }
-            return Forbid("You are not allowed to mark this message as read");
+            return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to mark this message as read");
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostMessage(MessageForCreateDto messageDto)
+        public async Task<ActionResult> PostMessage(MessageCreateModel messageDto)
         {
             int authorizedUserID = User.GetUserID();
-            messageDto.SenderId = authorizedUserID;
 
-            var newMessage = await _messageService.CreateMessage(messageDto);
+            var newMessage = await _messageService.CreateMessage(messageDto, authorizedUserID);
             return CreatedAtAction("GetById", new { id = newMessage.MessageId }, newMessage);
         }
     }

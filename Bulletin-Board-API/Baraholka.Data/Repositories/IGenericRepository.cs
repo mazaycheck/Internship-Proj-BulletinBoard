@@ -44,5 +44,6 @@ namespace Baraholka.Data.Repositories
         Task Delete(T entity);
 
         Task<int> Save();
+        Task UpdateRange(IEnumerable<T> entities);
     }
 }

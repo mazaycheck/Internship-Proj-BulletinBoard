@@ -52,6 +52,12 @@ namespace Baraholka.Data.Repositories
             return entity;
         }
 
+        public async Task UpdateRange(IEnumerable<T> entities)
+        {
+            _context.Set<T>().UpdateRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<int> Save()
         {
             var count = await _context.SaveChangesAsync();
