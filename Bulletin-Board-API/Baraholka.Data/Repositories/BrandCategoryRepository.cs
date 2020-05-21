@@ -53,7 +53,6 @@ namespace Baraholka.Data.Repositories
             var filters = new List<Expression<Func<BrandCategory, bool>>>()
             {
                 b => b.BrandCategoryId == brandCategoryId,
-                
             };
 
             var brandCategory = await GetSingle(includes, filters);
@@ -66,6 +65,22 @@ namespace Baraholka.Data.Repositories
             var brandCatetogyRelation = new BrandCategory() { BrandId = brandId, CategoryId = categoryId };
             var newBrandCategory = await CreateAndReturn(brandCatetogyRelation);
             return _mapper.Map<BrandCategoryDto>(newBrandCategory);
+        }
+
+        public async Task DeleteBrandCategory(int id)
+        {
+            await Delete(new BrandCategory { BrandCategoryId = id });
+        }
+
+        public async Task<bool> BrandCategoryExists(int brandId, int categoryId)
+        {
+            var filters = new Expression<Func<BrandCategory, bool>>[]
+            {
+                x => x.CategoryId == categoryId,
+                y => y.BrandId == brandId
+            };
+
+            return await Exists(filters);
         }
     }
 }

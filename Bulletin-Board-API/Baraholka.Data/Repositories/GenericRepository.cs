@@ -58,16 +58,6 @@ namespace Baraholka.Data.Repositories
             return count;
         }
 
-        public async Task<bool> Exists(int entityId)
-        {
-            var entity = await _context.Set<T>().FindAsync(entityId);
-            if (entity != null)
-            {
-                return true;
-            }
-            return false;
-        }
-
         public async Task<bool> Exists(params Expression<Func<T, bool>>[] expressions)
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();

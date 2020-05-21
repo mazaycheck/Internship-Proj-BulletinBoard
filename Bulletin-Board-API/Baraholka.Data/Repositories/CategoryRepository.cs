@@ -56,6 +56,13 @@ namespace Baraholka.Data.Repositories
             return _mapper.Map<CategoryDto>(category);
         }
 
+        public async Task<CategoryDto> FindCategory(string title)
+        {
+            Category category = await GetSingle(x => x.Title == title);
+
+            return _mapper.Map<CategoryDto>(category);
+        }
+
         public async Task<CategoryDto> CreateCategory(CategoryDto categoryDto)
         {
             var categoryToCreate = _mapper.Map<Category>(categoryDto);

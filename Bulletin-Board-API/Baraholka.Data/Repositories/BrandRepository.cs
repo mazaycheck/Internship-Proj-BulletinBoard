@@ -59,6 +59,12 @@ namespace Baraholka.Data.Repositories
             return _mapper.Map<BrandDto>(brandFromDb);
         }
 
+        public async Task<BrandDto> FindBrand(string title)
+        {
+            var brand = await GetSingle(x => x.Title == title);
+            return _mapper.Map<BrandDto>(brand);
+        }
+
         public async Task<BrandDto> CreateBrand(BrandDto brandDto)
         {
             var brandToCreate = _mapper.Map<Brand>(brandDto);

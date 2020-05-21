@@ -98,7 +98,7 @@ namespace Baraholka.Services
 
         public async Task<bool> BrandCategoryExists(int brandCategoryId)
         {
-            return await _brandCategoryRepo.Exists(brandCategoryId);
+            return await _brandCategoryRepo.Exists(b => b.BrandCategoryId == brandCategoryId);
         }
 
         private async Task SaveAnnoucementImages(int annoucementId, List<IFormFile> images)

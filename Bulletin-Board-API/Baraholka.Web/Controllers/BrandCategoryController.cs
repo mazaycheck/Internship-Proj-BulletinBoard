@@ -60,13 +60,13 @@ namespace Baraholka.Web.Controllers
                 return NotFound("No such brand");
             }
 
-            if (await _brandCategoryService.BrandCategoryExists(category.CategoryId, brand.BrandId))
+            if (await _brandCategoryService.BrandCategoryExists(brand.BrandId, category.CategoryId))
             {
                 return Conflict($"This relation already exists");
             }
 
-            BrandCategoryModel newBrandCategory = await _brandCategoryService.CreateRelation(category.CategoryId, brand.BrandId);
-            return CreatedAtAction(nameof(Get), newBrandCategory.BrandCategoryId, newBrandCategory);
+            BrandCategoryModel newBrandCategory = await _brandCategoryService.CreateRelation(brand.BrandId, category.CategoryId);
+            return CreatedAtAction(nameof(Get), new { id = newBrandCategory.BrandCategoryId }, newBrandCategory);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -75,7 +75,7 @@ namespace Baraholka.Web.Controllers
         {
             if (!await _brandCategoryService.BrandCategoryExists(id))
             {
-                return Conflict($"Brand-Category relation with id: {id} does not exist");
+                return BadRequest($"Brand-Category relation with id: {id} does not exist");
             }
 
             await _brandCategoryService.DeleteRelation(id);

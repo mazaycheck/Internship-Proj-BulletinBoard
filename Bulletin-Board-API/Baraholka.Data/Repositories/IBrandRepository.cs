@@ -15,5 +15,7 @@ namespace Baraholka.Data.Repositories
         Task DeleteBrand(int brandId);
 
         Task<BrandDto> UpdateBrand(BrandDto brandDto, string[] categories);
+
+        Task<BrandDto> FindBrand(string title);
     }
 }

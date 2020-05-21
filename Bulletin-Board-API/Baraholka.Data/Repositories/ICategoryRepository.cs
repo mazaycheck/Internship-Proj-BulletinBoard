@@ -11,6 +11,8 @@ namespace Baraholka.Data.Repositories
 
         Task DeleteCategory(int categoryId);
 
+        Task<CategoryDto> FindCategory(string title);
+
         Task<List<CategoryDto>> GetCategories(string filter);
 
         Task<CategoryDto> GetCategory(int id);

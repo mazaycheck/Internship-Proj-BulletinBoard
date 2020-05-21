@@ -72,8 +72,10 @@ namespace Baraholka.Web
                 endpoints.MapHub<ChatHub>("/chatHub");
             });
             app.UseSwagger();
-            app.UseSwaggerUI(options => {                 
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Baraholka API"); });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Baraholka API");
+            });
         }
     }
 }

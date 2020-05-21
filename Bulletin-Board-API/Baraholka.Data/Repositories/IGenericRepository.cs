@@ -31,8 +31,6 @@ namespace Baraholka.Data.Repositories
 
         Task<T> FindById(int id, List<Expression<Func<T, object>>> references, List<Expression<Func<T, IEnumerable<object>>>> collections);
 
-        Task<bool> Exists(int id);
-
         Task<bool> Exists(params Expression<Func<T, bool>>[] expressions);
 
         Task Create(T entity);
