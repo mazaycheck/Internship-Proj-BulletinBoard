@@ -20,13 +20,13 @@ namespace Baraholka.Services
             _mapper = mapper;
         }
 
-        public async Task<PageDataContainer<UserForModeratorView>> GetUsers(PageArguments pageArguments, string query)
+        public async Task<PageDataContainer<UserAdminModel>> GetUsers(PageArguments pageArguments, string query)
         {
             PageDataContainer<User> pagedUsers = await _userRepository.GetPagedUsers(query, pageArguments);
 
             if (pagedUsers.PageData.Count > 0)
             {
-                PageDataContainer<UserForModeratorView> pagedUserDtos = _mapper.Map<PageDataContainer<UserForModeratorView>>(pagedUsers);
+                PageDataContainer<UserAdminModel> pagedUserDtos = _mapper.Map<PageDataContainer<UserAdminModel>>(pagedUsers);
                 return pagedUserDtos;
             }
 

@@ -28,11 +28,10 @@ namespace Baraholka.Services
             return await _roleManager.Roles.Select(x => x.Name).ToListAsync();
         }
 
-        public async Task<UserForModeratorView> UpdateUserRoles(UserRolesForModifyDto userRolesForModifyDto)
+        public async Task<UserAdminModel> UpdateUserRoles(UserRolesUpdateModel userRolesForModifyDto)
         {
-            var email = userRolesForModifyDto.Email;
             var newRoles = userRolesForModifyDto.Roles;
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(userRolesForModifyDto.Email);
 
             foreach (var role in newRoles)
             {
@@ -46,7 +45,7 @@ namespace Baraholka.Services
             await AddOrDeleteRoles(user, newRoles, userCurrentRoles);
 
             var updatedRoles = await _userManager.GetRolesAsync(user);
-            var updatedUser = _mapper.Map<UserForModeratorView>(user);
+            var updatedUser = _mapper.Map<UserAdminModel>(user);
 
             updatedUser.Roles = updatedRoles.ToArray<string>();
             return updatedUser;

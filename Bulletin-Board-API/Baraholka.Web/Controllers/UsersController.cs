@@ -22,7 +22,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] PageArguments paginateParams, [FromQuery] string query)
         {
-            PageDataContainer<UserForModeratorView> users = await _userService.GetUsers(paginateParams, query);
+            PageDataContainer<UserAdminModel> users = await _userService.GetUsers(paginateParams, query);
             if (users == null)
             {
                 return NoContent();

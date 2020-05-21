@@ -1,4 +1,4 @@
-﻿using Baraholka.Data.Dtos;
+﻿using Baraholka.Services.Models;
 using Baraholka.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

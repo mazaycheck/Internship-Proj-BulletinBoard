@@ -2,7 +2,7 @@
 
 namespace Baraholka.Data.Dtos
 {
-    public class UserForModeratorView
+    public class UserAdminModel
     {
         public int UserId { get; set; }
         public string UserName { get; set; }

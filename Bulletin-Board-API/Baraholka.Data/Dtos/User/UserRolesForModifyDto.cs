@@ -2,7 +2,7 @@
 
 namespace Baraholka.Data.Dtos
 {
-    public class UserRolesForModifyDto
+    public class UserRolesUpdateModel
     {
         [Required(ErrorMessage = "Field is required!")]
         public string Email { get; set; }

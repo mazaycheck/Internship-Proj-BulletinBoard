@@ -8,7 +8,7 @@ namespace Baraholka.Services
     {
         Task<List<string>> GetRoles();
 
-        Task<UserForModeratorView> UpdateUserRoles(UserRolesForModifyDto userRolesForModifyDto);
+        Task<UserAdminModel> UpdateUserRoles(UserRolesUpdateModel userRolesForModifyDto);
 
         Task<bool> UserExists(string email);
     }

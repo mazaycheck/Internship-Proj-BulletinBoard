@@ -1,6 +1,6 @@
-﻿namespace Baraholka.Data.Dtos
+﻿namespace Baraholka.Services.Models
 {
-    public class TownForPublicViewDto
+    public class TownModel
     {
         public int TownId { get; set; }
         public string Title { get; set; }

@@ -24,7 +24,7 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<UserRegisterDto, User>();
 
-            CreateMap<User, UserForModeratorView>()
+            CreateMap<User, UserAdminModel>()
                 .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id))
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
                 .ForMember(dest => dest.Roles, sourse => sourse
@@ -32,17 +32,17 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<User, UserServiceDto>().ReverseMap();
 
-            CreateMap<PageDataContainer<User>, PageDataContainer<UserForModeratorView>>();
+            CreateMap<PageDataContainer<User>, PageDataContainer<UserAdminModel>>();
 
-            CreateMap<Town, TownForPublicViewDto>();
-            CreateMap<Town, TownServiceDto>().ReverseMap();
-            CreateMap<TownForCreateDto, Town>();
-            CreateMap<TownForUpdateDto, Town>();
-            CreateMap<PageDataContainer<Town>, PageDataContainer<TownServiceDto>>();
+            CreateMap<Town, TownDto>().ReverseMap();
+
+            CreateMap<PageDataContainer<Town>, PageDataContainer<TownDto>>();
+
             CreateMap<Message, MessageDto>();
             CreateMap<MessageDto, Message>()
                 .ForMember(dest => dest.Sender, src => src.Ignore())
                 .ForMember(dest => dest.Reciever, src => src.Ignore());
+
         }
     }
 }

@@ -32,12 +32,12 @@ namespace Baraholka.Web.Controllers
 
         [HttpPost]
         [Route("editroles")]
-        public async Task<IActionResult> EditRoles([FromBody] UserRolesForModifyDto userRolesForModifyDto)
+        public async Task<IActionResult> EditRoles([FromBody] UserRolesUpdateModel userRolesForModifyDto)
         {
             var userExists = await _rolesService.UserExists(userRolesForModifyDto.Email);
             if (userExists)
             {
-                UserForModeratorView updatedUser = await _rolesService.UpdateUserRoles(userRolesForModifyDto);
+                UserAdminModel updatedUser = await _rolesService.UpdateUserRoles(userRolesForModifyDto);
                 return Ok(updatedUser);
             }
             return BadRequest("No such user");

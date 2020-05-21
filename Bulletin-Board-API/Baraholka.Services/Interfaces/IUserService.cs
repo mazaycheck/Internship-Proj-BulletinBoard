@@ -12,6 +12,6 @@ namespace Baraholka.Services
 
         Task<UserForPublicDetail> GetUser(int id);
 
-        Task<PageDataContainer<UserForModeratorView>> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string query);
+        Task<PageDataContainer<UserAdminModel>> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string query);
     }
 }
