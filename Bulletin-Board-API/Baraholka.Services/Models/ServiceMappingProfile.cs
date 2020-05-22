@@ -9,11 +9,6 @@ namespace Baraholka.Data.Configurations
     {
         public ServiceMappingProfile()
         {
-            CreateMap<MessageCreateModel, MessageDto>();
-            CreateMap<MessageDto, MessageModel>()
-                .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))
-                .ForMember(dest => dest.RecieverName, sourse => sourse.MapFrom(src => src.Reciever.UserName));
-
             CreateMap<TownDto, TownModel>();
             CreateMap<TownCreateModel, TownDto>();
             CreateMap<TownUpdateModel, TownDto>();

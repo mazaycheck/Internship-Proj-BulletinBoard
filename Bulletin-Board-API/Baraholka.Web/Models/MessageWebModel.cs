@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Baraholka.Services.Models
+namespace Baraholka.Web.Models
 {
-    public class MessageModel
+    public class MessageWebModel
     {
         public int MessageId { get; set; }
         public string Text { get; set; }

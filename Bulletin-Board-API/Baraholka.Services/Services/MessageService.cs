@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Baraholka.Data.Dtos;
-using Baraholka.Services.Models;
+﻿using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using System;
 using System.Collections.Generic;
@@ -11,41 +9,34 @@ namespace Baraholka.Services
 {
     public class MessageService : IMessageService
     {
-        private readonly IMapper _mapper;
         private readonly IMessageRepository _messageRepository;
 
-        public MessageService(IMessageRepository messageRepository, IMapper mapper)
+        public MessageService(IMessageRepository messageRepository)
         {
-            _mapper = mapper;
             _messageRepository = messageRepository;
         }
 
-        enum MessageboxType
+        private enum MessageboxType
         {
             inbox,
             outbox,
-            unread,            
+            unread,
         }
 
-        public async Task<MessageModel> CreateMessage(MessageCreateModel messageCreateModel, int userId)
+        public async Task<MessageDto> CreateMessage(MessageDto messageCreateDto)
         {
-            var messageForCreate = _mapper.Map<MessageDto>(messageCreateModel);
-
-            messageForCreate.DateTimeSent = DateTime.Now;
-            messageForCreate.SenderId = userId;
-
-            MessageDto newMessage = await _messageRepository.CreateMessage(messageForCreate);
-            return _mapper.Map<MessageModel>(newMessage);
+            messageCreateDto.DateTimeSent = DateTime.Now;
+            MessageDto newMessage = await _messageRepository.CreateMessage(messageCreateDto);
+            return newMessage;
         }
 
-        public async Task<MessageModel> GetById(int id)
+        public async Task<MessageDto> GetById(int id)
         {
-            var messageFromDb = await _messageRepository.GetMessage(id);
-            var messageDto = _mapper.Map<MessageModel>(messageFromDb);
-            return messageDto;
+            MessageDto messageFromDb = await _messageRepository.GetMessage(id);
+            return messageFromDb;
         }
 
-        public async Task<List<MessageModel>> GetMessagesByType(string messagesType, int userId)
+        public async Task<List<MessageDto>> GetMessagesByType(string messagesType, int userId)
         {
             MessageboxType boxValue;
             Enum.TryParse(messagesType, true, out boxValue);
@@ -61,28 +52,28 @@ namespace Baraholka.Services
             else
                 throw new Exception("No such message box type");
 
-            return _mapper.Map<List<MessageDto>, List<MessageModel>>(messages);
+            return messages;
         }
 
-        public async Task<List<MessageModel>> GetMessageThread(int userOneId, int userTwoId)
+        public async Task<List<MessageDto>> GetMessageThread(int userOneId, int userTwoId)
         {
-            var messages = await _messageRepository.GetMessageThread(userOneId, userTwoId);
+            List<MessageDto> messages = await _messageRepository.GetMessageThread(userOneId, userTwoId);
             var unreadMessagesByUserOne = messages.Where(m => m.SenderId == userTwoId && !m.IsRead).ToList();
             if (unreadMessagesByUserOne.Any())
             {
                 await MarkThreadMessagesAsRead(unreadMessagesByUserOne);
             }
 
-            return _mapper.Map<List<MessageDto>, List<MessageModel>>(messages);
+            return messages;
         }
 
-        public async Task<MessageModel> MarkMessageAsRead(int messageId)
+        public async Task<MessageDto> MarkMessageAsRead(int messageId)
         {
             var message = await _messageRepository.FindMessage(messageId);
             message.IsRead = true;
             message.DateTimeRead = DateTime.Now;
             MessageDto updatedMessage = await _messageRepository.UpdateMessage(message);
-            return _mapper.Map<MessageModel>(updatedMessage);
+            return updatedMessage;
         }
 
         public async Task MarkThreadMessagesAsRead(IEnumerable<MessageDto> messages)

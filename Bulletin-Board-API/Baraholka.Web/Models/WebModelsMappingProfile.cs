@@ -66,7 +66,7 @@ namespace Baraholka.Web.Models
                 .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
 
             CreateMap<MessageCreateModel, MessageDto>();
-            CreateMap<MessageDto, MessageModel>()
+            CreateMap<MessageDto, MessageWebModel>()
                 .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))
                 .ForMember(dest => dest.RecieverName, sourse => sourse.MapFrom(src => src.Reciever.UserName));
 
