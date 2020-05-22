@@ -1,4 +1,4 @@
-﻿using Baraholka.Services.Models;
+﻿using Baraholka.Data.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,7 +8,7 @@ namespace Baraholka.Services
     {
         Task<List<string>> GetRoles();
 
-        Task<UserAdminModel> UpdateUserRoles(UserRolesUpdateModel userRolesForModifyDto);
+        Task<UserDto> UpdateUserRoles(string email, string[] roles);
 
         Task<bool> UserExists(string email);
     }

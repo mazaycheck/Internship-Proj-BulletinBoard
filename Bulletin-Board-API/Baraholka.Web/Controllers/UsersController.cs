@@ -1,6 +1,7 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Services;
-using Baraholka.Services.Models;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,34 +14,38 @@ namespace Baraholka.Web.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] PageArguments paginateParams, [FromQuery] string query)
         {
-            PageDataContainer<UserAdminModel> users = await _userService.GetUsers(paginateParams, query);
-            if (users == null)
+            PageDataContainer<UserDto> usersDto = await _userService.GetUsers(paginateParams, query);
+
+            if (usersDto == null)
             {
                 return NoContent();
             }
-            return Ok(users);
+            PageDataContainer<UserAdminModel> pagedUsersAdminModel = _mapper.Map<PageDataContainer<UserAdminModel>>(usersDto);
+            return Ok(pagedUsersAdminModel);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            UserPublicWebModel userFromDb = await _userService.GetUser(id);
+            UserDto userFromDb = await _userService.GetUser(id);
             if (userFromDb == null)
             {
                 return NotFound();
             }
-
-            return Ok(userFromDb);
+            UserPublicWebModel userWebModel = _mapper.Map<UserPublicWebModel>(userFromDb);
+            return Ok(userWebModel);
         }
 
         [Authorize(Roles = "Admin")]

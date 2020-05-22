@@ -1,6 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
 using System.Threading.Tasks;
-using Baraholka.Services.Models;
 
 namespace Baraholka.Services
 {
@@ -8,7 +7,7 @@ namespace Baraholka.Services
     {
         Task<string> Login(string email, string password);
 
-        Task<UserPublicWebModel> Register(UserRegisterDto userRegisterDto);
+        Task<UserDto> Register(UserDto userRegisterDto, string password);
 
         Task<bool> UserExists(string email);
     }

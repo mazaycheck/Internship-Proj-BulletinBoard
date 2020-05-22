@@ -75,15 +75,15 @@ namespace Baraholka.Web.Models
             CreateMap<TownUpdateModel, TownDto>();
             CreateMap<PageDataContainer<TownDto>, PageDataContainer<TownModel>>();
 
+            CreateMap<UserRegisterModel, UserDto>();
+
             CreateMap<UserDto, UserPublicWebModel>()
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
                 .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id));
 
             CreateMap<UserDto, UserAdminModel>()
                 .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id))
-                .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
-                .ForMember(dest => dest.Roles, sourse => sourse
-                    .MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()));
+                .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title));
 
             CreateMap<PageDataContainer<UserDto>, PageDataContainer<UserAdminModel>>();
         }

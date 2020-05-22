@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
-using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,13 +25,13 @@ namespace Baraholka.Services
 
         public async Task<List<string>> GetRoles()
         {
-            return await _roleManager.Roles.Select(x => x.Name).ToListAsync();            
+            return await _roleManager.Roles.Select(x => x.Name).ToListAsync();
         }
 
-        public async Task<UserAdminModel> UpdateUserRoles(UserRolesUpdateModel userRolesForModifyDto)
+        public async Task<UserDto> UpdateUserRoles(string email, string[] roles)
         {
-            var newRoles = userRolesForModifyDto.Roles;
-            var user = await _userManager.FindByEmailAsync(userRolesForModifyDto.Email);
+            var newRoles = roles;
+            var user = await _userManager.FindByEmailAsync(email);
 
             foreach (var role in newRoles)
             {
@@ -45,12 +44,13 @@ namespace Baraholka.Services
             var userCurrentRoles = (await _userManager.GetRolesAsync(user)).ToArray();
             await AddOrDeleteRoles(user, newRoles, userCurrentRoles);
 
-            var updatedRoles = await _userManager.GetRolesAsync(user);
-            var userDto = _mapper.Map<UserDto>(user);
-            var updatedUser = _mapper.Map<UserAdminModel>(userDto);
+            IList<string> updatedRoles = await _userManager.GetRolesAsync(user);
 
-            updatedUser.Roles = updatedRoles.ToArray<string>();
-            return updatedUser;
+            UserDto userDto = _mapper.Map<UserDto>(user);
+
+            userDto.Roles = updatedRoles;
+
+            return userDto;
         }
 
         private async Task AddOrDeleteRoles(User user, string[] newRoles, string[] userCurrentRoles)

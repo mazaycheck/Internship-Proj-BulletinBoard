@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Baraholka.Services.Models
+namespace Baraholka.Web.Models
 {
     public class UserAdminModel
     {

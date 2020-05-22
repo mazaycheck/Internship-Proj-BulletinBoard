@@ -2,7 +2,7 @@
 
 namespace Baraholka.Data.Dtos
 {
-    public class UserRegisterDto
+    public class UserRegisterModel
     {
         [Required]
         public string UserName { get; set; }

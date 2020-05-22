@@ -1,5 +1,7 @@
-﻿using Baraholka.Services;
-using Baraholka.Services.Models;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Services;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -12,10 +14,12 @@ namespace Baraholka.Web.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRolesService _rolesService;
+        private readonly IMapper _mapper;
 
-        public RolesController(IRolesService rolesService)
+        public RolesController(IRolesService rolesService, IMapper mapper)
         {
             _rolesService = rolesService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -32,15 +36,16 @@ namespace Baraholka.Web.Controllers
 
         [HttpPost]
         [Route("editroles")]
-        public async Task<IActionResult> EditRoles([FromBody] UserRolesUpdateModel userRolesForModifyDto)
+        public async Task<IActionResult> EditRoles([FromBody] UserRolesUpdateModel userRolesUpdateModel)
         {
-            var userExists = await _rolesService.UserExists(userRolesForModifyDto.Email);
-            if (userExists)
+            var userExists = await _rolesService.UserExists(userRolesUpdateModel.Email);
+            if (!userExists)
             {
-                UserAdminModel updatedUser = await _rolesService.UpdateUserRoles(userRolesForModifyDto);
-                return Ok(updatedUser);
+                return BadRequest("No such user");
             }
-            return BadRequest("No such user");
+            UserDto updatedUserDto = await _rolesService.UpdateUserRoles(userRolesUpdateModel.Email, userRolesUpdateModel.Roles);
+            UserAdminModel updatedUserAdminModel = _mapper.Map<UserAdminModel>(updatedUserDto);
+            return Ok(updatedUserAdminModel);
         }
     }
 }

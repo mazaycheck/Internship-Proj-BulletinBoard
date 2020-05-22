@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
+using System.Linq;
 
 namespace Baraholka.Data.Configurations
 {
@@ -8,8 +9,7 @@ namespace Baraholka.Data.Configurations
     {
         public AutoMapperConfig()
         {
-            CreateMap<Annoucement, AnnoucementDto>();
-            CreateMap<AnnoucementDto, Annoucement>();
+            CreateMap<Annoucement, AnnoucementDto>().ReverseMap();
             CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementDto>>();
 
             CreateMap<BrandCategory, BrandCategoryDto>().ReverseMap();
@@ -17,12 +17,14 @@ namespace Baraholka.Data.Configurations
             CreateMap<Brand, BrandDto>().ReverseMap();
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandDto>>();
 
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.Roles, sourse => sourse
+                    .MapFrom(src => src.UserRoles.Select(r => r.Role.Name).ToList()));
+
             CreateMap<UserDto, User>()
                 .ForMember(dest => dest.Town, src => src.Ignore())
                 .ForMember(dest => dest.UserRoles, src => src.Ignore());
 
-            CreateMap<UserRegisterDto, User>();
             CreateMap<PageDataContainer<User>, PageDataContainer<UserDto>>();
 
             CreateMap<Town, TownDto>().ReverseMap();

@@ -13,6 +13,6 @@ namespace Baraholka.Data.Dtos
         public string PhoneNumber { get; set; }
         public DateTime RegistrationDate { get; set; }
         public string Email { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; }
+        public IList<string> Roles { get; set; }
     }
 }

@@ -1,6 +1,7 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Services;
-using Baraholka.Services.Models;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -13,10 +14,12 @@ namespace Baraholka.Web.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IMapper mapper)
         {
             _authService = authService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -34,15 +37,17 @@ namespace Baraholka.Web.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody]UserRegisterDto userRegisterDto)
+        public async Task<IActionResult> Register([FromBody]UserRegisterModel userRegisterModel)
         {
-            if (await _authService.UserExists(userRegisterDto.Email))
+            if (await _authService.UserExists(userRegisterModel.Email))
             {
                 return Conflict("Such user already exists");
             }
-            UserPublicWebModel createdUser = await _authService.Register(userRegisterDto);
+            UserDto userRegisterDto = _mapper.Map<UserDto>(userRegisterModel);
+            UserDto createdUser = await _authService.Register(userRegisterDto, userRegisterModel.Password);
+            UserPublicWebModel createdUserModel = _mapper.Map<UserPublicWebModel>(createdUser);
 
-            return Ok(createdUser);
+            return Ok(createdUserModel);
         }
     }
 }
