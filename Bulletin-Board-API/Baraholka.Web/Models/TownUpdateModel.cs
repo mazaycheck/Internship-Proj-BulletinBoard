@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Services.Models
+namespace Baraholka.Web.Models
 {
     public class TownUpdateModel
     {

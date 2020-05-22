@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
-using Baraholka.Services.Models;
 using System.Linq;
 
 namespace Baraholka.Web.Models
@@ -70,10 +69,10 @@ namespace Baraholka.Web.Models
                 .ForMember(dest => dest.SenderName, sourse => sourse.MapFrom(src => src.Sender.UserName))
                 .ForMember(dest => dest.RecieverName, sourse => sourse.MapFrom(src => src.Reciever.UserName));
 
-            CreateMap<TownDto, TownModel>();
+            CreateMap<TownDto, TownWebModel>();
             CreateMap<TownCreateModel, TownDto>();
             CreateMap<TownUpdateModel, TownDto>();
-            CreateMap<PageDataContainer<TownDto>, PageDataContainer<TownModel>>();
+            CreateMap<PageDataContainer<TownDto>, PageDataContainer<TownWebModel>>();
 
             CreateMap<UserRegisterModel, UserDto>();
 

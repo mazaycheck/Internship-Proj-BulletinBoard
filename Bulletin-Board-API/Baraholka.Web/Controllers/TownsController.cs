@@ -1,5 +1,7 @@
-﻿using Baraholka.Services;
-using Baraholka.Services.Models;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Services;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,10 +15,12 @@ namespace Baraholka.Web.Controllers
     public class TownsController : ControllerBase
     {
         private readonly ITownService _townService;
+        private readonly IMapper _mapper;
 
-        public TownsController(ITownService townService)
+        public TownsController(ITownService townService, IMapper mapper)
         {
             _townService = townService;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -24,24 +28,26 @@ namespace Baraholka.Web.Controllers
         [Route("public")]
         public async Task<IActionResult> Get()
         {
-            List<TownModel> towns = await _townService.GetAllTowns();
+            List<TownDto> towns = await _townService.GetAllTowns();
             if (towns == null)
             {
                 return NoContent();
             }
-            return Ok(towns);
+            List<TownWebModel> townsModels = _mapper.Map<List<TownDto>, List<TownWebModel>>(towns);
+            return Ok(townsModels);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            TownModel town = await _townService.GetTown(id);
-            if (town == null)
+            TownDto townDto = await _townService.GetTown(id);
+            if (townDto == null)
             {
                 return NotFound($"No town with id: {id}");
             }
-            return Ok(town);
+
+            return Ok(_mapper.Map<TownWebModel>(townDto));
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -52,16 +58,17 @@ namespace Baraholka.Web.Controllers
             {
                 return Conflict($"Such town already exists");
             }
-
-            TownModel newTown = await _townService.CreateTown(townCreateModel);
-            return StatusCode(201, newTown);
+            TownDto townCreateDto = _mapper.Map<TownDto>(townCreateModel);
+            TownDto newTownDto = await _townService.CreateTown(townCreateDto);
+            TownWebModel newTownModel = _mapper.Map<TownWebModel>(newTownDto);
+            return CreatedAtAction(nameof(Get), new { id = newTownModel.TownId }, newTownModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] TownUpdateModel townUpdateModel)
         {
-            TownModel townFromDb = await _townService.GetTown(townUpdateModel.TownId);
+            TownDto townFromDb = await _townService.GetTown(townUpdateModel.TownId);
             if (townFromDb == null)
             {
                 return NotFound($"No such town with id: {townUpdateModel.TownId}");
@@ -70,10 +77,11 @@ namespace Baraholka.Web.Controllers
             {
                 return Conflict($"Such town already exists with title {townUpdateModel.Title} ");
             }
+            TownDto townCreateDto = _mapper.Map<TownDto>(townUpdateModel);
+            TownDto updatedTown = await _townService.UpdateTown(townCreateDto);
+            TownWebModel updatedTownModel = _mapper.Map<TownWebModel>(updatedTown);
 
-            TownModel updatedTown = await _townService.UpdateTown(townUpdateModel);
-
-            return CreatedAtAction(nameof(Get), new { id = updatedTown.TownId }, updatedTown);
+            return CreatedAtAction(nameof(Get), new { id = updatedTownModel.TownId }, updatedTownModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]

@@ -1,5 +1,4 @@
 ﻿using Baraholka.Data.Dtos;
-using Baraholka.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,7 +6,7 @@ namespace Baraholka.Services
 {
     public interface ITownService
     {
-        Task<TownModel> CreateTown(TownCreateModel townDto);
+        Task<TownDto> CreateTown(TownDto townDto);
 
         Task DeleteTown(int townId);
 
@@ -15,12 +14,12 @@ namespace Baraholka.Services
 
         Task<TownDto> FindTown(string title);
 
-        Task<PageDataContainer<TownModel>> GetPagedTowns(string filter, PageArguments pageArguments);
+        Task<PageDataContainer<TownDto>> GetPagedTowns(string filter, PageArguments pageArguments);
 
-        Task<List<TownModel>> GetAllTowns();
+        Task<List<TownDto>> GetAllTowns();
 
-        Task<TownModel> UpdateTown(TownUpdateModel townDto);
+        Task<TownDto> UpdateTown(TownDto townDto);
 
-        Task<TownModel> GetTown(int id);
+        Task<TownDto> GetTown(int id);
     }
 }

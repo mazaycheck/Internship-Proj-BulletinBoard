@@ -32,7 +32,6 @@ namespace Baraholka.Web
 
             services.AddAutoMapper(
                 typeof(AutoMapperConfig).Assembly,
-                typeof(ServiceMappingProfile).Assembly,
                 typeof(WebModelsMappingProfile).Assembly);
 
             services.AddHttpContextAccessor();

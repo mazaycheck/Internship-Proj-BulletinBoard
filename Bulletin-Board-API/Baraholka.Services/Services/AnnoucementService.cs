@@ -28,13 +28,12 @@ namespace Baraholka.Services
 
         public async Task<AnnoucementDto> CreateAnnoucement(AnnoucementDto annoucementDto, List<IFormFile> images)
         {
-
             bool exists = await BrandCategoryExists(annoucementDto.BrandCategoryId);
             if (!exists)
             {
                 throw new Exception("BrandCategory Id does not exist");
             }
-                
+
             AnnoucementDto createdAnnoucement = await _annoucementRepo.CreateAnnoucement(annoucementDto);
 
             if (images != null)
@@ -47,7 +46,6 @@ namespace Baraholka.Services
 
         public async Task<AnnoucementDto> UpdateAnnoucement(AnnoucementDto annoucementDto, List<IFormFile> images)
         {
-
             bool exists = await BrandCategoryExists(annoucementDto.BrandCategoryId);
 
             if (!exists)

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Web.Models
 {
     public class UserRegisterModel
     {

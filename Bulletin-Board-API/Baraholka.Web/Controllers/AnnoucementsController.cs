@@ -59,9 +59,9 @@ namespace Baraholka.Web.Controllers
         [HttpPost]
         [Route("new")]
         public async Task<IActionResult> Add([FromForm] AnnoucementCreateModel annoucementCreateModel)
-        {            
-            AnnoucementDto annoucementDto = _mapper.Map<AnnoucementDto>(annoucementCreateModel);   
-            
+        {
+            AnnoucementDto annoucementDto = _mapper.Map<AnnoucementDto>(annoucementCreateModel);
+
             annoucementDto.UserId = User.GetUserID();
 
             AnnoucementDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, annoucementCreateModel.Photo);
@@ -110,7 +110,7 @@ namespace Baraholka.Web.Controllers
             {
                 return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to update other user's annoucement!");
             }
-            
+
             AnnoucementDto annoucementUpdateDto = _mapper.Map<AnnoucementDto>(annoucementUpdateModel);
 
             AnnoucementDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementUpdateDto, annoucementUpdateModel.Photo);

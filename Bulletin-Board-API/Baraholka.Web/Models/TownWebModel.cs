@@ -1,6 +1,6 @@
-﻿namespace Baraholka.Services.Models
+﻿namespace Baraholka.Web.Models
 {
-    public class TownModel
+    public class TownWebModel
     {
         public int TownId { get; set; }
         public string Title { get; set; }
