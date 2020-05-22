@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
-using Baraholka.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,18 +17,18 @@ namespace Baraholka.Services
             _mapper = mapper;
         }
 
-        public async Task<List<CategoryModel>> GetAllCategories(string filter)
+        public async Task<List<CategoryDto>> GetAllCategories(string filter)
         {
-            var categories = await _categoryRepository.GetCategories(filter);
+            List<CategoryDto> categories = await _categoryRepository.GetCategories(filter);
             if (categories.Count == 0)
             {
                 return null;
             }
 
-            return _mapper.Map<List<CategoryDto>, List<CategoryModel>>(categories);
+            return categories;
         }
 
-        public async Task<CategoryModel> GetCategory(int id)
+        public async Task<CategoryDto> GetCategory(int id)
         {
             CategoryDto category = await _categoryRepository.GetCategory(id);
 
@@ -38,21 +37,19 @@ namespace Baraholka.Services
                 return null;
             }
 
-            return _mapper.Map<CategoryModel>(category);
+            return category;
         }
 
-        public async Task<CategoryModel> CreateCategory(CategoryCreateModel categoryCreateModel)
+        public async Task<CategoryDto> CreateCategory(CategoryDto categoryDto)
         {
-            CategoryDto category = _mapper.Map<CategoryDto>(categoryCreateModel);
-            CategoryDto newCategory = await _categoryRepository.CreateCategory(category);
-            return _mapper.Map<CategoryModel>(newCategory);
+            CategoryDto newCategory = await _categoryRepository.CreateCategory(categoryDto);
+            return newCategory;
         }
 
-        public async Task<CategoryModel> UpdateCategory(CategoryUpdateModel categoryUpdateModel)
+        public async Task<CategoryDto> UpdateCategory(CategoryDto categoryUpdate)
         {
-            CategoryDto category = _mapper.Map<CategoryDto>(categoryUpdateModel);
-            await _categoryRepository.UpdateCategory(category);
-            return _mapper.Map<CategoryModel>(category);
+            CategoryDto updatedCategory = await _categoryRepository.UpdateCategory(categoryUpdate);
+            return updatedCategory;
         }
 
         public async Task DeleteCategory(int categoryId)

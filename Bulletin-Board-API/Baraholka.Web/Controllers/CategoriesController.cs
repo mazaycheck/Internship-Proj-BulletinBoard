@@ -1,4 +1,6 @@
-﻿using Baraholka.Services;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Services;
 using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,62 +14,68 @@ namespace Baraholka.Web.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]string filter)
         {
-            List<CategoryModel> allCategories = await _categoryService.GetAllCategories(filter);
+            List<CategoryDto> allCategories = await _categoryService.GetAllCategories(filter);
             if (allCategories == null)
             {
                 return NoContent();
             }
-
-            return Ok(allCategories);
+            List<CategoryModel> categoriesWebModel = _mapper.Map<List<CategoryDto>, List<CategoryModel>>(allCategories);
+            return Ok(categoriesWebModel);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            CategoryModel category = await _categoryService.GetCategory(id);
+            CategoryDto category = await _categoryService.GetCategory(id);
             if (category == null)
             {
                 return NotFound($"No such category with id: {id}");
             }
-            return Ok(category);
+            CategoryModel categoryWebModel = _mapper.Map<CategoryModel>(category);
+            return Ok(categoryWebModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CategoryCreateModel categoryDto)
+        public async Task<IActionResult> Post([FromBody] CategoryCreateModel categoryCreateModel)
         {
-            if (await _categoryService.Exists(categoryDto.Title))
+            if (await _categoryService.Exists(categoryCreateModel.Title))
             {
                 return Conflict("Such category already exists");
             }
-            CategoryModel category = await _categoryService.CreateCategory(categoryDto);
-            return StatusCode(201, category);
+            CategoryDto categoryDto = _mapper.Map<CategoryDto>(categoryCreateModel);
+            CategoryDto createdCategory = await _categoryService.CreateCategory(categoryDto);
+
+            return StatusCode(201, _mapper.Map<CategoryModel>(createdCategory));
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] CategoryUpdateModel categoryForUpdate)
+        public async Task<IActionResult> Put([FromBody] CategoryUpdateModel categoryUpdateModel)
         {
-            CategoryModel categoryFromDb = await _categoryService.GetCategory(categoryForUpdate.CategoryId);
-            if (categoryFromDb.Title != categoryForUpdate.Title)
+            CategoryDto categoryFromDb = await _categoryService.GetCategory(categoryUpdateModel.CategoryId);
+            if (categoryFromDb.Title != categoryUpdateModel.Title)
             {
-                if (await _categoryService.Exists(categoryForUpdate.Title))
+                if (await _categoryService.Exists(categoryUpdateModel.Title))
                 {
                     return Conflict("This category already exists");
                 }
             }
 
-            CategoryModel category = await _categoryService.UpdateCategory(categoryForUpdate);
-            return StatusCode(201, category);
+            CategoryDto categoryUpdateDto = _mapper.Map<CategoryDto>(categoryUpdateModel);
+            CategoryDto updatedCategory = await _categoryService.UpdateCategory(categoryUpdateDto);
+            return StatusCode(201, _mapper.Map<CategoryModel>(updatedCategory));
         }
 
         [Authorize(Roles = "Admin, Moderator")]

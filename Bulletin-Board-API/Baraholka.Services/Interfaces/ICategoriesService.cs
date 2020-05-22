@@ -1,4 +1,4 @@
-﻿using Baraholka.Services.Models;
+﻿using Baraholka.Data.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,14 +8,14 @@ namespace Baraholka.Services
     {
         Task<bool> Exists(string title);
 
-        Task<CategoryModel> CreateCategory(CategoryCreateModel newCategory);
+        Task<CategoryDto> CreateCategory(CategoryDto newCategory);
 
         Task DeleteCategory(int categoryId);
 
-        Task<List<CategoryModel>> GetAllCategories(string filter);
+        Task<List<CategoryDto>> GetAllCategories(string filter);
 
-        Task<CategoryModel> GetCategory(int id);
+        Task<CategoryDto> GetCategory(int id);
 
-        Task<CategoryModel> UpdateCategory(CategoryUpdateModel categoryForUpdate);
+        Task<CategoryDto> UpdateCategory(CategoryDto categoryForUpdate);
     }
 }

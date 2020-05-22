@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
-using Baraholka.Domain.Models;
 using Baraholka.Services.Models;
 using System.Linq;
 
@@ -10,14 +9,6 @@ namespace Baraholka.Data.Configurations
     {
         public ServiceMappingProfile()
         {
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<CategoryDto, CategoryModel>()
-                .ForMember(dest => dest.Brands, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Brand.Title).ToList()));
-
-            CreateMap<CategoryCreateModel, CategoryDto>();
-            CreateMap<CategoryUpdateModel, CategoryDto>();
-
             CreateMap<BrandCategoryDto, BrandCategoryModel>()
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
                 .ForMember(dest => dest.CategoryTitle, sourse => sourse.MapFrom(src => src.Category.Title));
