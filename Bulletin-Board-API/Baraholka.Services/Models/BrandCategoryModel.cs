@@ -1,4 +1,4 @@
-﻿namespace Baraholka.Data.Dtos
+﻿namespace Baraholka.Services.Models
 {
     public class BrandCategoryModel
     {
