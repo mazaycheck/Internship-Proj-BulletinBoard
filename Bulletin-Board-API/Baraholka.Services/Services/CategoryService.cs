@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Baraholka.Data.Dtos;
+﻿using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;

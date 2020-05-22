@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace Baraholka.Data.Repositories
         Task Delete(T entity);
 
         Task<int> Save();
+
         Task UpdateRange(IEnumerable<T> entities);
     }
 }

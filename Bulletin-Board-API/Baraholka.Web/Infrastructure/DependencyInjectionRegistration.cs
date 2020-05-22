@@ -37,6 +37,7 @@ namespace Baraholka.Web.Infrastructure
             services.AddScoped<IImageFileManager, ImageFileManager>();
             services.AddScoped<IImageFolderConfigAccessor, ImageFolderConfigAccessor>();
             services.AddScoped<IRootPathProvider, RootPathProvider>();
+            services.AddScoped<ISecurityKeyProvider, SecurityKeyProvider>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Data.Pagination
 {
     public class PageDataContainer<U>
     {

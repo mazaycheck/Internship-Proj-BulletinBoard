@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using Baraholka.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace Baraholka.Data.Repositories
         {
             var includes = new string[]
             {
-                $"{nameof(User.UserRoles)}",                
+                $"{nameof(User.UserRoles)}",
             };
             var user = await FindById(userId, includes);
             user.UserRoles = new List<UserRole>();

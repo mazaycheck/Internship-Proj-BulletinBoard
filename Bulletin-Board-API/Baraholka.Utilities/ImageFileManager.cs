@@ -11,8 +11,8 @@ namespace Baraholka.Utilities
     {
         private readonly IImageFileProcessor _imageFileProcessor;
         private readonly IRootPathProvider _rootPathProvider;
-        private readonly string _rootPath;
         private readonly List<ImageFolderConfig> _imageFolders;
+        private readonly string _rootPath;
 
         public ImageFileManager(
             IImageFileProcessor imageFileProcessor,

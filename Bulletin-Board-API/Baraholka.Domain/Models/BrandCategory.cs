@@ -15,10 +15,5 @@ namespace Baraholka.Domain.Models
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
-
-        public override string ToString()
-        {
-            return $"BrandId: {BrandId}, CategoryId: {CategoryId}";
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services

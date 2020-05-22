@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using Baraholka.Domain.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;

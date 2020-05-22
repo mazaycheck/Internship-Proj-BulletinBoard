@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using Baraholka.Services;
 using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;

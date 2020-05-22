@@ -2,7 +2,6 @@
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -15,17 +14,20 @@ namespace Baraholka.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ISecurityKeyProvider _securityKeyProvider;
         private readonly IMapper _mapper;
 
-        public AuthService(IConfiguration configuration,
-            UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper)
+        public AuthService(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ISecurityKeyProvider securityKeyProvider,
+            IMapper mapper)
         {
-            _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
+            _securityKeyProvider = securityKeyProvider;
             _mapper = mapper;
         }
 
@@ -80,7 +82,7 @@ namespace Baraholka.Services
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securityKeyProvider.GetKey()));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

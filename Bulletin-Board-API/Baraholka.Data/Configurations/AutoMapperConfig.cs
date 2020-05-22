@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using Baraholka.Domain.Models;
 using System.Linq;
 

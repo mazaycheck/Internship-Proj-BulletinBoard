@@ -24,7 +24,7 @@ namespace Baraholka.Web.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody]UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login([FromBody]UserLoginModel userLoginDto)
         {
             var jwtToken = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
             if (!string.IsNullOrWhiteSpace(jwtToken))

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Baraholka.Data
+namespace Baraholka.Data.Pagination
 {
     public static class PageExtensions
     {

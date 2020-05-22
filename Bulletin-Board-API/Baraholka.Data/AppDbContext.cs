@@ -23,14 +23,14 @@ namespace Baraholka.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfiguration<UserRole>(new UserRoleConfiguration());
-            modelBuilder.ApplyConfiguration<User>(new UserConfiguration());
-            modelBuilder.ApplyConfiguration<Town>(new TownConfiguration());
-            modelBuilder.ApplyConfiguration<Brand>(new BrandConfiguration());
-            modelBuilder.ApplyConfiguration<Category>(new CategoryConfiguration());
-            modelBuilder.ApplyConfiguration<BrandCategory>(new BrandCategoryConfiguration());
-            modelBuilder.ApplyConfiguration<Annoucement>(new AnnoucementConfiguration());
-            modelBuilder.ApplyConfiguration<Message>(new MessageConfiguration());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new TownConfiguration());
+            modelBuilder.ApplyConfiguration(new BrandConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new BrandCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new AnnoucementConfiguration());
+            modelBuilder.ApplyConfiguration(new MessageConfiguration());
             modelBuilder.Entity<User>();
         }
 

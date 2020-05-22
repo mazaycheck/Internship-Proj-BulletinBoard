@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Data.Pagination;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
 using Baraholka.Utilities;
@@ -12,12 +13,12 @@ namespace Baraholka.Services
     public class AnnoucementService : IAnnoucementService
     {
         private readonly IAnnoucementRepository _annoucementRepo;
-        private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
+        private readonly IBrandCategoryRepository _brandCategoryRepo;
         private readonly IImageFileManager _imageFileManager;
 
         public AnnoucementService(
                 IAnnoucementRepository annoucementRepo,
-                IGenericRepository<BrandCategory> brandCategoryRepo,
+                IBrandCategoryRepository brandCategoryRepo,
                 IImageFileManager imageFileManager
                 )
         {
