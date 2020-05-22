@@ -1,5 +1,6 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Services;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            UserForPublicDetail userFromDb = await _userService.GetUser(id);
+            UserPublicModel userFromDb = await _userService.GetUser(id);
             if (userFromDb == null)
             {
                 return NotFound();
@@ -43,15 +44,30 @@ namespace Baraholka.Web.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser(int id)
+        [HttpPost]
+        [Route("deactivate/{id}")]
+        public async Task<ActionResult> DeactivateUser([FromRoute] int id)
         {
-            var user = await _userService.FindUserByID(id);
+            var user = await _userService.GetUser(id);
             if (user == null)
             {
                 return NotFound("No such user");
             }
-            await _userService.DeleteUser(id);
+            await _userService.DeactivateUser(id);
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("activate/{id}")]
+        public async Task<ActionResult> ActivateUser([FromRoute] int id)
+        {
+            var user = await _userService.GetUser(id);
+            if (user == null)
+            {
+                return NotFound("No such user");
+            }
+            await _userService.ActivateUser(id);
             return Ok();
         }
     }

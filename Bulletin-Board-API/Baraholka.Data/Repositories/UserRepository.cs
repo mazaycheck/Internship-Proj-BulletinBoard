@@ -1,4 +1,5 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,25 @@ namespace Baraholka.Data.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(AppDbContext context) : base(context)
+        private readonly IMapper _mapper;
+
+        public UserRepository(AppDbContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
-        public async Task<PageDataContainer<User>> GetPagedUsers(string filter, PageArguments pageArguments)
+        public async Task<UserDto> GetUser(int id)
+        {
+            var includes = new string[] { $"{nameof(Town)}" };
+            var conditions = new List<Expression<Func<User, bool>>>
+            {
+                u => u.Id == id
+            };
+            var user = await GetSingle(includes, conditions);
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<PageDataContainer<UserDto>> GetPagedUsers(string filter, PageArguments pageArguments)
         {
             var filters = new List<Expression<Func<User, bool>>>()
             {
@@ -28,17 +43,45 @@ namespace Baraholka.Data.Repositories
                 new OrderParams<User> { OrderBy = (x) => x.UserName, Descending = false }
             };
 
-            return await GetPagedData(includes, filters, orderParameters, pageArguments);
+            var pagedUsers = await GetPagedData(includes, filters, orderParameters, pageArguments);
+            return _mapper.Map<PageDataContainer<UserDto>>(pagedUsers);
         }
 
-        public async Task<User> GetByEmail(string email)
+        public async Task<UserDto> GetByEmail(string email)
         {
-            return await GetFirst(x => x.Email == email);
+            var user = await GetFirst(x => x.Email == email);
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<bool> UserExists(string email)
         {
             return await Exists(x => x.Email == email);
+        }
+
+        public async Task DeactivateUser(int userId)
+        {
+            var includes = new string[]
+            {
+                $"{nameof(User.UserRoles)}",                
+            };
+            var user = await FindById(userId, includes);
+            user.UserRoles = new List<UserRole>();
+            user.LockoutEnabled = true;
+            user.LockoutEnd = new DateTime(2100, 12, 31);
+            await Save();
+        }
+
+        public async Task ActivateUser(int userId)
+        {
+            var includes = new string[]
+            {
+                $"{nameof(User.UserRoles)}",
+            };
+            var user = await FindById(userId, includes);
+            user.UserRoles = new List<UserRole>() { new UserRole() { RoleId = 3, UserId = userId } };
+            user.LockoutEnabled = true;
+            user.LockoutEnd = null;
+            await Save();
         }
     }
 }

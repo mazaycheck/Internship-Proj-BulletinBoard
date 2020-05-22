@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Baraholka.Data.Dtos
+namespace Baraholka.Services.Models
 {
-    public class UserForPublicDetail
+    public class UserPublicModel
     {
         public int UserId { get; set; }
         public string UserName { get; set; }

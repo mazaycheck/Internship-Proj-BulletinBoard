@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
-using System.Linq;
 
 namespace Baraholka.Data.Configurations
 {
@@ -18,21 +17,13 @@ namespace Baraholka.Data.Configurations
             CreateMap<Brand, BrandDto>().ReverseMap();
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandDto>>();
 
-            CreateMap<User, UserForPublicDetail>()
-                .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
-                .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id));
+            CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>()
+                .ForMember(dest => dest.Town, src => src.Ignore())
+                .ForMember(dest => dest.UserRoles, src => src.Ignore());
 
             CreateMap<UserRegisterDto, User>();
-
-            CreateMap<User, UserAdminModel>()
-                .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id))
-                .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
-                .ForMember(dest => dest.Roles, sourse => sourse
-                    .MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()));
-
-            CreateMap<User, UserServiceDto>().ReverseMap();
-
-            CreateMap<PageDataContainer<User>, PageDataContainer<UserAdminModel>>();
+            CreateMap<PageDataContainer<User>, PageDataContainer<UserDto>>();
 
             CreateMap<Town, TownDto>().ReverseMap();
 
@@ -42,7 +33,6 @@ namespace Baraholka.Data.Configurations
             CreateMap<MessageDto, Message>()
                 .ForMember(dest => dest.Sender, src => src.Ignore())
                 .ForMember(dest => dest.Reciever, src => src.Ignore());
-
         }
     }
 }

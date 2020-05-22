@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Baraholka.Domain.Models
 {
@@ -10,13 +9,7 @@ namespace Baraholka.Domain.Models
         public int? TownId { get; set; }
         public virtual Town Town { get; set; }
 
-        [Range(typeof(DateTime), "01/01/2020", "01/01/2100")]
         public DateTime RegistrationDate { get; set; }
-
-        public static object FindFirst(string nameIdentifier)
-        {
-            throw new NotImplementedException();
-        }
 
         public virtual ICollection<Annoucement> Annoucements { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }

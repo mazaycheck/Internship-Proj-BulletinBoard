@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +26,7 @@ namespace Baraholka.Services
 
         public async Task<List<string>> GetRoles()
         {
-            return await _roleManager.Roles.Select(x => x.Name).ToListAsync();
+            return await _roleManager.Roles.Select(x => x.Name).ToListAsync();            
         }
 
         public async Task<UserAdminModel> UpdateUserRoles(UserRolesUpdateModel userRolesForModifyDto)
@@ -45,7 +46,8 @@ namespace Baraholka.Services
             await AddOrDeleteRoles(user, newRoles, userCurrentRoles);
 
             var updatedRoles = await _userManager.GetRolesAsync(user);
-            var updatedUser = _mapper.Map<UserAdminModel>(user);
+            var userDto = _mapper.Map<UserDto>(user);
+            var updatedUser = _mapper.Map<UserAdminModel>(userDto);
 
             updatedUser.Roles = updatedRoles.ToArray<string>();
             return updatedUser;

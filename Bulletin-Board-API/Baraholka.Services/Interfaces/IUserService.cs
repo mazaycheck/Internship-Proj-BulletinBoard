@@ -1,4 +1,5 @@
 ﻿using Baraholka.Data.Dtos;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -6,11 +7,10 @@ namespace Baraholka.Services
 {
     public interface IUserService
     {
-        Task DeleteUser(int id);
+        Task ActivateUser(int id);
+        Task DeactivateUser(int id);
 
-        Task<UserServiceDto> FindUserByID(int id);
-
-        Task<UserForPublicDetail> GetUser(int id);
+        Task<UserPublicModel> GetUser(int id);
 
         Task<PageDataContainer<UserAdminModel>> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string query);
     }

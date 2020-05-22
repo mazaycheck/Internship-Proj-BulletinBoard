@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Domain.Models;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -43,7 +44,7 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<UserForPublicDetail> Register(UserRegisterDto userRegisterDto)
+        public async Task<UserPublicModel> Register(UserRegisterDto userRegisterDto)
         {
             var userEmail = userRegisterDto.Email;
             if (await _userManager.FindByEmailAsync(userEmail) != null)
@@ -57,7 +58,8 @@ namespace Baraholka.Services
 
             if (result.Succeeded)
             {
-                return _mapper.Map<UserForPublicDetail>(newUser);
+                var user =  _mapper.Map<UserDto>(newUser);
+                return  _mapper.Map<UserPublicModel>(user);
             }
             else
             {

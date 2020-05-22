@@ -74,6 +74,18 @@ namespace Baraholka.Data.Configurations
             CreateMap<TownCreateModel, TownDto>();
             CreateMap<TownUpdateModel, TownDto>();
             CreateMap<PageDataContainer<TownDto>, PageDataContainer<TownModel>>();
+
+            CreateMap<UserDto, UserPublicModel>()
+                .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
+                .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id));
+
+            CreateMap<UserDto, UserAdminModel>()
+                .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id))
+                .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
+                .ForMember(dest => dest.Roles, sourse => sourse
+                    .MapFrom(src => src.UserRoles.Select(x => x.Role.Name).ToList()));
+
+            CreateMap<PageDataContainer<UserDto>, PageDataContainer<UserAdminModel>>();
         }
     }
 }

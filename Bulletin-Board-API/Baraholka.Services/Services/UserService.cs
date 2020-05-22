@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
-using Baraholka.Domain.Models;
+using Baraholka.Services.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
@@ -22,7 +20,7 @@ namespace Baraholka.Services
 
         public async Task<PageDataContainer<UserAdminModel>> GetUsers(PageArguments pageArguments, string query)
         {
-            PageDataContainer<User> pagedUsers = await _userRepository.GetPagedUsers(query, pageArguments);
+            PageDataContainer<UserDto> pagedUsers = await _userRepository.GetPagedUsers(query, pageArguments);
 
             if (pagedUsers.PageData.Count > 0)
             {
@@ -33,35 +31,20 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<UserForPublicDetail> GetUser(int id)
+        public async Task<UserPublicModel> GetUser(int id)
         {
-            var includes = new string[] { $"{nameof(Town)}" };
-            var conditions = new List<Expression<Func<User, bool>>>
-            {
-                u => u.Id == id
-            };
-            var user = await _userRepository.GetSingle(includes, conditions);
-            if (user == null)
-            {
-                return null;
-            }
-            return _mapper.Map<UserForPublicDetail>(user);
+            UserDto user = await _userRepository.GetUser(id);
+            return _mapper.Map<UserPublicModel>(user);
         }
 
-        public async Task DeleteUser(int id)
+        public async Task DeactivateUser(int id)
         {
-            var user = await _userRepository.FindById(id);
-            if (user == null)
-            {
-                throw new NullReferenceException("No such user");
-            }
-            await _userRepository.Delete(user);
+            await _userRepository.DeactivateUser(id);
         }
 
-        public async Task<UserServiceDto> FindUserByID(int id)
+        public async Task ActivateUser(int id)
         {
-            var user = await _userRepository.GetSingle(x => x.Id == id);
-            return _mapper.Map<UserServiceDto>(user);
+            await _userRepository.ActivateUser(id);
         }
     }
 }
