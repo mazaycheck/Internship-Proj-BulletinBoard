@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Baraholka.Services.Models
+namespace Baraholka.Web.Models
 {
     public class BrandModel
     {

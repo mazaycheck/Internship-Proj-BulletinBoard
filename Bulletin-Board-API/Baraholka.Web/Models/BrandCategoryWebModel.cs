@@ -1,6 +1,6 @@
-﻿namespace Baraholka.Services.Models
+﻿namespace Baraholka.Web.Models
 {
-    public class BrandCategoryModel
+    public class BrandCategoryWebModel
     {
         public int BrandCategoryId { get; set; }
         public int BrandId { get; set; }

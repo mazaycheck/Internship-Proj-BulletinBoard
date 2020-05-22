@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Services;
-using Baraholka.Services.Models;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

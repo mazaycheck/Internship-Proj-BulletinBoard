@@ -1,7 +1,10 @@
-﻿using Baraholka.Services;
-using Baraholka.Services.Models;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
+using Baraholka.Services;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -12,10 +15,12 @@ namespace Baraholka.Web.Controllers
     public class BrandCategoryController : ControllerBase
     {
         private readonly IBrandCategoryService _brandCategoryService;
+        private readonly IMapper _mapper;
 
-        public BrandCategoryController(IBrandCategoryService brandCategoryService)
+        public BrandCategoryController(IBrandCategoryService brandCategoryService, IMapper mapper)
         {
             _brandCategoryService = brandCategoryService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -28,33 +33,36 @@ namespace Baraholka.Web.Controllers
                 return NoContent();
             }
 
-            return Ok(brandCategoryRelations);
+            List<BrandCategoryWebModel> brandCategoryWebModels = _mapper
+                .Map<List<BrandCategoryDto>, List<BrandCategoryWebModel>>(brandCategoryRelations);
+
+            return Ok(brandCategoryWebModels);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var brandCategoryRelation = await _brandCategoryService.GetRelationById(id);
+            BrandCategoryDto brandCategoryRelation = await _brandCategoryService.GetRelationById(id);
 
             if (brandCategoryRelation == null)
             {
                 return NotFound();
             }
-
-            return Ok(brandCategoryRelation);
+            BrandCategoryWebModel brandCategoryWebModel = _mapper.Map<BrandCategoryWebModel>(brandCategoryRelation);
+            return Ok(brandCategoryWebModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BrandCategoryCreateModel brandCategoryForCreate)
         {
-            var category = await _brandCategoryService.GetCategory(brandCategoryForCreate.Category);
+            CategoryDto category = await _brandCategoryService.GetCategory(brandCategoryForCreate.Category);
             if (category == null)
             {
                 return NotFound("No such category");
             }
 
-            var brand = await _brandCategoryService.GetBrand(brandCategoryForCreate.Brand);
+            BrandDto brand = await _brandCategoryService.GetBrand(brandCategoryForCreate.Brand);
             if (brand == null)
             {
                 return NotFound("No such brand");
@@ -65,8 +73,9 @@ namespace Baraholka.Web.Controllers
                 return Conflict($"This relation already exists");
             }
 
-            BrandCategoryModel newBrandCategory = await _brandCategoryService.CreateRelation(brand.BrandId, category.CategoryId);
-            return CreatedAtAction(nameof(Get), new { id = newBrandCategory.BrandCategoryId }, newBrandCategory);
+            BrandCategoryDto newBrandCategory = await _brandCategoryService.CreateRelation(brand.BrandId, category.CategoryId);
+            BrandCategoryWebModel newBrandCategoryModel = _mapper.Map<BrandCategoryWebModel>(newBrandCategory);
+            return CreatedAtAction(nameof(Get), new { id = newBrandCategory.BrandCategoryId }, newBrandCategoryModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
