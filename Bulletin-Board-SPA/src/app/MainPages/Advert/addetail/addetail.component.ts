@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdvertService } from 'src/app/services/Repositories/advert.service';
 import { Advert } from 'src/app/Models/Advert';
-import { Route, ActivatedRoute } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
-import { UserService } from 'src/app/services/Repositories/user.service';
+import { ActivatedRoute } from '@angular/router';
 import { UserForDetail } from 'src/app/Models/UserForDetail';
 
 @Component({

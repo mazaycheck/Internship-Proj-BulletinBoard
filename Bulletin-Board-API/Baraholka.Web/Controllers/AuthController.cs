@@ -1,5 +1,6 @@
 ﻿using Baraholka.Data.Dtos;
 using Baraholka.Services;
+using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -39,7 +40,8 @@ namespace Baraholka.Web.Controllers
             {
                 return Conflict("Such user already exists");
             }
-            var createdUser = await _authService.Register(userRegisterDto);
+            UserPublicWebModel createdUser = await _authService.Register(userRegisterDto);
+
             return Ok(createdUser);
         }
     }

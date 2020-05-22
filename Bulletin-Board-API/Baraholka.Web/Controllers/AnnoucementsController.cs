@@ -1,8 +1,12 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Services;
-using Baraholka.Services.Models;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -12,10 +16,12 @@ namespace Baraholka.Web.Controllers
     public class AnnoucementsController : ControllerBase
     {
         private readonly IAnnoucementService _annoucementService;
+        private readonly IMapper _mapper;
 
-        public AnnoucementsController(IAnnoucementService annoucementService)
+        public AnnoucementsController(IAnnoucementService annoucementService, IMapper mapper)
         {
             _annoucementService = annoucementService;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -24,52 +30,50 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<AnnoucementModel> pagedObject = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<AnnoucementDto> pagedAnnoucements = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
 
-            if (pagedObject == null)
+            if (!pagedAnnoucements.PageData.Any())
             {
                 return NoContent();
             }
+            PageDataContainer<AnnoucementWebModel> pagedWebAnnoucements = _mapper.Map<PageDataContainer<AnnoucementWebModel>>(pagedAnnoucements);
 
-            return Ok(pagedObject);
+            return Ok(pagedWebAnnoucements);
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute]int id)
         {
-            AnnoucementModel annoucementDto = await _annoucementService.GetAnnoucement(id);
+            AnnoucementDto annoucementDto = await _annoucementService.GetAnnoucement(id);
 
             if (annoucementDto == null)
             {
                 return NotFound($"No annoucement with id: {id}");
             }
-
-            return Ok(annoucementDto);
+            AnnoucementWebModel annoucementWebModel = _mapper.Map<AnnoucementWebModel>(annoucementDto);
+            return Ok(annoucementWebModel);
         }
 
         [Authorize(Roles = "Member")]
         [HttpPost]
         [Route("new")]
-        public async Task<IActionResult> Add([FromForm] AnnoucementCreateModel annoucementDto)
-        {
-            bool exists = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+        public async Task<IActionResult> Add([FromForm] AnnoucementCreateModel annoucementCreateModel)
+        {            
+            AnnoucementDto annoucementDto = _mapper.Map<AnnoucementDto>(annoucementCreateModel);   
+            
+            annoucementDto.UserId = User.GetUserID();
 
-            if (exists)
-            {
-                int userId = User.GetUserID();
-                AnnoucementModel annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, userId);
-                return CreatedAtAction(nameof(GetById), new { id = annoucement.Id }, annoucement);
-            }
+            AnnoucementDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, annoucementCreateModel.Photo);
 
-            return BadRequest("BrandCategory Id does not exist");
+            return CreatedAtAction(nameof(GetById), new { id = annoucement.AnnoucementId }, annoucement);
         }
 
         [Authorize(Roles = "Member")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
-            AnnoucementModel annoucement = await _annoucementService.GetAnnoucement(id);
+            AnnoucementDto annoucement = await _annoucementService.GetAnnoucement(id);
 
             if (annoucement == null)
             {
@@ -91,32 +95,27 @@ namespace Baraholka.Web.Controllers
         [Authorize(Roles = "Member")]
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update([FromForm] AnnoucementUpdateModel annoucementDto)
+        public async Task<IActionResult> Update([FromForm] AnnoucementUpdateModel annoucementUpdateModel)
         {
-            AnnoucementModel annoucement = await _annoucementService.GetAnnoucement(annoucementDto.AnnoucementId);
+            AnnoucementDto annoucementFromDbDto = await _annoucementService.GetAnnoucement(annoucementUpdateModel.AnnoucementId);
 
-            if (annoucement == null)
+            if (annoucementFromDbDto == null)
             {
-                return BadRequest($"No annoucement with id: {annoucementDto.AnnoucementId}");
+                return BadRequest($"No annoucement with id: {annoucementUpdateModel.AnnoucementId}");
             }
 
             int currentUser = User.GetUserID();
 
-            if (currentUser != annoucement.UserId)
+            if (currentUser != annoucementFromDbDto.UserId)
             {
-                return StatusCode(403, "You are not allowed to update other user's annoucement!");
+                return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to update other user's annoucement!");
             }
+            
+            AnnoucementDto annoucementUpdateDto = _mapper.Map<AnnoucementDto>(annoucementUpdateModel);
 
-            bool result = await _annoucementService.BrandCategoryExists(annoucementDto.BrandCategoryId);
+            AnnoucementDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementUpdateDto, annoucementUpdateModel.Photo);
 
-            if (!result)
-            {
-                return BadRequest("BrandCategory does not exist");
-            }
-
-            AnnoucementModel updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementDto, currentUser);
-
-            return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.Id }, updatedAnnoucement);
+            return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.AnnoucementId });
         }
     }
 }

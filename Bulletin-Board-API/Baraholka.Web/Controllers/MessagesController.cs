@@ -72,7 +72,7 @@ namespace Baraholka.Web.Controllers
             {
                 return Ok(message);
             }
-            return Forbid("You are not allowed to get this message");
+            return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to get this message");
         }
 
         [HttpPut("{messageId}")]

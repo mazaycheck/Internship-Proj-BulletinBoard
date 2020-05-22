@@ -31,10 +31,10 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<UserPublicModel> GetUser(int id)
+        public async Task<UserPublicWebModel> GetUser(int id)
         {
             UserDto user = await _userRepository.GetUser(id);
-            return _mapper.Map<UserPublicModel>(user);
+            return _mapper.Map<UserPublicWebModel>(user);
         }
 
         public async Task DeactivateUser(int id)

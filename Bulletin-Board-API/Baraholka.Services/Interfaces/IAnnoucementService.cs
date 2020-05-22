@@ -1,19 +1,20 @@
 ﻿using Baraholka.Data.Dtos;
-using Baraholka.Services.Models;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
 {
     public interface IAnnoucementService
     {
-        Task<PageDataContainer<AnnoucementModel>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+        Task<PageDataContainer<AnnoucementDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
             PageArguments paginateParams, SortingArguments orderParams);
 
-        Task<AnnoucementModel> GetAnnoucement(int id);
+        Task<AnnoucementDto> GetAnnoucement(int id);
 
-        Task<AnnoucementModel> CreateAnnoucement(AnnoucementCreateModel annoucementDto, int userId);
+        Task<AnnoucementDto> CreateAnnoucement(AnnoucementDto annoucementDto, List<IFormFile> images);
 
-        Task<AnnoucementModel> UpdateAnnoucement(AnnoucementUpdateModel annoucementDto, int userId);
+        Task<AnnoucementDto> UpdateAnnoucement(AnnoucementDto annoucementDto, List<IFormFile> images);
 
         Task<bool> BrandCategoryExists(int id);
 

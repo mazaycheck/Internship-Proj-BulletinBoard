@@ -2,7 +2,7 @@
 
 namespace Baraholka.Services.Models
 {
-    public class UserPublicModel
+    public class UserPublicWebModel
     {
         public int UserId { get; set; }
         public string UserName { get; set; }

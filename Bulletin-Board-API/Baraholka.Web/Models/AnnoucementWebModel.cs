@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Baraholka.Web.Models
 {
-    public class AnnoucementModel
+    public class AnnoucementWebModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

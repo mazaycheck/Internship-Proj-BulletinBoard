@@ -44,7 +44,7 @@ namespace Baraholka.Services
             return null;
         }
 
-        public async Task<UserPublicModel> Register(UserRegisterDto userRegisterDto)
+        public async Task<UserPublicWebModel> Register(UserRegisterDto userRegisterDto)
         {
             var userEmail = userRegisterDto.Email;
             if (await _userManager.FindByEmailAsync(userEmail) != null)
@@ -59,7 +59,7 @@ namespace Baraholka.Services
             if (result.Succeeded)
             {
                 var user =  _mapper.Map<UserDto>(newUser);
-                return  _mapper.Map<UserPublicModel>(user);
+                return  _mapper.Map<UserPublicWebModel>(user);
             }
             else
             {

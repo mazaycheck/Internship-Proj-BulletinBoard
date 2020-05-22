@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using Baraholka.Data.Dtos;
+﻿using Baraholka.Data.Dtos;
 using Baraholka.Data.Repositories;
 using Baraholka.Domain.Models;
-using Baraholka.Services.Models;
 using Baraholka.Utilities;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,46 +12,50 @@ namespace Baraholka.Services
     public class AnnoucementService : IAnnoucementService
     {
         private readonly IAnnoucementRepository _annoucementRepo;
-        private readonly IMapper _mapper;
         private readonly IGenericRepository<BrandCategory> _brandCategoryRepo;
         private readonly IImageFileManager _imageFileManager;
 
         public AnnoucementService(
                 IAnnoucementRepository annoucementRepo,
-                IMapper mapper,
                 IGenericRepository<BrandCategory> brandCategoryRepo,
                 IImageFileManager imageFileManager
                 )
         {
             _annoucementRepo = annoucementRepo;
-            _mapper = mapper;
             _brandCategoryRepo = brandCategoryRepo;
             _imageFileManager = imageFileManager;
         }
 
-        public async Task<AnnoucementModel> CreateAnnoucement(AnnoucementCreateModel annoucementDto, int userId)
+        public async Task<AnnoucementDto> CreateAnnoucement(AnnoucementDto annoucementDto, List<IFormFile> images)
         {
-            AnnoucementDto annoucementToCreate = _mapper.Map<AnnoucementDto>(annoucementDto);
-            annoucementToCreate.UserId = userId;
-            AnnoucementDto createdAnnoucement = await _annoucementRepo.CreateAnnoucement(annoucementToCreate);
 
-            List<IFormFile> images = annoucementDto.Photo;
+            bool exists = await BrandCategoryExists(annoucementDto.BrandCategoryId);
+            if (!exists)
+            {
+                throw new Exception("BrandCategory Id does not exist");
+            }
+                
+            AnnoucementDto createdAnnoucement = await _annoucementRepo.CreateAnnoucement(annoucementDto);
 
             if (images != null)
             {
                 await SaveAnnoucementImages(createdAnnoucement.AnnoucementId, images);
             }
 
-            return _mapper.Map<AnnoucementModel>(createdAnnoucement);
+            return createdAnnoucement;
         }
 
-        public async Task<AnnoucementModel> UpdateAnnoucement(AnnoucementUpdateModel annoucementDto, int userId)
+        public async Task<AnnoucementDto> UpdateAnnoucement(AnnoucementDto annoucementDto, List<IFormFile> images)
         {
-            AnnoucementDto annoucementSourse = _mapper.Map<AnnoucementDto>(annoucementDto);
-            annoucementSourse.UserId = userId;
-            AnnoucementDto updatedAnnoucement = await _annoucementRepo.UpdateAnnoucement(annoucementSourse);
 
-            List<IFormFile> images = annoucementDto.Photo;
+            bool exists = await BrandCategoryExists(annoucementDto.BrandCategoryId);
+
+            if (!exists)
+            {
+                throw new Exception("BrandCategory Id does not exist");
+            }
+
+            AnnoucementDto updatedAnnoucement = await _annoucementRepo.UpdateAnnoucement(annoucementDto);
 
             if (images != null)
             {
@@ -61,10 +64,10 @@ namespace Baraholka.Services
                 await SaveAnnoucementImages(updatedAnnoucement.AnnoucementId, images);
             }
 
-            return _mapper.Map<AnnoucementModel>(updatedAnnoucement);
+            return annoucementDto;
         }
 
-        public async Task<PageDataContainer<AnnoucementModel>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
+        public async Task<PageDataContainer<AnnoucementDto>> GetAnnoucements(AnnoucementFilterArguments filterOptions,
              PageArguments paginateParams, SortingArguments orderParams)
         {
             PageDataContainer<AnnoucementDto> pagedAnnoucements = await _annoucementRepo.GetPagedAnnoucements(filterOptions, paginateParams, orderParams);
@@ -73,18 +76,16 @@ namespace Baraholka.Services
             {
                 return null;
             }
-            PageDataContainer<AnnoucementModel> pagedViewData = _mapper.Map<PageDataContainer<AnnoucementModel>>(pagedAnnoucements);
 
-            return pagedViewData;
+            return pagedAnnoucements;
         }
 
-        public async Task<AnnoucementModel> GetAnnoucement(int id)
+        public async Task<AnnoucementDto> GetAnnoucement(int id)
         {
             AnnoucementDto annoucement = await _annoucementRepo.GetSingleAnnoucementForView(id);
             if (annoucement != null)
             {
-                var annoucementForView = _mapper.Map<AnnoucementModel>(annoucement);
-                return annoucementForView;
+                return annoucement;
             }
             return null;
         }

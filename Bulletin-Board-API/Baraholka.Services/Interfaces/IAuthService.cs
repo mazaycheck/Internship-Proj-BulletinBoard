@@ -8,7 +8,7 @@ namespace Baraholka.Services
     {
         Task<string> Login(string email, string password);
 
-        Task<UserPublicModel> Register(UserRegisterDto userRegisterDto);
+        Task<UserPublicWebModel> Register(UserRegisterDto userRegisterDto);
 
         Task<bool> UserExists(string email);
     }

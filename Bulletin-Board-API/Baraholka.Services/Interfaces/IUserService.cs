@@ -10,7 +10,7 @@ namespace Baraholka.Services
         Task ActivateUser(int id);
         Task DeactivateUser(int id);
 
-        Task<UserPublicModel> GetUser(int id);
+        Task<UserPublicWebModel> GetUser(int id);
 
         Task<PageDataContainer<UserAdminModel>> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string query);
     }

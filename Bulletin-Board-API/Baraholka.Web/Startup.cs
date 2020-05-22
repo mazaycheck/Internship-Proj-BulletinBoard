@@ -3,6 +3,7 @@ using Baraholka.Data;
 using Baraholka.Data.Configurations;
 using Baraholka.Utilities;
 using Baraholka.Web.Infrastructure;
+using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,8 @@ namespace Baraholka.Web
 
             services.AddAutoMapper(
                 typeof(AutoMapperConfig).Assembly,
-                typeof(ServiceMappingProfile).Assembly);
+                typeof(ServiceMappingProfile).Assembly,
+                typeof(WebModelsMappingProfile).Assembly);
 
             services.AddHttpContextAccessor();
 

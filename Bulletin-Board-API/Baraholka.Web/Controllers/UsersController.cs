@@ -34,7 +34,7 @@ namespace Baraholka.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            UserPublicModel userFromDb = await _userService.GetUser(id);
+            UserPublicWebModel userFromDb = await _userService.GetUser(id);
             if (userFromDb == null)
             {
                 return NotFound();
