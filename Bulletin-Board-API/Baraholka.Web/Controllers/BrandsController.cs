@@ -1,4 +1,5 @@
-﻿using Baraholka.Data.Dtos;
+﻿using AutoMapper;
+using Baraholka.Data.Dtos;
 using Baraholka.Services;
 using Baraholka.Services.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,66 +14,75 @@ namespace Baraholka.Web.Controllers
     public class BrandsController : ControllerBase
     {
         private readonly IBrandService _brandService;
+        private readonly IMapper _mapper;
 
-        public BrandsController(IBrandService brandService)
+        public BrandsController(IBrandService brandService, IMapper mapper)
         {
             _brandService = brandService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]BrandFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<BrandModel> brands = await _brandService.GetAllBrands(filterArgs, pageArgs, sortingArgs);
-            if (brands != null)
+            PageDataContainer<BrandDto> pagedBrands = await _brandService.GetAllBrands(filterArgs, pageArgs, sortingArgs);
+
+            if (pagedBrands == null)
             {
-                return Ok(brands);
+                return NoContent();
             }
-            return NoContent();
+
+            PageDataContainer<BrandModel> pagedBrandsForWeb = _mapper.Map<PageDataContainer<BrandModel>>(pagedBrands);
+            return Ok(pagedBrandsForWeb);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            BrandModel brandDto = await _brandService.GetBrand(id);
+            BrandDto brandDto = await _brandService.GetBrand(id);
             if (brandDto == null)
             {
                 return NotFound($"No such brand with id: {id}");
             }
-
-            return Ok(brandDto);
+            BrandModel brandWebModel = _mapper.Map<BrandModel>(brandDto);
+            return Ok(brandWebModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BrandCreateModel brand)
+        public async Task<IActionResult> Post([FromBody] BrandCreateModel brandCreateModel)
         {
-            if (await _brandService.BrandExist(brand.Title))
+            if (await _brandService.BrandExist(brandCreateModel.Title))
             {
                 return Conflict("Such brand already exists");
             }
-            BrandModel newBrand = await _brandService.CreateBrand(brand);
-            return StatusCode(201, newBrand);
+            BrandDto brandDto = _mapper.Map<BrandDto>(brandCreateModel);
+            BrandDto createdBrandDto = await _brandService.CreateBrand(brandDto);
+            BrandModel brandWebModel = _mapper.Map<BrandModel>(createdBrandDto);
+            return StatusCode(201, brandWebModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update([FromBody] BrandUpdateModel brandForUpdate)
+        public async Task<IActionResult> Update([FromBody] BrandUpdateModel brandUpdateModel)
         {
-            var brandFromDb = await _brandService.GetBrand(brandForUpdate.BrandId);
+            var brandFromDb = await _brandService.GetBrand(brandUpdateModel.BrandId);
 
             if (brandFromDb == null)
             {
                 return NotFound("No such brand");
             }
 
-            if (await _brandService.UpdatedBrandExists(brandForUpdate))
+            BrandDto brandDto = _mapper.Map<BrandDto>(brandUpdateModel);
+
+            if (await _brandService.UpdatedBrandExists(brandDto))
             {
                 return Conflict("This brand already exists");
             }
 
-            BrandModel updatedBrand = await _brandService.UpdateBrand(brandForUpdate);
+            BrandDto updatedBrand = await _brandService.UpdateBrand(brandDto, brandUpdateModel.Categories);
             return Ok(updatedBrand);
         }
 

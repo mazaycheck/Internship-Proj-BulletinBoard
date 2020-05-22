@@ -46,33 +46,34 @@ namespace Baraholka.Web.Controllers
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TownCreateModel town)
+        public async Task<IActionResult> Post([FromBody] TownCreateModel townCreateModel)
         {
-            if (await _townService.Exists(town.Title))
+            if (await _townService.Exists(townCreateModel.Title))
             {
                 return Conflict($"Such town already exists");
             }
 
-            TownModel newTown = await _townService.CreateTown(town);
+            TownModel newTown = await _townService.CreateTown(townCreateModel);
             return StatusCode(201, newTown);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] TownUpdateModel newTown)
+        public async Task<IActionResult> Put([FromBody] TownUpdateModel townUpdateModel)
         {
-            TownModel townFromDb = await _townService.GetTown(newTown.TownId);
+            TownModel townFromDb = await _townService.GetTown(townUpdateModel.TownId);
             if (townFromDb == null)
             {
-                return NotFound($"No such town with id: {newTown.TownId}");
+                return NotFound($"No such town with id: {townUpdateModel.TownId}");
             }
-            if (townFromDb.Title != newTown.Title && await _townService.Exists(newTown.Title))
+            if (townFromDb.Title != townUpdateModel.Title && await _townService.Exists(townUpdateModel.Title))
             {
-                return Conflict($"Such town already exists with title {newTown.Title} ");
+                return Conflict($"Such town already exists with title {townUpdateModel.Title} ");
             }
 
-            TownModel updatedTown = await _townService.UpdateTown(newTown);
-            return StatusCode(201, updatedTown);
+            TownModel updatedTown = await _townService.UpdateTown(townUpdateModel);
+
+            return CreatedAtAction(nameof(Get), new { id = updatedTown.TownId }, updatedTown);
         }
 
         [Authorize(Roles = "Admin, Moderator")]

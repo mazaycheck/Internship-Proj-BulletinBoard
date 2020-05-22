@@ -1,24 +1,23 @@
 ﻿using Baraholka.Data.Dtos;
-using Baraholka.Services.Models;
 using System.Threading.Tasks;
 
 namespace Baraholka.Services
 {
     public interface IBrandService
     {
-        Task<PageDataContainer<BrandModel>> GetAllBrands(BrandFilterArguments filterArguments,
+        Task<PageDataContainer<BrandDto>> GetAllBrands(BrandFilterArguments filterArguments,
              PageArguments pageArguments, SortingArguments sortingArguments);
 
-        Task<BrandModel> UpdateBrand(BrandUpdateModel brandForUpdate);
+        Task<BrandDto> UpdateBrand(BrandDto brandForUpdate, string[] categories);
 
         Task DeleteBrand(int brandId);
 
-        Task<BrandModel> GetBrand(int id);
+        Task<BrandDto> GetBrand(int id);
 
-        Task<BrandModel> CreateBrand(BrandCreateModel brand);
+        Task<BrandDto> CreateBrand(BrandDto brand);
 
         Task<bool> BrandExist(string brand);
 
-        Task<bool> UpdatedBrandExists(BrandUpdateModel brandForUpdate);
+        Task<bool> UpdatedBrandExists(BrandDto brand);
     }
 }

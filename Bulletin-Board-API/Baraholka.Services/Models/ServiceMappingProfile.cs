@@ -10,7 +10,6 @@ namespace Baraholka.Data.Configurations
     {
         public ServiceMappingProfile()
         {
-
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<CategoryDto, CategoryModel>()
                 .ForMember(dest => dest.Brands, sourse => sourse
@@ -18,20 +17,6 @@ namespace Baraholka.Data.Configurations
 
             CreateMap<CategoryCreateModel, CategoryDto>();
             CreateMap<CategoryUpdateModel, CategoryDto>();
-
-            CreateMap<BrandDto, BrandModel>()
-                .ForMember(dest => dest.Categories, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
-                .ReverseMap();
-
-            CreateMap<PageDataContainer<BrandDto>, PageDataContainer<BrandModel>>();
-            CreateMap<BrandCreateModel, BrandDto>();
-            CreateMap<BrandUpdateModel, BrandDto>();
-
-            CreateMap<Brand, BrandModel>()
-                .ForMember(dest => dest.Categories, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
-                .ReverseMap();
 
             CreateMap<BrandCategoryDto, BrandCategoryModel>()
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
