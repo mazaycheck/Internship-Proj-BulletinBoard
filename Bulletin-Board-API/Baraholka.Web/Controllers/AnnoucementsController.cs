@@ -99,21 +99,22 @@ namespace Baraholka.Web.Controllers
         [Route("update")]
         public async Task<IActionResult> Update([FromForm] AnnoucementUpdateModel annoucementUpdateModel)
         {
-            AnnoucementDto annoucementFromDbDto = await _annoucementService.GetAnnoucement(annoucementUpdateModel.AnnoucementId);
+            AnnoucementDto annoucementDto = await _annoucementService.GetAnnoucement(annoucementUpdateModel.AnnoucementId);
 
-            if (annoucementFromDbDto == null)
+            if (annoucementDto == null)
             {
                 return BadRequest($"No annoucement with id: {annoucementUpdateModel.AnnoucementId}");
             }
 
             int currentUser = User.GetUserID();
 
-            if (currentUser != annoucementFromDbDto.UserId)
+            if (currentUser != annoucementDto.UserId)
             {
                 return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to update other user's annoucement!");
             }
 
             AnnoucementDto annoucementUpdateDto = _mapper.Map<AnnoucementDto>(annoucementUpdateModel);
+            annoucementUpdateDto.UserId = currentUser;
 
             AnnoucementDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementUpdateDto, annoucementUpdateModel.Photo);
 

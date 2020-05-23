@@ -1,9 +1,8 @@
-<!-- <mat-toolbar color="primary">User Profile</mat-toolbar> -->
 <div class="row">
   <div class="col-md-4 mt-3">
     <app-userInfo [userId]="userId" [detailedMode]="true" #userCard>  
       <div header class="d-block w-100 mb-2">
-        <img src="\assets\images\random.jpg" alt="" width="200px"  height="200px" class="d-block mx-auto">
+        <img [src]="placeholderImageUrl" alt="" width="200px"  height="200px" class="d-block mx-auto">
       </div>
 
       <div footer *ngIf="userCard.user">

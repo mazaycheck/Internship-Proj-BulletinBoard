@@ -13,10 +13,11 @@ namespace Baraholka.Data.Configurations
             CreateMap<Annoucement, AnnoucementDto>().ReverseMap();
             CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementDto>>();
 
-            CreateMap<BrandCategory, BrandCategoryDto>().ReverseMap();
-
+            CreateMap<BrandCategory, BrandCategoryDto>().ReverseMap();            
             CreateMap<Brand, BrandDto>().ReverseMap();
             CreateMap<PageDataContainer<Brand>, PageDataContainer<BrandDto>>();
+
+            CreateMap<Category, CategoryDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.Roles, sourse => sourse

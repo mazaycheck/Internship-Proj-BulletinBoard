@@ -16,6 +16,7 @@ export class UserprofileComponent implements OnInit {
   userInfo: UserForDetail;
   adverts: Advert[] = [];
   columns: string[] = ['Title', 'Price', 'Category', 'CreateDate'];
+  placeholderImageUrl = '/assets/images/profile.png';
   constructor(private route: ActivatedRoute, private userservice: UserService, private advertService: AdvertService) { }
   ngOnInit() {
     this.userId = +this.route.snapshot.paramMap.get('id');

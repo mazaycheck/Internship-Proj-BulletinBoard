@@ -4,10 +4,7 @@
   </mat-toolbar> 
   <br>
   <mat-list role="list" *ngIf="user">
-
     <ng-content select="[header]"></ng-content>
-
-
     <mat-list-item role="listitem" class="user-description-mat-list-item">
       <span>User Name</span>
       <span><b>{{user.userName}}</b></span>
@@ -20,21 +17,7 @@
       <span>Registered Since</span>
       <span><b>{{user.registrationDate | date}}</b></span>
     </mat-list-item>
-
     <ng-content select="[footer]"></ng-content>
-
-<!-- <ng-container *ngIf="detailedMode">
-  <mat-list-item role="listitem" class="user-description-mat-list-item">
-    <span>Lives in</span>
-    <span><b>{{user.townName}}</b></span>
-  </mat-list-item>
-  <mat-list-item role="listitem" class="user-description-mat-list-item">
-    <span>Rating</span>
-    <span><b>{{user.rating}}</b></span>
-  </mat-list-item>
-
-</ng-container> -->
-
   </mat-list>
 <mat-divider></mat-divider>
 <br>

@@ -1,6 +1,7 @@
 <div class="tiles-container">
-  <div class="d-inline-block p-1 mb-2" *ngFor="let advert of data">
+  <div class="d-inline-block p-1 mb-2 tiles-outer-card-container" *ngFor="let advert of data">
     <mat-card (click)="onCardClicked(advert.id)">
+      <div class="tiles-container-card">
       <mat-card-header class="card-header-for-tiles">
         <div class="for-tiles-text-center">{{advert.title}}</div>
       </mat-card-header>
@@ -8,11 +9,14 @@
         <div class="img-preview-container mx-auto">
           <img *ngIf="advert.photoUrls.length" [src]="baseUrl + 'images/' + advert.id + '/medium/' +  advert.photoUrls[0]" class="img-preview">            
         </div>  
-        <div class="for-tiles-text-center"> {{advert.price | currency}}</div>
+        
       </mat-card-content>
-      <mat-card-footer style="text-align: center;">
-       
+      <mat-card-footer style="text-align: center;">          
       </mat-card-footer>
+      <div class="for-tiles-text-center tiles-price-container">
+         {{advert.price | currency}}     
+        </div>  
+      </div>
     </mat-card>
 </div>
 </div>

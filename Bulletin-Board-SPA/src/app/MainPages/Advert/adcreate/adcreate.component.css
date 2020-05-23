@@ -9,25 +9,45 @@ mat-form-field{
     width:200px;
     height:200px;
     overflow:hidden;
+    position: relative;
 }
 
 .img-preview{
     display : inline-block;
     width:100%;
     height:100%;
-    object-fit: cover
+    object-fit: cover;
+    z-index: 3;
 }
 
 .w-50{
     width: 49%;
 }
 
-.advert-card{
-
-}
-
-
 mat-card-title{
     font-family: 'Baloo Thambi 2'!important;
     font-size: 25px!important;
 }
+
+.img-cancel-icon:hover + .img-cancel {
+    opacity: 0.2;    
+}
+
+.img-preview:hover{
+    z-index: -10;
+}
+
+.img-cancel-icon{
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    top : 0px;
+    right: 0px;
+    position: absolute;
+    font-size: large;
+    z-index: 1;
+    cursor: pointer;
+}
+
+

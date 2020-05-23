@@ -28,10 +28,11 @@ export class AdupdateComponent implements OnInit {
   uploadedPicturesBinaryData: string[] = [];
   formData: FormData;
   brandCategoryIdForUpdate: number;
+  placeholderImageUrl = '/assets/images/camera.jpg';
 
   constructor(private advertService: AdvertService, private router: Router, private catservice: CatService,
-    private toast: ToastrService,
-    private route: ActivatedRoute, private brandCatService: BrandCategoryService) { }
+              private toast: ToastrService, private route: ActivatedRoute,
+              private brandCatService: BrandCategoryService) { }
 
   ngOnInit() {
     this.baseUrl = environment.baseUrl;
@@ -42,7 +43,7 @@ export class AdupdateComponent implements OnInit {
     this.formData = new FormData();
   }
 
-  private initForm() {
+  initForm() {
     this.advertForm = new FormGroup({
       title: new FormControl(''),
       description: new FormControl(''),
@@ -56,13 +57,21 @@ export class AdupdateComponent implements OnInit {
   loadAdvertFromDb() {
     this.advertService.getAd(this.getAnnoucementId()).subscribe(advertResponse => {
       this.advertFromDb = advertResponse;
-      this.pictureGUIDs = this.advertFromDb.photoUrls;
+      this.replacePlaceHolderImagesWithRealImages(this.advertFromDb.photoUrls);
       this.brandCatService.getById(this.advertFromDb.brandCategoryId).subscribe(brandCatResponse => {
         this.selectedCategory = this.allCategoriesFromDb.find(x => x.categoryId === brandCatResponse.categoryId);
         this.brandCategoryIdForUpdate = this.advertFromDb.brandCategoryId;
         this.patchFormValues(advertResponse, brandCatResponse);
       });
     });
+  }
+
+
+
+  replacePlaceHolderImagesWithRealImages(images: string[]) {
+    for (let i = 0; i < images.length; i++) {
+      this.pictureGUIDs[i] = images[i];
+    }
   }
 
   patchFormValues(advertResponse: Advert, brandCatResponse: BrandCategory) {
@@ -83,9 +92,9 @@ export class AdupdateComponent implements OnInit {
     });
   }
 
-  private initPlaceHolderImages() {
+  initPlaceHolderImages() {
     for (let i = 0; i < this.numberOfFiles; i++) {
-      this.pictureGUIDs[i] = '/assets/images/random.jpg';
+      this.pictureGUIDs[i] = this.placeholderImageUrl;
     }
   }
 
@@ -103,8 +112,8 @@ export class AdupdateComponent implements OnInit {
     );
   }
 
-
   onFileAttach($event) {
+    this.resetImages();
     for (let i = 0; i < $event.target.files.length; i++) {
       const file = $event.target.files[i];
       this.uploadedPicturesBinaryData.push(file);
@@ -115,6 +124,25 @@ export class AdupdateComponent implements OnInit {
       });
       fileReader.readAsDataURL(file);
     }
+  }
+
+  onFileCancel(imageIndex) {
+    console.log(imageIndex);
+    this.uploadedPicturesBinaryData.splice(imageIndex, 1);
+    this.pictureGUIDs.splice(imageIndex, 1);
+    this.pictureGUIDs.push(this.placeholderImageUrl);
+    const photos = this.formData.getAll('photo');
+    photos.splice(imageIndex, 1);
+    this.formData.set('photo', null);
+    this.uploadedPicturesBinaryData.forEach(element => {
+      this.formData.append('photo', element, 'textfilename');
+    });
+  }
+
+  private resetImages() {
+    this.initPlaceHolderImages();
+    this.uploadedPicturesBinaryData = [];
+    this.formData.set('photo', null);
   }
 
   selectedCategoryChanged($event) {
@@ -137,16 +165,6 @@ export class AdupdateComponent implements OnInit {
       this.selectedCategory = response;
     });
   }
-
-  // toFormData() {
-  //   this.formData.append('title', this.advertForm.value.title);
-  //   this.formData.append('description', this.advertForm.value.description);
-  //   this.formData.append('price', this.advertForm.value.price);
-  //   this.formData.append('brandCategoryId', this.advertForm.value.brandCategoryId);
-  //   this.formData.append('userId', `${this.advertFromDb.userId}`);
-  //   this.formData.append('annoucementId', `${this.advertFromDb.id}`);
-  // }
-
 
   toFormData() {
     this.formData.set('annoucementId', `${this.advertFromDb.id}`);

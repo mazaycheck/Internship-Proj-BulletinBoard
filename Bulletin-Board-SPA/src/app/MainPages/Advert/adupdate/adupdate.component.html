@@ -61,15 +61,36 @@
   <div class="mb-3">
     
     <ng-container *ngIf="uploadedPicturesBinaryData.length && pictureGUIDs.length">
-      <div *ngFor="let url of pictureGUIDs" class="img-preview-container mr-1">
-        <img [src]="url" class="img-preview">
+      <div *ngFor="let url of pictureGUIDs; index as i" class="img-preview-container mr-1"> 
+        
+        <ng-container *ngIf="url != placeholderImageUrl">
+          <div class="img-cancel-icon" (click)="onFileCancel(i)">
+            <mat-icon color="accent">cancel</mat-icon>       
+          </div>         
+          <img [src]="url" class="img-preview img-cancel">  
+        </ng-container>
+                    
+          <ng-container *ngIf="url == placeholderImageUrl">
+            <img [src]="url" class="img-preview">            
+          </ng-container>
+
       </div>   
     </ng-container>
+
     <ng-container *ngIf="!(uploadedPicturesBinaryData.length && pictureGUIDs.length)">
       <div *ngFor="let url of pictureGUIDs" class="img-preview-container mr-1">
-        <img [src]="baseUrl + 'images/' + advertFromDb.id + '/medium/' +  url" class="img-preview">            
+        
+        <ng-container *ngIf="url != placeholderImageUrl">
+          <img [src]="baseUrl + 'images/' + advertFromDb.id + '/medium/' +  url" class="img-preview">            
+        </ng-container>
+
+        <ng-container *ngIf="url == placeholderImageUrl">
+          <img [src]="url" class="img-preview">            
+        </ng-container>
+
       </div>  
     </ng-container>
+
   </div>
 </ng-container>
 

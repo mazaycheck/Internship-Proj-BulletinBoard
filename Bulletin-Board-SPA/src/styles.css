@@ -97,5 +97,17 @@ input:-webkit-autofill:focus { -webkit-box-shadow: 0 0 0 1000px white inset !imp
 }
 
 .userroles-selection .mat-list-item-content.mat-list-item-content-reverse {
-    padding-left: 0!important;
+    padding-left: 0!important;    
+}
+
+
+.navigation-top-menu .mat-icon.notranslate.material-icons.mat-icon-no-color{
+    display: inline-block;
+    height: 30px;  
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.nav-item-span{
+    display: inline-block;
 }

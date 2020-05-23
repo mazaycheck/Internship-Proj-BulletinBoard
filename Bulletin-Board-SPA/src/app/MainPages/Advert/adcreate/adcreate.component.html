@@ -56,10 +56,20 @@
       <button type="button" mat-raised-button (click)="fileInput.click()" class="mb-4">Upload Images</button>        
       <input hidden #fileInput type="file" multiple class="custom-file-input" value="Choose am image" id="inputFile1" (change)="onFileAttach($event)" formControlName="photo">
 
-
   <div class="mb-3">
-    <div *ngFor="let url of pictureURLs" class="img-preview-container mr-1">
-      <img [src]="url" class="img-preview">
+    <div *ngFor="let url of pictureURLs; index as i" class="img-preview-container mr-1">
+      
+      <ng-container *ngIf="url != placeholderImageUrl">
+        <div class="img-cancel-icon" (click)="onFileCancel(i)">          
+          <mat-icon color="accent">cancel</mat-icon>       
+        </div>         
+        <img [src]="url" class="img-preview img-cancel">  
+      </ng-container>
+                  
+        <ng-container *ngIf="url == placeholderImageUrl">
+          <img [src]="url" class="img-preview">            
+        </ng-container>
+
     </div>   
   </div>
 

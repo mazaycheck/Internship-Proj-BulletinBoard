@@ -13,7 +13,7 @@ export class UserInfoComponent implements OnInit {
   @Input() userId: number;
   @Input() detailedMode: boolean;
   user: UserForDetail;
-  newMessage: string;
+  newMessage: string;  
   constructor(private userService: UserService, private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -36,8 +36,6 @@ export class UserInfoComponent implements OnInit {
     config.width = '600px';
     config.data = $event;
     this.dialog.open(MessageModalComponent, config);
-
-    
   }
 
 

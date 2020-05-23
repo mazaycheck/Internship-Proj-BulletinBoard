@@ -32,15 +32,11 @@
   <br>
 
   <app-adtablebody [advertisements]="advertisements" [displayedColumns]="displayedColumns" (delete)="removeAd($event)" (sort)="sortData($event)" *ngIf="presentationMode == 'table'">
-
   </app-adtablebody>
 
 <app-adtiles [data]="advertisements" *ngIf="presentationMode == 'tiles'">
-
 </app-adtiles>
 <br>
-
-
 
   <mat-paginator #paginator [length]="length"
                 [pageSize]="pageSize"

@@ -27,6 +27,7 @@ export class AdcreateComponent implements OnInit {
   uploadedPicturesBinaryData: string[] = [];
   formData: FormData;
   brandCategoryIdForCreate: number;
+  placeholderImageUrl = '/assets/images/camera.jpg';
 
   constructor(private advertService: AdvertService, private router: Router, private categoriesService: CatService,
               private toast: ToastrService, private brandCatService: BrandCategoryService) { }
@@ -40,7 +41,7 @@ export class AdcreateComponent implements OnInit {
 
   private initPlaceHolderImages() {
     for (let i = 0; i < this.numberOfFiles; i++) {
-      this.pictureURLs[i] = '/assets/images/random.jpg';
+      this.pictureURLs[i] = this.placeholderImageUrl;
     }
   }
 
@@ -81,6 +82,7 @@ export class AdcreateComponent implements OnInit {
   }
 
   onFileAttach($event) {
+    this.resetImages();
     for (let i = 0; i < $event.target.files.length; i++) {
       const file = $event.target.files[i];
       this.uploadedPicturesBinaryData.push(file);
@@ -91,6 +93,31 @@ export class AdcreateComponent implements OnInit {
       });
       fileReader.readAsDataURL(file);
     }
+  }
+
+  replacePlaceHolderImagesWithRealImages(images: string[]) {
+    for (let i = 0; i < images.length; i++) {
+      this.pictureURLs[i] = images[i];
+    }
+  }
+
+  resetImages() {
+    this.initPlaceHolderImages();
+    this.uploadedPicturesBinaryData = [];
+    this.formData.set('photo', null);
+  }
+
+  onFileCancel(imageIndex) {
+    console.log(imageIndex);
+    this.uploadedPicturesBinaryData.splice(imageIndex, 1);
+    this.pictureURLs.splice(imageIndex, 1);
+    this.pictureURLs.push(this.placeholderImageUrl);
+    const photos = this.formData.getAll('photo');
+    photos.splice(imageIndex, 1);
+    this.formData.set('photo', null);
+    this.uploadedPicturesBinaryData.forEach(element => {
+      this.formData.append('photo', element, 'textfilename');
+    });
   }
 
 
