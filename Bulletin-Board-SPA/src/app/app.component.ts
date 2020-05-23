@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { Advert } from './Models/Advert';
-import { AdvertService } from './services/Repositories/advert.service';
-import { ActivatedRoute, Router, RouterEvent, NavigationStart, NavigationEnd } from '@angular/router';
+import {  Router, RouterEvent, NavigationStart, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +12,6 @@ export class AppComponent {
   constructor(private router: Router) {
     this.configureRouterEventsNavigation();
   }
-
 
   private configureRouterEventsNavigation() {
     this.router.events.subscribe((routerEvent: RouterEvent) => {

@@ -56,7 +56,8 @@ namespace Baraholka.Services
 
         public async Task<bool> Exists(string title)
         {
-            return await _categoryRepository.Exists(category => category.Title.ToLower().Contains(title.ToLower()));
+            string lowerTitle = title.ToLower();
+            return await _categoryRepository.Exists(category => category.Title.ToLower().Equals(lowerTitle));
         }
     }
 }

@@ -1,11 +1,16 @@
-<mat-toolbar color="primary" class="justify-content-between p-4" >
+<mat-toolbar color="primary" class="p-4 justify-content-between">  
   <ng-content></ng-content>
-  <div class="d-none d-lg-block">
-  <mat-list class="d-flex navigation-top-menu">
+  <div style="width: 100px" class="d-inline-block ml-2">
+    <h1>
+      BaraholGO
+    </h1>
+  </div>
+  <div class="d-none d-lg-block mx-auto">
+  <mat-list class="d-flex navigation-top-menu" *ngIf="isLoggedIn()">
     <ng-container *ngIf="hasRequiredAccess(['Moderator', 'Member'])">
       <mat-list-item><a [routerLink]="['/newadvert']" routerLinkActive="router-link-active" class="p-1 d-inline-block"><mat-icon>add_to_queue</mat-icon><span class="nav-item-span"> Create New Advert</span></a></mat-list-item>
     </ng-container>
-    <mat-list-item><a [routerLink]="['/ads']" routerLinkActive="router-link-active"><mat-icon>airplay</mat-icon> Advertisements </a></mat-list-item>
+    <mat-list-item *ngIf="isLoggedIn()"><a [routerLink]="['/ads']" routerLinkActive="router-link-active"><mat-icon>airplay</mat-icon> Advertisements </a></mat-list-item>
     <mat-list-item *ngIf="isLoggedIn()"><a routerLink="/messages" routerLinkActive="router-link-active"><mat-icon>message</mat-icon> Messages</a></mat-list-item>
     <ng-container *ngIf="hasRequiredAccess(['Admin', 'Moderator'])">
       <mat-list-item><a routerLink="/admin" routerLinkActive="router-link-active"><mat-icon>person</mat-icon> Admin</a></mat-list-item>
@@ -13,7 +18,7 @@
   </mat-list>
 </div>
 
-    <form *ngIf="!isLoggedIn()" #loginForm="ngForm" (ngSubmit)="loginForm.valid ? login() : ''" class="d-flex mr-3">    
+    <form *ngIf="!isLoggedIn()" #loginForm="ngForm" (ngSubmit)="loginForm.valid ? login() : ''" class="d-flex mr-3 ml-auto">    
         <mat-form-field appearance="outline" class="mr-3" id="loginEmail">
           <mat-label>Email</mat-label>
           <input required matInput type="text"  name="email" [(ngModel)]="loginData.email" class="mr-3" >

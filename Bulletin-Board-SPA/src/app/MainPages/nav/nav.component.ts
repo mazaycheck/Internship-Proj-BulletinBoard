@@ -59,6 +59,7 @@ export class NavComponent implements OnInit {
   onRegister() {
     const config = new MatDialogConfig();
     config.width = '30%';
+    config.minWidth = '460px';
     this.dialog.open(RegistrationComponent, config);
   }
 
