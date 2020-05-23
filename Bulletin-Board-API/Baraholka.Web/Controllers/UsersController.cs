@@ -25,28 +25,30 @@ namespace Baraholka.Web.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] PageArguments paginateParams, [FromQuery] string query)
+        public async Task<IActionResult> GetUsers([FromQuery] PageArguments pageArguments, [FromQuery] string filter)
         {
-            PageDataContainer<UserDto> usersDto = await _userService.GetUsers(paginateParams, query);
+            PageDataContainer<UserDto> pagedUserDtos = await _userService.GetUsers(pageArguments, filter);
 
-            if (usersDto == null)
+            if (pagedUserDtos == null)
             {
                 return NoContent();
             }
-            PageDataContainer<UserAdminModel> pagedUsersAdminModel = _mapper.Map<PageDataContainer<UserAdminModel>>(usersDto);
-            return Ok(pagedUsersAdminModel);
+            PageDataContainer<UserAuditWebModel> pagedUserAuditModels = _mapper.Map<PageDataContainer<UserAuditWebModel>>(pagedUserDtos);
+
+            return Ok(pagedUserAuditModels);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            UserDto userFromDb = await _userService.GetUser(id);
-            if (userFromDb == null)
+            UserDto userDto = await _userService.GetUser(id);
+            if (userDto == null)
             {
                 return NotFound();
             }
-            UserPublicWebModel userWebModel = _mapper.Map<UserPublicWebModel>(userFromDb);
-            return Ok(userWebModel);
+            UserPublicWebModel userPublicModel = _mapper.Map<UserPublicWebModel>(userDto);
+
+            return Ok(userPublicModel);
         }
 
         [Authorize(Roles = "Admin")]
@@ -54,11 +56,12 @@ namespace Baraholka.Web.Controllers
         [Route("deactivate/{id}")]
         public async Task<ActionResult> DeactivateUser([FromRoute] int id)
         {
-            var user = await _userService.GetUser(id);
-            if (user == null)
+            UserDto userDto = await _userService.GetUser(id);
+            if (userDto == null)
             {
                 return NotFound("No such user");
             }
+
             await _userService.DeactivateUser(id);
             return Ok();
         }
@@ -68,11 +71,12 @@ namespace Baraholka.Web.Controllers
         [Route("activate/{id}")]
         public async Task<ActionResult> ActivateUser([FromRoute] int id)
         {
-            var user = await _userService.GetUser(id);
-            if (user == null)
+            UserDto userDto = await _userService.GetUser(id);
+            if (userDto == null)
             {
                 return NotFound("No such user");
             }
+
             await _userService.ActivateUser(id);
             return Ok();
         }

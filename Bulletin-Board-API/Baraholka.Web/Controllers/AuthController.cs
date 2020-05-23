@@ -26,7 +26,8 @@ namespace Baraholka.Web.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginModel userLoginDto)
         {
-            var jwtToken = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
+            string jwtToken = await _authService.Login(userLoginDto.Email, userLoginDto.Password);
+
             if (!string.IsNullOrWhiteSpace(jwtToken))
             {
                 return Ok(new { token = jwtToken });
@@ -44,8 +45,8 @@ namespace Baraholka.Web.Controllers
                 return Conflict("Such user already exists");
             }
             UserDto userRegisterDto = _mapper.Map<UserDto>(userRegisterModel);
-            UserDto createdUser = await _authService.Register(userRegisterDto, userRegisterModel.Password);
-            UserPublicWebModel createdUserModel = _mapper.Map<UserPublicWebModel>(createdUser);
+            UserDto createdUserDto = await _authService.Register(userRegisterDto, userRegisterModel.Password);
+            UserPublicWebModel createdUserModel = _mapper.Map<UserPublicWebModel>(createdUserDto);
 
             return Ok(createdUserModel);
         }

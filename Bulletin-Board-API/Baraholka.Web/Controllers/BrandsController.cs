@@ -27,15 +27,16 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> Get([FromQuery]BrandFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<BrandDto> pagedBrands = await _brandService.GetAllBrands(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<BrandDto> pagedBrandDtos = await _brandService.GetAllBrands(filterArgs, pageArgs, sortingArgs);
 
-            if (pagedBrands == null)
+            if (pagedBrandDtos == null)
             {
                 return NoContent();
             }
 
-            PageDataContainer<BrandModel> pagedBrandsForWeb = _mapper.Map<PageDataContainer<BrandModel>>(pagedBrands);
-            return Ok(pagedBrandsForWeb);
+            PageDataContainer<BrandWebModel> pagedBrandModels = _mapper.Map<PageDataContainer<BrandWebModel>>(pagedBrandDtos);
+
+            return Ok(pagedBrandModels);
         }
 
         [HttpGet("{id}")]
@@ -46,8 +47,9 @@ namespace Baraholka.Web.Controllers
             {
                 return NotFound($"No such brand with id: {id}");
             }
-            BrandModel brandWebModel = _mapper.Map<BrandModel>(brandDto);
-            return Ok(brandWebModel);
+            BrandWebModel brandModel = _mapper.Map<BrandWebModel>(brandDto);
+
+            return Ok(brandModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -60,8 +62,9 @@ namespace Baraholka.Web.Controllers
             }
             BrandDto brandDto = _mapper.Map<BrandDto>(brandCreateModel);
             BrandDto createdBrandDto = await _brandService.CreateBrand(brandDto);
-            BrandModel brandWebModel = _mapper.Map<BrandModel>(createdBrandDto);
-            return StatusCode(201, brandWebModel);
+            BrandWebModel brandModel = _mapper.Map<BrandWebModel>(createdBrandDto);
+
+            return CreatedAtAction(nameof(Get), new { id = brandModel.BrandId }, brandModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -69,30 +72,32 @@ namespace Baraholka.Web.Controllers
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] BrandUpdateModel brandUpdateModel)
         {
-            var brandFromDb = await _brandService.GetBrand(brandUpdateModel.BrandId);
+            BrandDto brandFromDb = await _brandService.GetBrand(brandUpdateModel.BrandId);
 
             if (brandFromDb == null)
             {
                 return NotFound("No such brand");
             }
 
-            BrandDto brandDto = _mapper.Map<BrandDto>(brandUpdateModel);
+            BrandDto brandUpdateDto = _mapper.Map<BrandDto>(brandUpdateModel);
 
-            if (await _brandService.UpdatedBrandExists(brandDto))
+            if (await _brandService.UpdatedBrandExists(brandUpdateDto))
             {
                 return Conflict("This brand already exists");
             }
 
-            BrandDto updatedBrand = await _brandService.UpdateBrand(brandDto, brandUpdateModel.Categories);
-            return Ok(updatedBrand);
+            BrandDto updatedBrandDto = await _brandService.UpdateBrand(brandUpdateDto, brandUpdateModel.Categories);
+            BrandWebModel updatedBrandModel = _mapper.Map<BrandWebModel>(updatedBrandDto);
+
+            return Ok(updatedBrandModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var brandFromDb = await _brandService.GetBrand(id);
-            if (brandFromDb == null)
+            BrandDto brandDto = await _brandService.GetBrand(id);
+            if (brandDto == null)
             {
                 return NotFound("No such brand");
             }

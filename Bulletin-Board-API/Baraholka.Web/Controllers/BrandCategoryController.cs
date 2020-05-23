@@ -26,56 +26,57 @@ namespace Baraholka.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string category, string brand)
         {
-            var brandCategoryRelations = await _brandCategoryService.GetAllRelations(category, brand);
+            List<BrandCategoryDto> brandCategoryDtos = await _brandCategoryService.GetAllRelations(category, brand);
 
-            if (brandCategoryRelations.Count == 0)
+            if (brandCategoryDtos.Count == 0)
             {
                 return NoContent();
             }
 
-            List<BrandCategoryWebModel> brandCategoryWebModels = _mapper
-                .Map<List<BrandCategoryDto>, List<BrandCategoryWebModel>>(brandCategoryRelations);
+            List<BrandCategoryWebModel> brandCategoryModels = _mapper
+                .Map<List<BrandCategoryDto>, List<BrandCategoryWebModel>>(brandCategoryDtos);
 
-            return Ok(brandCategoryWebModels);
+            return Ok(brandCategoryModels);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            BrandCategoryDto brandCategoryRelation = await _brandCategoryService.GetRelationById(id);
+            BrandCategoryDto brandCategoryDto = await _brandCategoryService.GetRelationById(id);
 
-            if (brandCategoryRelation == null)
+            if (brandCategoryDto == null)
             {
                 return NotFound();
             }
-            BrandCategoryWebModel brandCategoryWebModel = _mapper.Map<BrandCategoryWebModel>(brandCategoryRelation);
-            return Ok(brandCategoryWebModel);
+            BrandCategoryWebModel brandCategoryModel = _mapper.Map<BrandCategoryWebModel>(brandCategoryDto);
+
+            return Ok(brandCategoryModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BrandCategoryCreateModel brandCategoryForCreate)
+        public async Task<IActionResult> Post([FromBody] BrandCategoryCreateModel brandCategoryCreateModel)
         {
-            CategoryDto category = await _brandCategoryService.GetCategory(brandCategoryForCreate.Category);
-            if (category == null)
+            CategoryDto categoryDto = await _brandCategoryService.GetCategory(brandCategoryCreateModel.Category);
+            if (categoryDto == null)
             {
                 return NotFound("No such category");
             }
 
-            BrandDto brand = await _brandCategoryService.GetBrand(brandCategoryForCreate.Brand);
-            if (brand == null)
+            BrandDto brandDto = await _brandCategoryService.GetBrand(brandCategoryCreateModel.Brand);
+            if (brandDto == null)
             {
                 return NotFound("No such brand");
             }
 
-            if (await _brandCategoryService.BrandCategoryExists(brand.BrandId, category.CategoryId))
+            if (await _brandCategoryService.BrandCategoryExists(brandDto.BrandId, categoryDto.CategoryId))
             {
                 return Conflict($"This relation already exists");
             }
 
-            BrandCategoryDto newBrandCategory = await _brandCategoryService.CreateRelation(brand.BrandId, category.CategoryId);
-            BrandCategoryWebModel newBrandCategoryModel = _mapper.Map<BrandCategoryWebModel>(newBrandCategory);
-            return CreatedAtAction(nameof(Get), new { id = newBrandCategory.BrandCategoryId }, newBrandCategoryModel);
+            BrandCategoryDto newBrandCategoryDto = await _brandCategoryService.CreateRelation(brandDto.BrandId, categoryDto.CategoryId);
+            BrandCategoryWebModel newBrandCategoryModel = _mapper.Map<BrandCategoryWebModel>(newBrandCategoryDto);
+            return CreatedAtAction(nameof(Get), new { id = newBrandCategoryModel.BrandCategoryId }, newBrandCategoryModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -88,6 +89,7 @@ namespace Baraholka.Web.Controllers
             }
 
             await _brandCategoryService.DeleteRelation(id);
+
             return Ok($"Removed relation with id: {id}");
         }
     }

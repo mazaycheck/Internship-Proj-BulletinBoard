@@ -2,7 +2,7 @@
 
 namespace Baraholka.Web.Models
 {
-    public class UserAdminModel
+    public class UserAuditWebModel
     {
         public int UserId { get; set; }
         public string UserName { get; set; }

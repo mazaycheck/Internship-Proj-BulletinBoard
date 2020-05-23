@@ -4,6 +4,7 @@ using Baraholka.Services;
 using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -26,11 +27,13 @@ namespace Baraholka.Web.Controllers
         [Route("roleslist")]
         public async Task<IActionResult> Get()
         {
-            var listOfRoles = await _rolesService.GetRoles();
+            List<string> listOfRoles = await _rolesService.GetRoles();
+
             if (listOfRoles == null)
             {
                 return NoContent();
             }
+
             return Ok(listOfRoles);
         }
 
@@ -38,14 +41,17 @@ namespace Baraholka.Web.Controllers
         [Route("editroles")]
         public async Task<IActionResult> EditRoles([FromBody] UserRolesUpdateModel userRolesUpdateModel)
         {
-            var userExists = await _rolesService.UserExists(userRolesUpdateModel.Email);
+            bool userExists = await _rolesService.UserExists(userRolesUpdateModel.Email);
+
             if (!userExists)
             {
                 return BadRequest("No such user");
             }
+
             UserDto updatedUserDto = await _rolesService.UpdateUserRoles(userRolesUpdateModel.Email, userRolesUpdateModel.Roles);
-            UserAdminModel updatedUserAdminModel = _mapper.Map<UserAdminModel>(updatedUserDto);
-            return Ok(updatedUserAdminModel);
+            UserAuditWebModel updatedUserAuditModel = _mapper.Map<UserAuditWebModel>(updatedUserDto);
+
+            return Ok(updatedUserAuditModel);
         }
     }
 }

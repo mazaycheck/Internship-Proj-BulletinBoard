@@ -4,10 +4,8 @@ using Baraholka.Services;
 using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Baraholka.Web.Controllers
@@ -31,11 +29,11 @@ namespace Baraholka.Web.Controllers
         public async Task<ActionResult> GetMessages([FromRoute]string messagebox)
         {
             int authorizedUserID = User.GetUserID();
-            List<MessageDto> messagesDto = await _messageService.GetMessagesByType(messagebox, authorizedUserID);
-            if (messagesDto != null)
+            List<MessageDto> messageDtos = await _messageService.GetMessagesByType(messagebox, authorizedUserID);
+            if (messageDtos != null)
             {
-                var messagesModel = _mapper.Map<List<MessageDto>, List<MessageWebModel>>(messagesDto);
-                return Ok(messagesModel);
+                List<MessageWebModel> messageModels = _mapper.Map<List<MessageDto>, List<MessageWebModel>>(messageDtos);
+                return Ok(messageModels);
             }
             else
             {
@@ -49,12 +47,12 @@ namespace Baraholka.Web.Controllers
         {
             int authorizedUserID = User.GetUserID();
 
-            List<MessageDto> messagesDto = await _messageService.GetMessageThread(userOneId: authorizedUserID, userTwoId: withuserId);
+            List<MessageDto> messageDtos = await _messageService.GetMessageThread(userOneId: authorizedUserID, userTwoId: withuserId);
 
-            if (messagesDto != null)
+            if (messageDtos != null)
             {
-                var messagesModel = _mapper.Map<List<MessageDto>, List<MessageWebModel>>(messagesDto);
-                return Ok(messagesModel);
+                List<MessageWebModel> messageModels = _mapper.Map<List<MessageDto>, List<MessageWebModel>>(messageDtos);
+                return Ok(messageModels);
             }
             else
             {
@@ -71,9 +69,8 @@ namespace Baraholka.Web.Controllers
                 return NotFound();
             }
 
-            int tokenUserId;
+            int tokenUserId = User.GetUserID();
 
-            tokenUserId = Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (messageDto.SenderId == tokenUserId || messageDto.RecieverId == tokenUserId)
             {
                 return Ok(_mapper.Map<MessageWebModel>(messageDto));
@@ -86,16 +83,18 @@ namespace Baraholka.Web.Controllers
         {
             int authorizedUserID = User.GetUserID();
 
-            var messageFromDb = await _messageService.GetById(messageId);
-            if (messageFromDb == null)
+            MessageDto messageDto = await _messageService.GetById(messageId);
+            if (messageDto == null)
                 return NotFound();
-            if (messageFromDb.RecieverId == authorizedUserID)
+
+            if (messageDto.RecieverId != authorizedUserID)
             {
-                MessageDto messageDto = await _messageService.MarkMessageAsRead(messageId);
-                var MessageWebModel = _mapper.Map<MessageWebModel>(messageDto);
-                return Ok(MessageWebModel);
+                return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to mark this message as read");
             }
-            return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to mark this message as read");
+
+            MessageDto messageUpdateDto = await _messageService.MarkMessageAsRead(messageId);
+            MessageWebModel messageModel = _mapper.Map<MessageWebModel>(messageUpdateDto);
+            return Ok(messageModel);
         }
 
         [HttpPost]
@@ -103,9 +102,11 @@ namespace Baraholka.Web.Controllers
         {
             MessageDto messageCreateDto = _mapper.Map<MessageDto>(messageCreateModel);
             messageCreateDto.SenderId = User.GetUserID();
-            MessageDto newMessage = await _messageService.CreateMessage(messageCreateDto);
-            MessageWebModel newMessageWebModel = _mapper.Map<MessageWebModel>(newMessage);
-            return CreatedAtAction("GetById", new { id = newMessageWebModel.MessageId }, newMessageWebModel);
+
+            MessageDto createdMessageDto = await _messageService.CreateMessage(messageCreateDto);
+            MessageWebModel createdMessageModel = _mapper.Map<MessageWebModel>(createdMessageDto);
+
+            return CreatedAtAction("GetById", new { id = createdMessageModel.MessageId }, createdMessageModel);
         }
     }
 }

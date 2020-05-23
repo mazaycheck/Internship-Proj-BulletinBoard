@@ -2,7 +2,7 @@
 
 namespace Baraholka.Web.Models
 {
-    public class CategoryModel
+    public class CategoryWebModel
     {
         public int CategoryId { get; set; }
         public string Title { get; set; }

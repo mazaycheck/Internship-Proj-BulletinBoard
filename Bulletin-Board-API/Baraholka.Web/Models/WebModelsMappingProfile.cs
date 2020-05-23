@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Baraholka.Data.Dtos;
 using Baraholka.Data.Pagination;
-using Baraholka.Domain.Models;
 using System.Linq;
 
 namespace Baraholka.Web.Models
@@ -10,9 +9,6 @@ namespace Baraholka.Web.Models
     {
         public WebModelsMappingProfile()
         {
-            CreateMap<Annoucement, AnnoucementDto>();
-            CreateMap<AnnoucementDto, Annoucement>();
-
             CreateMap<AnnoucementDto, AnnoucementWebModel>()
                 .ForMember(dest => dest.Id, sourse => sourse
                     .MapFrom(src => src.AnnoucementId))
@@ -29,7 +25,6 @@ namespace Baraholka.Web.Models
                  .ForMember(dest => dest.PhotoUrls, sourse => sourse
                     .MapFrom(src => src.Photos.Select(x => x.PhotoUrl).ToList()));
 
-            CreateMap<PageDataContainer<Annoucement>, PageDataContainer<AnnoucementDto>>();
             CreateMap<PageDataContainer<AnnoucementDto>, PageDataContainer<AnnoucementWebModel>>();
 
             CreateMap<AnnoucementCreateModel, AnnoucementDto>();
@@ -39,27 +34,21 @@ namespace Baraholka.Web.Models
                 .ForMember(dest => dest.Photos, sourse => sourse.Ignore())
                 .ForMember(dest => dest.UserId, sourse => sourse.Ignore());
 
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<CategoryDto, CategoryModel>()
+            CreateMap<CategoryDto, CategoryWebModel>()
                 .ForMember(dest => dest.Brands, sourse => sourse
                     .MapFrom(src => src.BrandCategories.Select(x => x.Brand.Title).ToList()));
 
             CreateMap<CategoryCreateModel, CategoryDto>();
             CreateMap<CategoryUpdateModel, CategoryDto>();
 
-            CreateMap<BrandDto, BrandModel>()
+            CreateMap<BrandDto, BrandWebModel>()
                 .ForMember(dest => dest.Categories, sourse => sourse
                     .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
                 .ReverseMap();
 
-            CreateMap<PageDataContainer<BrandDto>, PageDataContainer<BrandModel>>();
+            CreateMap<PageDataContainer<BrandDto>, PageDataContainer<BrandWebModel>>();
             CreateMap<BrandCreateModel, BrandDto>();
             CreateMap<BrandUpdateModel, BrandDto>();
-
-            CreateMap<Brand, BrandModel>()
-                .ForMember(dest => dest.Categories, sourse => sourse
-                    .MapFrom(src => src.BrandCategories.Select(x => x.Category.Title).ToList()))
-                .ReverseMap();
 
             CreateMap<BrandCategoryDto, BrandCategoryWebModel>()
                 .ForMember(dest => dest.BrandTitle, sourse => sourse.MapFrom(src => src.Brand.Title))
@@ -81,11 +70,11 @@ namespace Baraholka.Web.Models
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title))
                 .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id));
 
-            CreateMap<UserDto, UserAdminModel>()
+            CreateMap<UserDto, UserAuditWebModel>()
                 .ForMember(dest => dest.UserId, sourse => sourse.MapFrom(src => src.Id))
                 .ForMember(dest => dest.TownName, sourse => sourse.MapFrom(src => src.Town.Title));
 
-            CreateMap<PageDataContainer<UserDto>, PageDataContainer<UserAdminModel>>();
+            CreateMap<PageDataContainer<UserDto>, PageDataContainer<UserAuditWebModel>>();
         }
     }
 }

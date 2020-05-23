@@ -2,7 +2,7 @@
 
 namespace Baraholka.Web.Models
 {
-    public class BrandModel
+    public class BrandWebModel
     {
         public int BrandId { get; set; }
         public string Title { get; set; }

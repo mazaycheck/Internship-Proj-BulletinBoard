@@ -5,8 +5,6 @@ using Baraholka.Services;
 using Baraholka.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -31,13 +29,13 @@ namespace Baraholka.Web.Controllers
         public async Task<IActionResult> GetAll([FromQuery]AnnoucementFilterArguments filterArgs,
             [FromQuery]PageArguments pageArgs, [FromQuery]SortingArguments sortingArgs)
         {
-            PageDataContainer<AnnoucementDto> pagedAnnoucements = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
+            PageDataContainer<AnnoucementDto> pagedAnnoucementDtos = await _annoucementService.GetAnnoucements(filterArgs, pageArgs, sortingArgs);
 
-            if (!pagedAnnoucements.PageData.Any())
+            if (pagedAnnoucementDtos == null)
             {
                 return NoContent();
             }
-            PageDataContainer<AnnoucementWebModel> pagedWebAnnoucements = _mapper.Map<PageDataContainer<AnnoucementWebModel>>(pagedAnnoucements);
+            PageDataContainer<AnnoucementWebModel> pagedWebAnnoucements = _mapper.Map<PageDataContainer<AnnoucementWebModel>>(pagedAnnoucementDtos);
 
             return Ok(pagedWebAnnoucements);
         }
@@ -53,6 +51,7 @@ namespace Baraholka.Web.Controllers
                 return NotFound($"No annoucement with id: {id}");
             }
             AnnoucementWebModel annoucementWebModel = _mapper.Map<AnnoucementWebModel>(annoucementDto);
+
             return Ok(annoucementWebModel);
         }
 
@@ -65,9 +64,11 @@ namespace Baraholka.Web.Controllers
 
             annoucementDto.UserId = User.GetUserID();
 
-            AnnoucementDto annoucement = await _annoucementService.CreateAnnoucement(annoucementDto, annoucementCreateModel.Photo);
+            AnnoucementDto createdAnnoucementDto = await _annoucementService.CreateAnnoucement(annoucementDto, annoucementCreateModel.Photo);
 
-            return CreatedAtAction(nameof(GetById), new { id = annoucement.AnnoucementId }, annoucement);
+            AnnoucementWebModel createdAnnoucementModel = _mapper.Map<AnnoucementWebModel>(createdAnnoucementDto);
+
+            return CreatedAtAction(nameof(GetById), new { id = createdAnnoucementDto.AnnoucementId }, createdAnnoucementDto);
         }
 
         [Authorize(Roles = "Member")]
@@ -85,7 +86,7 @@ namespace Baraholka.Web.Controllers
 
             if (currentUser != annoucement.UserId)
             {
-                return StatusCode(403, "You are not allowed to delete other user's annoucement!");
+                return StatusCode((int)HttpStatusCode.Forbidden, "You are not allowed to delete other user's annoucement!");
             }
 
             await _annoucementService.DeleteAnnoucement(id);
@@ -116,7 +117,7 @@ namespace Baraholka.Web.Controllers
 
             AnnoucementDto updatedAnnoucement = await _annoucementService.UpdateAnnoucement(annoucementUpdateDto, annoucementUpdateModel.Photo);
 
-            return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.AnnoucementId });
+            return CreatedAtAction(nameof(GetById), new { id = updatedAnnoucement.AnnoucementId }, updatedAnnoucement);
         }
     }
 }

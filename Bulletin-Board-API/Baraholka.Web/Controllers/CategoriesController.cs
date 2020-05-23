@@ -25,25 +25,27 @@ namespace Baraholka.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]string filter)
         {
-            List<CategoryDto> allCategories = await _categoryService.GetAllCategories(filter);
-            if (allCategories == null)
+            List<CategoryDto> categoryDtos = await _categoryService.GetAllCategories(filter);
+            if (categoryDtos == null)
             {
                 return NoContent();
             }
-            List<CategoryModel> categoriesWebModel = _mapper.Map<List<CategoryDto>, List<CategoryModel>>(allCategories);
-            return Ok(categoriesWebModel);
+            List<CategoryWebModel> categoryModels = _mapper.Map<List<CategoryDto>, List<CategoryWebModel>>(categoryDtos);
+
+            return Ok(categoryModels);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            CategoryDto category = await _categoryService.GetCategory(id);
-            if (category == null)
+            CategoryDto categoryDto = await _categoryService.GetCategory(id);
+            if (categoryDto == null)
             {
                 return NotFound($"No such category with id: {id}");
             }
-            CategoryModel categoryWebModel = _mapper.Map<CategoryModel>(category);
-            return Ok(categoryWebModel);
+            CategoryWebModel categoryModel = _mapper.Map<CategoryWebModel>(categoryDto);
+
+            return Ok(categoryModel);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
@@ -54,18 +56,18 @@ namespace Baraholka.Web.Controllers
             {
                 return Conflict("Such category already exists");
             }
-            CategoryDto categoryDto = _mapper.Map<CategoryDto>(categoryCreateModel);
-            CategoryDto createdCategory = await _categoryService.CreateCategory(categoryDto);
+            CategoryDto categoryCreateDto = _mapper.Map<CategoryDto>(categoryCreateModel);
+            CategoryDto createdCategoryDto = await _categoryService.CreateCategory(categoryCreateDto);
 
-            return StatusCode(201, _mapper.Map<CategoryModel>(createdCategory));
+            return CreatedAtAction(nameof(Get), new { id = createdCategoryDto.CategoryId }, createdCategoryDto);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] CategoryUpdateModel categoryUpdateModel)
         {
-            CategoryDto categoryFromDb = await _categoryService.GetCategory(categoryUpdateModel.CategoryId);
-            if (categoryFromDb.Title != categoryUpdateModel.Title)
+            CategoryDto categoryDto = await _categoryService.GetCategory(categoryUpdateModel.CategoryId);
+            if (categoryDto.Title != categoryUpdateModel.Title)
             {
                 if (await _categoryService.Exists(categoryUpdateModel.Title))
                 {
@@ -74,16 +76,17 @@ namespace Baraholka.Web.Controllers
             }
 
             CategoryDto categoryUpdateDto = _mapper.Map<CategoryDto>(categoryUpdateModel);
-            CategoryDto updatedCategory = await _categoryService.UpdateCategory(categoryUpdateDto);
-            return StatusCode(201, _mapper.Map<CategoryModel>(updatedCategory));
+            CategoryDto updatedCategoryDto = await _categoryService.UpdateCategory(categoryUpdateDto);
+
+            return CreatedAtAction(nameof(Get), new { id = updatedCategoryDto.CategoryId }, updatedCategoryDto);
         }
 
         [Authorize(Roles = "Admin, Moderator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _categoryService.GetCategory(id);
-            if (category == null)
+            CategoryDto categoryDto = await _categoryService.GetCategory(id);
+            if (categoryDto == null)
             {
                 return NotFound($"No such category with id: {id}");
             }
