@@ -50,8 +50,12 @@ namespace Baraholka.Data.Seed
 
                 //For testing only
                 var admin = new User() { UserName = "Admin", Email = "admin@myweb.com" };
+                admin.RegistrationDate = DateTime.Now - TimeSpan.FromDays(30);
+                admin.LockoutEnabled = false;
+                admin.PhoneNumber = "12345678";
+                admin.TownId = 1;                
                 userManager.CreateAsync(admin, "password123").Wait();
-                userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" }).Wait();
+                userManager.AddToRolesAsync(admin, new[] { "Admin" }).Wait();
             }
         }
 
@@ -71,7 +75,7 @@ namespace Baraholka.Data.Seed
         public static void SeedPhotos(AppDbContext context, string rootPath, List<ImageFolderConfig> folders, IImageFileProcessor imageFileProcessor, IImageFileManager fileManager)
         {
             if (!context.Photos.Any())
-            {
+            {                
                 var annoucements = context.Annoucements.Include(p => p.Photos).ToList();
                 foreach (Annoucement item in annoucements)
                 {
@@ -79,6 +83,29 @@ namespace Baraholka.Data.Seed
                     item.Photos = GetPhotos(category, item.AnnoucementId, rootPath, folders, imageFileProcessor, fileManager);
                 }
                 context.SaveChanges();
+            }
+        }
+
+        public static void SeedMessages(AppDbContext context)
+        {
+            if (!context.Messages.Any())
+            {
+                for (int i = 1; i <= 11; i++)
+                {
+                    for (int y = 1; y <= 11; y++)
+                    {
+                        Message newMessage = new Message()
+                        {
+                            DateTimeSent = DateTime.Now - TimeSpan.FromDays(Faker.RandomNumber.Next(1, 10)),
+                            RecieverId = i,
+                            SenderId = y,
+                            IsRead = true,
+                            Text = Faker.Lorem.Sentence(2),
+                            DateTimeRead = DateTime.Now,
+                        };
+                        context.Messages.Add(newMessage);
+                    }
+                }
             }
         }
 

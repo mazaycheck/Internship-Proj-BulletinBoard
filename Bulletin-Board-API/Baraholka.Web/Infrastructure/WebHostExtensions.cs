@@ -32,6 +32,7 @@ namespace Baraholka.Web.Infrastructure
                     var filemanager = services.GetRequiredService<IImageFileManager>();
                     context.Database.Migrate();
                     Seed.SeedUsers(userManager, roleManager);
+                    Seed.SeedMessages(context);
                     Seed.SeedAnnoucements(context);
                     var imageFolders = configuration.GetSection("AppSettings:ImageFolders").Get<List<ImageFolderConfig>>();
                     Seed.SeedPhotos(context, environment.WebRootPath, imageFolders, imageProcessor, filemanager);
