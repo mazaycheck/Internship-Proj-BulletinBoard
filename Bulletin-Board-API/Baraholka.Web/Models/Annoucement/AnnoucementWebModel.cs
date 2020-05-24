@@ -12,8 +12,8 @@ namespace Baraholka.Web.Models
         public DateTime Date { get; set; }
         public virtual List<string> PhotoUrls { get; set; }
         public int UserId { get; set; }
-        public string Category { get; set; }
-        public string Brand { get; set; }
+        public string CategoryName { get; set; }
+        public string BrandName { get; set; }
         public string Town { get; set; }
         public int BrandCategoryId { get; set; }
     }

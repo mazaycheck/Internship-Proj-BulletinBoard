@@ -1,0 +1,53 @@
+.bg{
+    height: 10vh;
+    width: 100%;
+    background-image: url('/assets/images/logo5s1.bmp');
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.bg2{
+    height: 10vh;
+    width: 100%;
+    background-image: url('/assets/images/logo5s2.bmp');
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+.bg3{
+    height: 40vh;
+    width: 100%;
+    background-image: url('/assets/images/logo6h2.png');
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+.mt200{
+    margin-top: 150px;
+}
+
+.sub2 {
+    font-family: 'Cookie', cursive!important;
+    font-size: 80px!important;
+    color: cadetblue!important;
+    font-stretch: extra-expanded;  
+    text-align: center;  
+}
+
+.sub1{
+    font-family: 'Frijole', cursive!important;;
+    font-size: 120px!important;
+    color: rgb(95, 96, 160)!important;
+    font-stretch: extra-expanded;  
+    text-align: center;  
+    line-height: 120px;
+}

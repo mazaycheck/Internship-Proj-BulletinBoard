@@ -34,15 +34,13 @@
              
       <div class="d-flex align-items-center ml-3">
         <button mat-stroked-button color="accent" type="submit" class="mr-3">Login</button>
-        <!-- <button type="button" mat-raised-button color="warn"  routerLink='/auth/register' routerLinkActive="router-link-active" >Register</button> -->
          <button type="button" mat-stroked-button color="warn"  (click)="onRegister()">Register</button>
       </div>
 
     </form>  
 
-    <div *ngIf="isLoggedIn()" class="mr-3">
-      
-      <h4 class="d-inline-block mr-3">Welcome {{ name | titlecase }}</h4>
+    <div *ngIf="isLoggedIn()" class="mr-3">      
+      <h4 class="d-inline-block mr-3"><a [routerLink]="['/profile', userId]">Welcome <span *ngIf="name"> {{ name | titlecase }} </span></a></h4>
       <button mat-stroked-button color="warn" class="d-inline-block" (click)="logout()">Log Out</button>
     </div>
 

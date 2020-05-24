@@ -7,3 +7,8 @@
     white-space: pre-wrap;
     line-height: 1.6;    
 }
+
+.p-bold{
+    font-size: larger;
+    font-weight: bold;
+}

@@ -34,11 +34,25 @@
       <app-userInfo [userId]="advert.userId" [detailedMode]="false">        
       </app-userInfo>
       <mat-card class="mt-3">
-        <mat-card-header>
-          <mat-card-title>
-            Description:
-          </mat-card-title>
-        </mat-card-header>
+ 
+    
+            <div class="d-flex justify-content-between my-2">
+              <p class="d-inline-block p-bold">Category:</p>  
+              <p class="d-inline-block">{{advert.categoryName}}</p>
+            </div>
+                                
+   
+            <div class="d-flex justify-content-between my-2">
+              <p class="d-inline-block p-bold">Brand:</p>  
+              <p class="d-inline-block">{{advert.brandName}}</p>
+            </div>
+
+            <div class="d-flex justify-content-between my-2">
+              <p class="d-inline-block p-bold">Price:</p>  
+              <p class="d-inline-block">{{advert.price | currency}}</p>
+            </div>
+            <mat-divider></mat-divider>
+            <br>                        
         <mat-card-content>
           <p class="ad-description">{{ advert.description }}</p>
         </mat-card-content>

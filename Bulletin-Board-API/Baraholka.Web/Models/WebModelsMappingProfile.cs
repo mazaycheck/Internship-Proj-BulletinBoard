@@ -16,9 +16,9 @@ namespace Baraholka.Web.Models
                     .MapFrom(src => src.CreateDate))
                 .ForMember(dest => dest.UserId, sourse => sourse
                     .MapFrom(src => src.UserId))
-                 .ForMember(dest => dest.Category, sourse => sourse
+                 .ForMember(dest => dest.CategoryName, sourse => sourse
                     .MapFrom(src => src.BrandCategory.Category.Title))
-                 .ForMember(dest => dest.Brand, sourse => sourse
+                 .ForMember(dest => dest.BrandName, sourse => sourse
                     .MapFrom(src => src.BrandCategory.Brand.Title))
                  .ForMember(dest => dest.Town, sourse => sourse
                     .MapFrom(src => src.User.Town.Title))

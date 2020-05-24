@@ -55,10 +55,12 @@ namespace Baraholka.Services
 
             var newUser = _mapper.Map<User>(userRegisterDto);
 
-            var result = await _userManager.CreateAsync(newUser, password);
-
+            newUser.RegistrationDate = DateTime.Now;            
+            IdentityResult result = await _userManager.CreateAsync(newUser, password);
+            
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(newUser, "Member");
                 return _mapper.Map<UserDto>(newUser);
             }
             else

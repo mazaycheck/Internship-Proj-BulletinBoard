@@ -18,12 +18,14 @@ export class NavComponent implements OnInit {
   hide = true;
   loginData: any = {};
   name: string;
+  userId: number;
 
   constructor(public authService: AuthService, private toast: ToastrService, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit() {
     if (this.isLoggedIn()) {
       this.name = this.authService.getCurrentUserName();
+      this.userId = this.authService.gettCurrentUserId();
     }
   }
 
