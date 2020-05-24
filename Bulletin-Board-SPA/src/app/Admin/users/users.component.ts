@@ -20,7 +20,7 @@ export class UsersComponent implements OnInit {
   allUsersFromDb: UserForDetail[] = [];
   allRolesFromDb: string[] = [];
   allUserRoles: string[];
-  displayedColumns = ['username', 'email', 'registrationdate', 'roles', 'action'];
+  displayedColumns = ['username', 'email', 'registrationdate', 'roles', 'active', 'action'];
   temporaryRoles: string[] = [];
 
 
@@ -44,11 +44,30 @@ export class UsersComponent implements OnInit {
       .subscribe(x => { this.queryOptions.query = x; this.getAllUsers(); });
   }
 
+  refresh(){
+    this.getAllUsers();
+    this.getAllRoles();    
+  }
+
   getAllRoles() {
     this.adminService.getRoles().subscribe(response => {
       this.allRolesFromDb = response;
 
     });
+  }
+
+  accountActivation(user: UserForDetail) {
+    if (user.isActive) {
+      this.adminService.unlockAccount(user.userId).subscribe(response => {
+        this.toastr.success(`Account ${user.email} unlocked`);
+        this.refresh();
+      });
+    } else {
+      this.adminService.deactivateAccount(user.userId).subscribe(reponse => {
+        this.toastr.warning(`Account ${user.email} locked `);
+        this.refresh();
+      });
+    }
   }
 
   getAllUsers() {

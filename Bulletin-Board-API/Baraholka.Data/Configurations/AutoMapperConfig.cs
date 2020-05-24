@@ -20,12 +20,17 @@ namespace Baraholka.Data.Configurations
             CreateMap<Category, CategoryDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
+                .ForMember(dest => dest.IsActive, sourse => sourse
+                    .MapFrom(src => !src.LockoutEnd.HasValue))
                 .ForMember(dest => dest.Roles, sourse => sourse
                     .MapFrom(src => src.UserRoles.Select(r => r.Role.Name).ToList()));
 
             CreateMap<UserDto, User>()
                 .ForMember(dest => dest.Town, src => src.Ignore())
-                .ForMember(dest => dest.UserRoles, src => src.Ignore());
+                .ForMember(dest => dest.UserRoles, src => src.Ignore())
+                .ForMember(dest => dest.LockoutEnd, src => src.Ignore());
+
+
 
             CreateMap<PageDataContainer<User>, PageDataContainer<UserDto>>();
 

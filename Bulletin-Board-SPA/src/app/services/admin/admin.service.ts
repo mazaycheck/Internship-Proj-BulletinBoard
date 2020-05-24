@@ -22,4 +22,12 @@ constructor(private http: HttpClient) {
    return this.http.post(this.baseUrl + 'api/roles/editroles', {email, roles});
  }
 
+ deactivateAccount(userId: number): Observable<any> {
+   return this.http.post(`${this.baseUrl}api/Users/deactivate/${userId}`, {});
+ }
+
+ unlockAccount(userId: number): Observable<any> {
+  return this.http.post(`${this.baseUrl}api/Users/activate/${userId}`, {});
+}
+
 }

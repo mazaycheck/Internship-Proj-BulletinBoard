@@ -1,5 +1,5 @@
 export interface UserForDetail {
-    id: number;
+    userId: number;
     userName: string;
     phoneNumber: string;
     townId: string;
@@ -9,4 +9,5 @@ export interface UserForDetail {
     roles?: string[];
     edit?: boolean;
     email?: string;
+    isActive?: boolean;
 }

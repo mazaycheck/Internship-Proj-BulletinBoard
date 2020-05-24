@@ -14,5 +14,6 @@ namespace Baraholka.Data.Dtos
         public DateTime RegistrationDate { get; set; }
         public string Email { get; set; }
         public IList<string> Roles { get; set; }
+        public bool IsActive { get; set; }
     }
 }

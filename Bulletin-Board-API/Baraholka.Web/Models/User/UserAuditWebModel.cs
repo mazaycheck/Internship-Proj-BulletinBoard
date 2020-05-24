@@ -12,5 +12,6 @@ namespace Baraholka.Web.Models
         public DateTime RegistrationDate { get; set; }
         public string Email { get; set; }
         public string[] Roles { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -23,8 +23,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./adtable.component.css']
 })
 export class AdtableComponent implements OnInit, OnChanges {
-  @Input() displayedColumns: string[] = ['Title', 'Description', 'Price', 'Category', 'Town', 'CreateDate', 'Manage'];
+  @Input() displayedColumns: string[] = ['Title', 'Price', 'Category', 'Town', 'CreateDate'];
   @Input() userId = 0;
+  @Input() titleLength: number;
   @ViewChild('paginator') paginator: MatPaginator;
   advertisements: Advert[] = [];
   categories: Category[] = [];
