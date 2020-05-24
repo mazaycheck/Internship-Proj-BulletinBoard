@@ -12,6 +12,7 @@ import { interval, Subscription } from 'rxjs';
 import * as signalR from '@aspnet/signalr';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { EventEmitterService } from 'src/app/services/Repositories/event-emitter.service';
 
 @Component({
   selector: 'app-messageModal',
@@ -31,7 +32,8 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
   timeOutForTyping: any;
   @ViewChild(CdkVirtualScrollViewport) viewPort: CdkVirtualScrollViewport;
 
-  constructor(private messageService: MessagesService, @Inject(MAT_DIALOG_DATA) public data, private authService: AuthService) {
+  constructor(private messageService: MessagesService, @Inject(MAT_DIALOG_DATA) public data,
+              private authService: AuthService, private eventEmitter: EventEmitterService) {
     this.baseUrl = environment.baseUrl;
   }
   startConnection() {
@@ -81,13 +83,14 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
     this.addDataListening();
     this.newMessage = { recieverId: this.data.id, text: '' };
     this.updateMessages();
-
+    this.eventEmitter.onFirstComponentEvent();
   }
 
   updateMessages() {
     this.messageService.getMessageThread(this.data.id).subscribe(response => {
       this.userNotTyping();
       this.messages = response;
+      this.eventEmitter.onFirstComponentEvent();
     });
   }
 

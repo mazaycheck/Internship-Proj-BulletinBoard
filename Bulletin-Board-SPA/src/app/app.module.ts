@@ -37,6 +37,7 @@ import { AdtableComponent } from './MainPages/Advert/adtable/adtable.component';
 import { AdtablebodyComponent } from './MainPages/Advert/adtable/adtablebody/adtablebody.component';
 import { AdtilesComponent } from './MainPages/Advert/adtable/adtiles/adtiles.component';
 import { SidenavComponent } from './MainPages/sidenav/sidenav.component';
+import { EventEmitterService } from './services/Repositories/event-emitter.service';
 
 export function toketGetter(){
    return localStorage.getItem('token');
@@ -92,7 +93,8 @@ export function toketGetter(){
          provide: HTTP_INTERCEPTORS,
          useClass: JwtTokenInterceptorService,
          multi: true
-      }
+      },
+      EventEmitterService,
    ],
    bootstrap: [
       AppComponent

@@ -1,8 +1,18 @@
 
 <mat-tab-group (selectedTabChange)="tabchanged($event)">
-  <mat-tab label="Categories" ><app-generic-entity [service]="catService" [title]="'Categories'"></app-generic-entity></mat-tab>
-  <mat-tab label="Brands"><app-brandList></app-brandList></mat-tab>
-  <mat-tab label="Towns" ><app-generic-entity [service]="townService" [title]="'Towns'"></app-generic-entity>  </mat-tab>
-  <mat-tab label="Users" ><app-users></app-users></mat-tab>
+  <mat-tab label="Categories">
+    <ng-template matTabContent>         
+    <app-generic-entity [service]="catService" [title]="'Categories'">
+    </app-generic-entity>
+  </ng-template>
+</mat-tab>
+  <mat-tab label="Brands">
+    <ng-template matTabContent><app-brandList></app-brandList></ng-template>
+  </mat-tab>
+  <mat-tab label="Towns" >
+    <ng-template matTabContent><app-generic-entity [service]="townService" [title]="'Towns'"></app-generic-entity></ng-template>
+  </mat-tab>
+  <mat-tab label="Users" >
+    <ng-template matTabContent><app-users></app-users></ng-template>
+  </mat-tab>
 </mat-tab-group>
-

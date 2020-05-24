@@ -70,6 +70,20 @@ export class UsersComponent implements OnInit {
     }
   }
 
+  lockAccount(user) {
+    this.adminService.deactivateAccount(user.userId).subscribe(reponse => {
+      this.toastr.warning(`Account ${user.email} locked `);
+      this.refresh();
+    });
+  }
+
+  unlockAccount(user) {
+    this.adminService.unlockAccount(user.userId).subscribe(response => {
+      this.toastr.success(`Account ${user.email} unlocked`);
+      this.refresh();
+    });
+  }
+
   getAllUsers() {
     this.userService.getAll(this.queryOptions).subscribe(response => {
       this.allUsersFromDb = response.pageData;
