@@ -27,6 +27,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatBadgeModule} from '@angular/material/badge';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
      MatTabsModule,
      ScrollingModule,
      MatSidenavModule,
+     MatBadgeModule,
   ],
   exports: [
     MatAutocompleteModule,
@@ -87,7 +89,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatButtonToggleModule,
     MatTabsModule,
     ScrollingModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatBadgeModule,
 
   ]
 })

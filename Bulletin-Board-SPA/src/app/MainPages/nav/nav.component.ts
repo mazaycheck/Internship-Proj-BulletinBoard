@@ -5,13 +5,13 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import { RegistrationComponent } from '../registration/registration.component';
+import { MessagesService } from 'src/app/services/Repositories/messages.service';
 
 
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css'],
-  // encapsulation : ViewEncapsulation.None,
 })
 export class NavComponent implements OnInit {
   
@@ -19,13 +19,18 @@ export class NavComponent implements OnInit {
   loginData: any = {};
   name: string;
   userId: number;
+  newMessages: number;
 
-  constructor(public authService: AuthService, private toast: ToastrService, private router: Router, private dialog: MatDialog) { }
+  constructor(public authService: AuthService, private toast: ToastrService,
+              private router: Router, private dialog: MatDialog, private messageService: MessagesService) { }
 
   ngOnInit() {
-    if (this.isLoggedIn()) {
+    if (this.isLoggedIn()) {      
       this.name = this.authService.getCurrentUserName();
       this.userId = this.authService.gettCurrentUserId();
+      this.messageService.getUnreadMessages().subscribe(response => {
+        this.newMessages = response.length;
+      });
     }
   }
 
