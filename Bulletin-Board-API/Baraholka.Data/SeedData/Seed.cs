@@ -63,7 +63,7 @@ namespace Baraholka.Data.Seed
         {
             if (!context.Annoucements.Any())
             {
-                foreach (var item in AnnoucementData.GetData(10))
+                foreach (var item in AnnoucementData.GetData(20))
                 {
                     context.Annoucements.Add(item);
                 }
