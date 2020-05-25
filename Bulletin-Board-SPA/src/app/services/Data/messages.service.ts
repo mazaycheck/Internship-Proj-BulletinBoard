@@ -47,5 +47,4 @@ export class MessagesService {
   getMessageThread(withUserTwoId: number): Observable<any> {
     return this.http.get(this.baseUrl + this.thread + withUserTwoId);
   }
-
 }

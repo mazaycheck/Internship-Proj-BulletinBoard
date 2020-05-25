@@ -9,8 +9,8 @@ import { AdvertService } from '../Data/advert.service';
 export class AdvertResolver implements Resolve<Advert> {
 
 constructor(private advertService: AdvertService) { }
-  resolve(route: import("@angular/router").ActivatedRouteSnapshot, state: import("@angular/router").RouterStateSnapshot): Advert | import("rxjs").Observable<Advert> | Promise<Advert> {
+    resolve(route: import('@angular/router').ActivatedRouteSnapshot,
+            state: import('@angular/router').RouterStateSnapshot): Advert | import('rxjs').Observable<Advert> | Promise<Advert> {
     return this.advertService.getAd(+route.paramMap.get('id'));
   }
-
 }

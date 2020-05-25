@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AdvertService } from 'src/app/services/Data/advert.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CatService } from 'src/app/services/Data/cat.service';
@@ -45,12 +45,12 @@ export class AdupdateComponent implements OnInit {
 
   initForm() {
     this.advertForm = new FormGroup({
-      title: new FormControl(''),
-      description: new FormControl(''),
-      price: new FormControl(0),
-      brand: new FormControl(''),
+      title: new FormControl('', [Validators.required, Validators.maxLength(50)] ),
+      description: new FormControl('' , [Validators.maxLength(1000)]),
+      price: new FormControl(0, [Validators.min(1), Validators.max(9999999), Validators.required]),
+      brand: new FormControl('', [Validators.required]),
       photo: new FormControl(),
-      categoryId: new FormControl(0)
+      categoryId: new FormControl('', [Validators.required])
     });
   }
 

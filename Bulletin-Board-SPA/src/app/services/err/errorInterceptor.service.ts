@@ -33,9 +33,8 @@ constructor() { }
               return throwError('Not Found');
             }
             if (errorResponse.status === 409) {
-              return throwError(errorResponse.statusText + ' ' + errorResponse.message);
+              return throwError('Duplicate entries');
             }
-
 
             if (typeof errorResponse.error.errors === 'object' ) {
               for (const err of Object.keys(errorResponse.error.errors)) {
@@ -56,6 +55,4 @@ constructor() { }
       )
     );
   }
-
-
 }

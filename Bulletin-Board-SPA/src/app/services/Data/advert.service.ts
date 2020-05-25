@@ -1,19 +1,15 @@
 import { Injectable } from '@angular/core';
-
 import { Observable } from 'rxjs';
 import { Advert } from 'src/app/Models/Advert';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { GlobalsService } from '../global/globals.service';
 import { AdvertQueryOptions } from 'src/app/Models/AdvertQueryOptions';
-import { UrlSerializer } from '@angular/router';
 import { PageObject } from 'src/app/Models/PageObject';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdvertService {
-
-
 
   baseUrl: string;
   constructor(private http: HttpClient, private globals: GlobalsService) {
@@ -31,7 +27,6 @@ export class AdvertService {
     const queryparams: HttpParams = this.getParamsFromOptions(advertOptions);
     return this.http.get<PageObject>(`${this.baseUrl}all?` + queryparams.toString());
   }
-
 
   getAd(id: number) {
     return this.http.get<Advert>(this.baseUrl + `${id}`);

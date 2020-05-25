@@ -16,10 +16,11 @@ export class TownService {
   getAll(): Observable<any> {
     return this.http.get(this.baseUrl + '/public');
   }
-  getById() { }
+
   create(town: Town): Observable<any> {
     return this.http.post(this.baseUrl, town);
   }
+
   delete(town: Town): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + town.townId);
   }

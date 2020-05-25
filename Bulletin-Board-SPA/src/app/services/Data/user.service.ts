@@ -18,9 +18,8 @@ export class UserService {
     const params = new HttpParams({fromObject: options});
     return this.http.get(`${this.baseUrl}?${params}`);
   }
-  
+
   getById(id: number): Observable <UserForDetail> {
     return this.http.get<UserForDetail>(this.baseUrl + `${id}`);
    }
-
 }

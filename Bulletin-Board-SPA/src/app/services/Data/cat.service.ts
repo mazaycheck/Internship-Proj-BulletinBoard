@@ -24,7 +24,6 @@ getAllWithOptions(options: any): Observable<any> {
   return this.http.get(`${this.baseUrl}?${params}`);
 }
 
-
 getById(categoryId): Observable<any> {
   return this.http.get(`${this.baseUrl}/${categoryId}`);
 }

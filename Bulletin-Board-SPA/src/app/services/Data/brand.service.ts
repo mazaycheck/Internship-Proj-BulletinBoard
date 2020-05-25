@@ -14,7 +14,6 @@ export class BrandService {
     this.baseUrl = this.config.baseUrl + 'api/brands';
   }
 
-
   getAll(options: any): Observable<any> {
     const params = new HttpParams({ fromObject: options });
     return this.http.get(`${this.baseUrl}?${params}`);
@@ -24,7 +23,6 @@ export class BrandService {
     httpparam = httpparam.append('categoryId', `${categoryId}`);
     return this.http.get(this.baseUrl + '?' + httpparam.toString());
   }
-
 
   getById(id: number): Observable<Brand> {
     return this.http.get<Brand>(this.baseUrl + '/' + `${id}`);
@@ -37,11 +35,7 @@ export class BrandService {
     return this.http.delete(this.baseUrl + '/' + brand.brandId);
   }
 
-  // update(brand: Brand): Observable<any> {
-  //   return this.http.put(this.baseUrl, brand);
-  // }
   update(brandId: number, title: string, categories: string[]): Observable<any> {
     return this.http.post(this.baseUrl + '/update', { brandId, title, categories });
   }
-
 }
