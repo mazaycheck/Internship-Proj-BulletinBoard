@@ -7,7 +7,6 @@
 <br>
 
 <ng-container>
-<!-- <cdk-virtual-scroll-viewport itemSize="3" class="example-viewport" ngx-auto-scroll lock-y-offset="10" observe-attributes> -->
 <cdk-virtual-scroll-viewport itemSize="3" class="example-viewport">
   <div *cdkVirtualFor="let message of messages" class="example-item w-100" >
     <div [class]="message.senderName == data.name ? 'messageFromContainer' : 'messageToContainer'">
@@ -24,7 +23,6 @@
         {{message.dateTimeSent | date}}
       </div>
 
-
     </div>
   </div>
   <div *ngIf="otherUserIsTyping" class="messageFromContainer">
@@ -35,8 +33,6 @@
   </div>
 </cdk-virtual-scroll-viewport>
 </ng-container>
-
-
 
 <mat-divider></mat-divider>
   <div class="d-flex messageBox mt-1 justify-content-between" style="width: 100%">
@@ -52,4 +48,3 @@
       </div>
     </div>
   </div>
-

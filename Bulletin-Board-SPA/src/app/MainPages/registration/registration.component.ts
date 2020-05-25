@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { FormsModule, NgForm, NgModel } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { UserRegisterModel } from '../../Models/UserRegisterModel';
-import { Observable } from 'rxjs';
-import { NgForOf } from '@angular/common';
 import { Router } from '@angular/router';
-import { ErrorInterceptorService } from '../../services/err/errorInterceptor.service';
 import { ToastrService } from 'ngx-toastr';
-import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import { Town } from 'src/app/Models/Town';
-import { TownService } from 'src/app/services/Repositories/town.service';
+import { TownService } from 'src/app/services/Data/town.service';
+import { EventEmitterService } from 'src/app/services/Data/event-emitter.service';
 
 @Component({
   selector: 'app-registration',
@@ -19,7 +17,7 @@ import { TownService } from 'src/app/services/Repositories/town.service';
 export class RegistrationComponent implements OnInit {
 
   constructor(private service: AuthService, private router: Router, private toast: ToastrService, private dialog: MatDialog,
-              private townService: TownService) { }
+              private townService: TownService, private eventEmitter: EventEmitterService, private authService: AuthService) { }
 
  model: UserRegisterModel = { userName: '', password: '', email: '', townId: 0, phoneNumber: '' };
  towns: Town[] = [];
@@ -33,6 +31,10 @@ export class RegistrationComponent implements OnInit {
     this.townService.getAll().subscribe(response => {
       this.towns = response;
     });
+
+    if (this.authService.isLoggedIn()) {
+      this.redirectoToHome();
+    }
   }
 
   selectedTownChanged($event) {
@@ -52,6 +54,7 @@ export class RegistrationComponent implements OnInit {
           if (this.checkout === true) {
           this.service.login(this.model).subscribe(r => {
             this.service.settoken(r.token);
+            this.eventEmitter.onLoggedInEvent();
              });
           }
           setTimeout(() => {

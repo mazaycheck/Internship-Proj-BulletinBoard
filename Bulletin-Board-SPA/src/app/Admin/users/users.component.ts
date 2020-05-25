@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from 'src/app/services/Repositories/user.service';
+import { UserService } from 'src/app/services/Data/user.service';
 import { UserForDetail } from 'src/app/Models/UserForDetail';
 import { AdminService } from 'src/app/services/admin/admin.service';
 import { PageEvent } from '@angular/material/paginator';
@@ -23,19 +23,16 @@ export class UsersComponent implements OnInit {
   displayedColumns = ['username', 'email', 'registrationdate', 'roles', 'active', 'action'];
   temporaryRoles: string[] = [];
 
-
-  // Page data
   queryOptions: { pageNumber: number, pageSize: number, query?: string } = { pageNumber: 1, pageSize: 10 };
   totalEntriesInDb: number;
   currentPageNumber: number;
   currentPageSize: number;
   pageSizeOptions = [10, 25, 50];
 
-  // Search
   filter = new FormControl('');
 
   constructor(private toastr: ToastrService, private userService: UserService, private adminService: AdminService,
-    private dialog: MatDialog) { }
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     this.getAllUsers();
@@ -44,9 +41,9 @@ export class UsersComponent implements OnInit {
       .subscribe(x => { this.queryOptions.query = x; this.getAllUsers(); });
   }
 
-  refresh(){
+  refresh() {
     this.getAllUsers();
-    this.getAllRoles();    
+    this.getAllRoles();
   }
 
   getAllRoles() {
@@ -101,8 +98,6 @@ export class UsersComponent implements OnInit {
 
   }
 
-
-
   editCancel(entity) {
     this.allUsersEditOff();
   }
@@ -136,6 +131,4 @@ export class UsersComponent implements OnInit {
       this.getAllUsers();
     });
   }
-
-
 }

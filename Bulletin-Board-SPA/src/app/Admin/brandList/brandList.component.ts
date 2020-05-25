@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BrandService } from 'src/app/services/Repositories/brand.service';
+import { BrandService } from 'src/app/services/Data/brand.service';
 import { ToastrService } from 'ngx-toastr';
-import { BrandCategoryService } from 'src/app/services/Repositories/brandCategory.service';
-import { CatService } from 'src/app/services/Repositories/cat.service';
+import { BrandCategoryService } from 'src/app/services/Data/brandCategory.service';
+import { CatService } from 'src/app/services/Data/cat.service';
 import { Brand } from 'src/app/Models/brand';
 import { BrandCategory } from 'src/app/Models/BrandCategory';
 import { Observable, merge, empty, concat } from 'rxjs';
@@ -28,7 +28,6 @@ export class BrandListComponent implements OnInit {
   filter = new FormControl('');
   newEntity: string;
 
-  // Page data
   queryOptions: { pageNumber: number, pageSize: number, title?: string, category?: string } = { pageNumber: 1, pageSize: 10 };
   totalBrandsEntriesInDb: number;
   currentPageNumber: number;
@@ -112,6 +111,4 @@ export class BrandListComponent implements OnInit {
       this.getAllBrands();
     });
   }
-
-
 }

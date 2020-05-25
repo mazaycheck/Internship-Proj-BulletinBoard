@@ -1,10 +1,6 @@
 <mat-toolbar color="primary" class="p-4 justify-content-between">  
   <ng-content></ng-content>
-  <!-- <div style="width: 100px" class="d-inline-block ml-2">
-    <h1>
-      BaraholGO
-    </h1>
-  </div> -->
+
   <div class="d-none d-md-block mx-auto">
   <mat-list class="d-flex navigation-top-menu" *ngIf="isLoggedIn()">
     <ng-container *ngIf="hasRequiredAccess(['Moderator', 'Member'])">
@@ -48,4 +44,3 @@
     </div>
 
 </mat-toolbar>
-

@@ -1,15 +1,11 @@
 <br>
 <mat-card class="example-card" class="">
-
-
   <mat-toolbar color="basic" class="my-3">
     <mat-toolbar-row>
       <h3  class="m-0">Create New Advertisement</h3>
     </mat-toolbar-row>
   </mat-toolbar>
-
   <mat-card-content>
-
 <form [formGroup]="advertForm" (ngSubmit)="submit()">
   <mat-form-field class="mr-3" appearance="outline">
     <mat-label>Title</mat-label>
@@ -19,10 +15,8 @@
     </mat-error>
     <mat-error *ngIf="advertForm.get('title').hasError('maxlength')">
       Max length is 50 characters actual {{advertForm.get('title').getError('maxlength').actualLength}}
-    </mat-error>
-   
+    </mat-error>   
   </mat-form-field>
-
   <div class="d-flex justify-content-between">
   <mat-form-field appearance="outline" class="w-50">
     <mat-label>Category</mat-label>
@@ -33,14 +27,11 @@
         </mat-option>
       </ng-container>
     </mat-select>
-
     <mat-error *ngIf="advertForm.get('category').getError('required')">
       Category is required
     </mat-error>
-  </mat-form-field>
-    
-
-  <mat-form-field *ngIf="selectedCategory" appearance="outline" class="w-50">
+  </mat-form-field>    
+<mat-form-field *ngIf="selectedCategory" appearance="outline" class="w-50">
   <mat-label for="title">Brand</mat-label>
     <mat-select class="custom select bg-light form-control"  formControlName="brand" required (selectionChange)="selectedBrandChanged($event)">      
         <mat-option *ngFor="let brand of selectedCategory.brands" [value]="brand">
@@ -51,55 +42,42 @@
       Brand is required
     </mat-error>
   </mat-form-field>
-</div>
-  
-<mat-form-field appearance="outline">
-  
+</div>  
+<mat-form-field appearance="outline">  
     <mat-label for="title">Price</mat-label>
     <input matInput type="number" name="" id="price" name="price" class="form-control" placeholder="" aria-describedby="helpId" formControlName="price">
     <mat-error *ngIf="advertForm.get('price').hasError('max')">
       Max price is 9999999
     </mat-error>
-
     <mat-error *ngIf="advertForm.get('price').hasError('min')">
       Min price is 1
     </mat-error>
-
     <mat-error *ngIf="advertForm.get('price').hasError('required')">
       Price is required
     </mat-error>
-
-  </mat-form-field>
-  
+  </mat-form-field>  
   <mat-form-field appearance="outline">
     <mat-label for="title">Description</mat-label>
     <textarea matInput class="form-control" formControlName="description" rows=3></textarea>
     <mat-error *ngIf="advertForm.get('description').hasError('maxlength')">
       Max length is 1000, actual {{advertForm.get('description').getError('maxlength').actualLength}}
     </mat-error>
-  </mat-form-field>
-  
-  
+  </mat-form-field>    
       <button type="button" mat-raised-button (click)="fileInput.click()" class="mb-4">Upload Images</button>        
       <input hidden #fileInput type="file" multiple class="custom-file-input" value="Choose am image" id="inputFile1" (change)="onFileAttach($event)" formControlName="photo"  accept="image/*">
-
   <div class="mb-3">
-    <div *ngFor="let url of pictureURLs; index as i" class="img-preview-container mr-1">
-      
+    <div *ngFor="let url of pictureURLs; index as i" class="img-preview-container mr-1">      
       <ng-container *ngIf="url != placeholderImageUrl">
         <div class="img-cancel-icon" (click)="onFileCancel(i)">          
           <mat-icon color="accent">cancel</mat-icon>       
         </div>         
         <img [src]="url" class="img-preview img-cancel">  
-      </ng-container>
-                  
+      </ng-container>                  
         <ng-container *ngIf="url == placeholderImageUrl">
           <img [src]="url" class="img-preview">            
         </ng-container>
-
     </div>   
   </div>
-
   <button [disabled]="!advertForm.valid" mat-raised-button color="primary" type="submit" class="mr-3">Submit</button>
   <a routerLink="/ads" mat-raised-button color="basic" type="submit">Cancel</a>
 </form>

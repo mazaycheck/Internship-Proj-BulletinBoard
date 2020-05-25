@@ -1,9 +1,9 @@
 import { Component, OnInit, OnChanges, SimpleChanges, Input, ViewChild } from '@angular/core';
 import { Advert } from '../../../Models/Advert';
-import { AdvertService } from '../../../services/Repositories/advert.service';
+import { AdvertService } from '../../../services/Data/advert.service';
 import { ToastrService } from 'ngx-toastr';
 import { Category } from 'src/app/Models/Category';
-import { CatService } from 'src/app/services/Repositories/cat.service';
+import { CatService } from 'src/app/services/Data/cat.service';
 import { faSearch, faTrash, faEdit, faList, faTh } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { GlobalsService } from 'src/app/services/global/globals.service';
@@ -41,7 +41,6 @@ export class AdtableComponent implements OnInit, OnChanges {
   filter: FormControl;
   advertSourse: Observable<any>;
 
-
   private _optionSelected: any;
   public get optionSelected() { return this._optionSelected; }
   public set optionSelected(newValue) {
@@ -53,7 +52,8 @@ export class AdtableComponent implements OnInit, OnChanges {
   }
 
   constructor(private adservice: AdvertService, private catservice: CatService, private toast: ToastrService, private router: Router,
-    private globals: GlobalsService) {
+              private globals: GlobalsService) {
+
     this.queryOptions = new AdvertQueryOptions();
   }
 
@@ -145,5 +145,4 @@ export class AdtableComponent implements OnInit, OnChanges {
     this.queryOptions.direction = sort.direction;
     this.refresh();
   }
-
 }

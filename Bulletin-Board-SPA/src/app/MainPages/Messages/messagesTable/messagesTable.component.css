@@ -6,23 +6,23 @@ table {
   }
   
   
-  .mat-header-row{
-   background: #f6f4f4;
-  }
-  .mat-row  {
-    padding: 100px;
-  }
-  .mat-row span{
-    position: relative;
-  }
-  .mat-row td {
-    height: 100%;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: none;
-    position: relative;
-    z-index: 999;
-  }
+.mat-header-row{
+  background: #f6f4f4;
+}
+.mat-row  {
+  padding: 100px;
+}
+.mat-row span{
+  position: relative;
+}
+.mat-row td {
+  height: 100%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: none;
+  position: relative;
+  z-index: 999;
+}
   
  .mat-row td::before {
     content: '';
@@ -40,7 +40,6 @@ table {
     color: black; 
     z-index: -1;
   } 
-  
   
   .mat-row td:first-child:before {
     border-left: 1px solid lightgray;

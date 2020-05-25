@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { UserForDetail } from 'src/app/Models/UserForDetail';
 import { Advert } from 'src/app/Models/Advert';
 import { ActivatedRoute } from '@angular/router';
-import { AdvertService } from 'src/app/services/Repositories/advert.service';
-import { UserService } from 'src/app/services/Repositories/user.service';
+import { AdvertService } from 'src/app/services/Data/advert.service';
+import { UserService } from 'src/app/services/Data/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
 
@@ -22,8 +22,8 @@ export class UserprofileComponent implements OnInit {
 
   placeholderImageUrl = '/assets/images/profile.png';
   constructor(private route: ActivatedRoute, private userservice: UserService,
-    private advertService: AdvertService, private authService: AuthService,
-    breakpointObserver: BreakpointObserver) {
+              private advertService: AdvertService, private authService: AuthService,
+              breakpointObserver: BreakpointObserver) {
 
     breakpointObserver.observe(['(max-width: 600px)']).subscribe(result => {
 
@@ -71,9 +71,8 @@ export class UserprofileComponent implements OnInit {
     this.loadUserInfo();
     if (this.canManage()) {
       this.columns = ['Title', 'Price', 'CreateDate', 'Manage'];
-    };
+    }
   }
-
 
   canManage(): boolean {
     return this.getCurrentUserId() == this.userId;

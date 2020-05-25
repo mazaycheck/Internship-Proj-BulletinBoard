@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagesService } from 'src/app/services/Repositories/messages.service';
+import { MessagesService } from 'src/app/services/Data/messages.service';
 import { MessageForDetail } from 'src/app/Models/MessageForDetail';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';

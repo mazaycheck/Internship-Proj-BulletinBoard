@@ -7,19 +7,14 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   templateUrl: './adtablebody.component.html',
   styleUrls: ['./adtablebody.component.css']
 })
-export class AdtablebodyComponent implements OnInit {
+export class AdtablebodyComponent {
   @Input() advertisements: Advert[];
   @Input() displayedColumns: string[];
   @Input() titleLength: number;
   @Output() sort: EventEmitter<any> = new EventEmitter<any>();
   @Output() delete: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(breakpointObserver: BreakpointObserver) {
-   
-  }
-
-  ngOnInit() {
-  }
+  constructor(breakpointObserver: BreakpointObserver) { }
 
   sortData($event) {
     this.sort.emit($event);
@@ -28,5 +23,4 @@ export class AdtablebodyComponent implements OnInit {
   removeAd(id) {
     this.delete.emit(id);
   }
-
 }

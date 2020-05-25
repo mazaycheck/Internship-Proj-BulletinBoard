@@ -1,5 +1,5 @@
 .btn-disactivate{
- color: #17a2b8  !important;
+    color: #17a2b8  !important;
 }
 
 a{
@@ -8,10 +8,8 @@ a{
 
 table {
     width: 100%;
-  }
+}
 
-  .link{
-      font-size: large;
-  }
-
- 
+.link{
+    font-size: large;
+}

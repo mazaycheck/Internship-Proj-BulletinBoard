@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AdvertService } from 'src/app/services/Repositories/advert.service';
+import { AdvertService } from 'src/app/services/Data/advert.service';
 import { Router } from '@angular/router';
-import { CatService } from 'src/app/services/Repositories/cat.service';
+import { CatService } from 'src/app/services/Data/cat.service';
 import { Category } from 'src/app/Models/Category';
 import { ToastrService } from 'ngx-toastr';
-import { Town } from 'src/app/Models/Town';
-import { TownService } from 'src/app/services/Repositories/town.service';
-import { Brand } from 'src/app/Models/brand';
-import { BrandService } from 'src/app/services/Repositories/brand.service';
-import { BrandCategoryService } from 'src/app/services/Repositories/brandCategory.service';
-import { BrandCategory } from 'src/app/Models/BrandCategory';
+import { BrandCategoryService } from 'src/app/services/Data/brandCategory.service';
 
 @Component({
   selector: 'app-adcreate',
@@ -45,7 +40,7 @@ export class AdcreateComponent implements OnInit {
     }
   }
 
-  showErrors($event){
+  showErrors($event) {
     console.log($event);
   }
 

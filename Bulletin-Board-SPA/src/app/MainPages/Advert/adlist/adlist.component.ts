@@ -11,9 +11,7 @@ export class AdlistComponent {
 
   displayedColumns: string[] = ['Title', 'Price', 'Category', 'Town', 'CreateDate'];
   titleLength = 50;
-  /**
-   *
-   */
+
   constructor(breakpointObserver: BreakpointObserver) {
 
     breakpointObserver.observe(['(max-width: 600px)']).subscribe(result => {
@@ -34,6 +32,5 @@ export class AdlistComponent {
       ['Title', 'Price', 'Category'] :
         ['Title',  'Price', 'Category', 'Town', 'CreateDate'];
     });
-
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserService } from 'src/app/services/Repositories/user.service';
+import { UserService } from 'src/app/services/Data/user.service';
 import { UserForDetail } from 'src/app/Models/UserForDetail';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { MessageModalComponent } from 'src/app/MainPages/Messages/messageModal/messageModal.component';
@@ -22,10 +22,6 @@ export class UserInfoComponent implements OnInit {
     });
   }
 
-  sendMessage() {
-
-  }
-
   cancel() {
     this.newMessage = '';
   }
@@ -38,11 +34,9 @@ export class UserInfoComponent implements OnInit {
     this.dialog.open(MessageModalComponent, config);
   }
 
-
   onMessageClick() {
     const chatWithId = this.userId;
     const chatWithName = this.user.userName;
     this.onChatOpen({id: chatWithId, name: chatWithName});
   }
-
 }

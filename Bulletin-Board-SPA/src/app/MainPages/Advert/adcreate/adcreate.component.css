@@ -3,7 +3,6 @@ mat-form-field{
     width: 100%;
 }
 
-
 .img-preview-container{
     display : inline-block;
     width:200px;
@@ -49,5 +48,3 @@ mat-card-title{
     z-index: 1;
     cursor: pointer;
 }
-
-

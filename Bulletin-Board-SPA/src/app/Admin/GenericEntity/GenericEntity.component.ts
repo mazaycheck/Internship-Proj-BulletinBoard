@@ -4,14 +4,12 @@ import { PageEvent } from '@angular/material/paginator';
 
 
 @Component({
-  // tslint:disable-next-line: component-selector
   selector: 'app-generic-entity',
   templateUrl: './GenericEntity.component.html',
   styleUrls: ['./GenericEntity.component.css'],
   encapsulation : ViewEncapsulation.None,
 })
 export class GenericEntityComponent implements OnInit {
-
 
   @Input() service: any;
   @Input() title: string;

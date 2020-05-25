@@ -12,56 +12,84 @@
   <mat-grid-tile>
     <mat-form-field appearance="fill">
       <mat-label>Your Name</mat-label>
-      <input matInput type="text"  name="name" [(ngModel)]="model.userName" >  
+      <input matInput type="text"  name="name" #fname="ngModel" [(ngModel)]="model.userName" required minlength="4" maxlength="20">  
+      <mat-error *ngIf="fname.hasError('required')">
+        Name is required
+      </mat-error>
+      <mat-error *ngIf="fname.hasError('minlength')">
+        Minlength is 4 
+      </mat-error>
+      <mat-error *ngIf="fname.hasError('maxlength')">
+        Maxlength is 20
+      </mat-error>
     </mat-form-field>
   </mat-grid-tile>
 
 <mat-grid-tile>
   <mat-form-field appearance="fill">
     <mat-label>Email</mat-label>
-    <input matInput type="email"  name="email" [(ngModel)]="model.email" >
+    <input matInput type="email" #femail="ngModel" name="email" [(ngModel)]="model.email" required>
+    <mat-error *ngIf="femail.hasError('required')">
+      Email is required
+    </mat-error>
   </mat-form-field>
 </mat-grid-tile>
-
 
 <mat-grid-tile>
   <mat-form-field appearance="fill">
     <mat-label>Phone Number</mat-label>
-    <input matInput type="text"   name ="phonenumber" [(ngModel)]="model.phoneNumber">
+    <input matInput type="text" #fphone="ngModel"  name ="phonenumber" [(ngModel)]="model.phoneNumber" required minlength="6" maxlength="12">
+    <mat-error *ngIf="fphone.hasError('required')">
+      Phone is required
+    </mat-error>
+
+    <mat-error *ngIf="fphone.hasError('minlength')">
+      Minlength is 6 
+    </mat-error>
+
+    <mat-error *ngIf="fphone.hasError('maxlength')">
+      Maxlength is 12
+    </mat-error>
   </mat-form-field>
 </mat-grid-tile>
 
 <mat-grid-tile>
-  <!-- <mat-form-field appearance="fill">
-    <mat-label>HomeTown</mat-label>
-    <input matInput type="number"  name ="townid" [(ngModel)]="model.townid" >
-  </mat-form-field> -->
   <mat-form-field appearance="fill" class="">
     <mat-label>Town</mat-label>
-    <mat-select required (selectionChange)="selectedTownChanged($event)" name="townId" [(ngModel)]="model.townId">  
+    <mat-select required (selectionChange)="selectedTownChanged($event)" #ftown="ngModel" name="townId" [(ngModel)]="model.townId" required minlength="6" maxlength="12">  
       <ng-container *ngIf="towns.length">
         <mat-option *ngFor="let town of towns" [value]="town.townId">
           {{ town.title }}
         </mat-option>
       </ng-container>
     </mat-select>
+    <mat-error *ngIf="ftown.hasError('required')">
+      Town is required
+    </mat-error>
   </mat-form-field>
 
 </mat-grid-tile>
 
-
-
-
-
 <mat-grid-tile>
   <mat-form-field appearance="fill">
     <mat-label>Password</mat-label>
-    <input matInput type="password"   name="password" [(ngModel)]="model.password">
-  </mat-form-field>     
+    <input matInput type="password" #fpassword="ngModel"  name="password" [(ngModel)]="model.password" required  minlength="6" maxlength="15">
+    <mat-error *ngIf="fpassword.hasError('required') && fpassword.touched">
+      Password is required
+    </mat-error>   
+  
+    <mat-error *ngIf="fpassword.hasError('minlength') && fpassword.dirty">
+      Minlength is 6 
+    </mat-error>
+  
+    <mat-error *ngIf="fpassword.hasError('maxlength') && fpassword.dirty">
+      Maxlength is 15
+    </mat-error>
+  </mat-form-field>  
 </mat-grid-tile>
 
 <mat-grid-tile>
-  <button mat-raised-button color="accent" type="submit" class="mr-3">Register</button>
+  <button  [disabled]="!registerForm.valid" mat-raised-button color="accent" type="submit" class="mr-3">Register</button>
   <mat-slide-toggle [(ngModel)]="checkout" name="checkout">Checkout</mat-slide-toggle>
 
 </mat-grid-tile> 

@@ -19,7 +19,7 @@ namespace Baraholka.Web.Models
         public int TownId { get; set; }
 
         [Required]
-        [StringLength(8, ErrorMessage = "The number must be {1} characters long")]
+        [StringLength(12, ErrorMessage = "The {0} number must be {2} characters long", MinimumLength = 6)]
         public string PhoneNumber { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../services/Repositories/user.service';
+import { UserService } from '../services/Data/user.service';
 import { UserForDetail } from '../Models/UserForDetail';
-import { TownService } from '../services/Repositories/town.service';
-import { CatService } from '../services/Repositories/cat.service';
+import { TownService } from '../services/Data/town.service';
+import { CatService } from '../services/Data/cat.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
@@ -10,17 +10,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   templateUrl: './Admin.component.html',
   styleUrls: ['./Admin.component.css']
 })
-export class AdminComponent implements OnInit {
-
+export class AdminComponent  {
   users: UserForDetail[] = [];
   constructor(public userService: UserService, public townService: TownService, public catService: CatService) { }
-
-  ngOnInit() {
-
-  }
-
-  tabchanged($event: MatTabChangeEvent) {
-
-  }
-
 }

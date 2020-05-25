@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AdvertService } from 'src/app/services/Repositories/advert.service';
+import { AdvertService } from 'src/app/services/Data/advert.service';
 import { Advert } from 'src/app/Models/Advert';
 import { ActivatedRoute } from '@angular/router';
 import { UserForDetail } from 'src/app/Models/UserForDetail';
@@ -23,8 +23,8 @@ export class AddetailComponent implements OnInit {
       this.selectedImage = this.advert.photoUrls[0];
     }
   }
+
   changeSelectedImage(image: string) {
     this.selectedImage = image;
   }
-
 }

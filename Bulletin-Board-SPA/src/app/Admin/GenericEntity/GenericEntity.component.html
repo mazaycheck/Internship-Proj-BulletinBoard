@@ -1,5 +1,4 @@
 <br>
-
 <div class="d-flex mb-3 w-100">
 <mat-card class="py-2 w-100" style="width: 100%!important;">
   <mat-form-field appearance="outline" class="mat-no-padding pr-3 d-inline-block align-center" style="width:284px;">
@@ -11,8 +10,6 @@
 </mat-card>
 </div>
   <table mat-table [dataSource]="entityList" class="mat-elevation-z8" style="width: 100%;">
-
-
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef>
          Title
@@ -27,34 +24,20 @@
             </mat-form-field>
           </div>      
       </td>
-
-    
     </ng-container>
-
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef> Action </th>
       <td mat-cell *matCellDef="let element"> 
-
         <div *ngIf="!element.edit" class="d-flex m-0">
-          <button mat-raised-button class="mr-3" (click)="update(element)"><mat-icon>edit</mat-icon> </button>
-          
+          <button mat-raised-button class="mr-3" (click)="update(element)"><mat-icon>edit</mat-icon> </button>          
           <button mat-raised-button (click)="delete(element)" color="accent"><mat-icon>delete_outline</mat-icon> </button> 
         </div>
-
         <div *ngIf="element.edit" class="d-flex m-0">        
           <button mat-raised-button class="mr-3" color="primary" (click)="editSave(element)"> <mat-icon>save</mat-icon></button>
           <button mat-raised-button color="basic" (click)="editCancel(element)"> <mat-icon>cancel</mat-icon> </button>
         </div>      
       </td>
-    </ng-container>
-    
+    </ng-container>    
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-
-
-<!-- <mat-paginator [length]="length"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="pageSizeOptions"
-  (page)="pageClicked($event)">
-</mat-paginator> -->

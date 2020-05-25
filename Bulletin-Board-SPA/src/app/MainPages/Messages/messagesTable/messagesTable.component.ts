@@ -29,5 +29,4 @@ export class MessagesTableComponent implements OnInit {
     }
     this.openChat.emit({id: chatWithId, name: chatWithName});
   }
-
 }

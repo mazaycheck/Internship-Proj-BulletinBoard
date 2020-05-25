@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { NavComponent } from './MainPages/nav/nav.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AdvertService } from './services/Repositories/advert.service';
+import { AdvertService } from './services/Data/advert.service';
 import { AdlistComponent } from './MainPages/Advert/adlist/adlist.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './MainPages/home/home.component';
@@ -15,19 +15,14 @@ import { AdupdateComponent } from './MainPages/Advert/adupdate/adupdate.componen
 import { AuthService } from './services/auth/auth.service';
 import { RegistrationComponent } from './MainPages/registration/registration.component';
 import { GlobalsService } from './services/global/globals.service';
-import { CatService } from './services/Repositories/cat.service';
-// import { CatlistComponent } from './Admin/catlist/catlist.component';
+import { CatService } from './services/Data/cat.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material/slider';
 import { ErrorInterceptorService } from './services/err/errorInterceptor.service';
 import { ToastrModule } from 'ngx-toastr';
-
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-// import { TownListComponent } from './MainPages/Town/townList/townList.component';
-// import { BrandListComponent } from './MainPages/Brand/brandList/brandList.component';
 import { JwtTokenInterceptorService } from './services/auth/jwtTokenInterceptor.service';
 import { MaterialModule} from './material/material.module';
-// import { GenericEntityComponent } from './MainPages/GenericEntity/GenericEntity.component';
 import { UserInfoComponent } from './MainPages/Advert/addetail/userInfo/userInfo.component';
 import { MessagesComponent } from './MainPages/Messages/messages/messages.component';
 import { MessagesTableComponent } from './MainPages/Messages/messagesTable/messagesTable.component';
@@ -37,7 +32,7 @@ import { AdtableComponent } from './MainPages/Advert/adtable/adtable.component';
 import { AdtablebodyComponent } from './MainPages/Advert/adtable/adtablebody/adtablebody.component';
 import { AdtilesComponent } from './MainPages/Advert/adtable/adtiles/adtiles.component';
 import { SidenavComponent } from './MainPages/sidenav/sidenav.component';
-import { EventEmitterService } from './services/Repositories/event-emitter.service';
+import { EventEmitterService } from './services/Data/event-emitter.service';
 
 export function toketGetter(){
    return localStorage.getItem('token');

@@ -3,4 +3,3 @@
   <mat-tab label="Inbox" ><app-messagesTable [dataSet]="messages" [box]="'inbox'" (openChat)="onChatOpen($event)"></app-messagesTable></mat-tab>
   <mat-tab label="Outbox" ><app-messagesTable [dataSet]="messages" [box]="'outbox'"(openChat)="onChatOpen($event)"></app-messagesTable></mat-tab>
 </mat-tab-group>
-

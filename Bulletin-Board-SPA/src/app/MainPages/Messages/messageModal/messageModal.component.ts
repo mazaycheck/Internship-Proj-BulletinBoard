@@ -1,25 +1,22 @@
-import { Component, OnInit, ViewChildren, ViewChild, AfterViewInit, OnChanges, SimpleChange, SimpleChanges, AfterViewChecked, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit,ViewChild, AfterViewInit, OnChanges,  SimpleChanges, AfterViewChecked, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject } from '@angular/core';
-import { MessagesService } from 'src/app/services/Repositories/messages.service';
+import { MessagesService } from 'src/app/services/Data/messages.service';
 import { MessageForDetail } from 'src/app/Models/MessageForDetail';
 import { MessageForCreate } from 'src/app/Models/MessageForCreate';
-import { ChangeDetectionStrategy } from '@angular/core';
-import { CdkScrollable } from '@angular/cdk/overlay';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { interval, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as signalR from '@aspnet/signalr';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { EventEmitterService } from 'src/app/services/Repositories/event-emitter.service';
+import { EventEmitterService } from 'src/app/services/Data/event-emitter.service';
 
 @Component({
   selector: 'app-messageModal',
   templateUrl: './messageModal.component.html',
   styleUrls: ['./messageModal.component.css'],
 })
-export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, AfterViewChecked, OnDestroy {
+export class MessageModalComponent implements OnInit, AfterViewChecked, OnDestroy {
   messages: MessageForDetail[] = [];
   newMessage: MessageForCreate;
   refreshSubscription: Subscription = new Subscription();
@@ -76,7 +73,6 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
      this.scrollDown();
   }
 
-
   ngOnInit() {
     this.userToken = this.authService.getToken();
     this.startConnection();
@@ -92,16 +88,6 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
       this.messages = response;
       this.eventEmitter.onFirstComponentEvent();
     });
-  }
-
-
-  ngOnChanges(changes: SimpleChanges) {
-
-  }
-
-  ngAfterViewInit(): void {
-
-
   }
 
   sendMessage() {
@@ -130,5 +116,4 @@ export class MessageModalComponent implements OnInit, OnChanges, AfterViewInit, 
       this.sendMessage();
     }
   }
-
 }

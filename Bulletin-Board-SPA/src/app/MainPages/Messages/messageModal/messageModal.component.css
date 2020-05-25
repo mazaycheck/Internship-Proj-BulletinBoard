@@ -3,8 +3,6 @@
 }
 
 .messageToContainer{
-
-    /* overflow: hidden; */
     display: flex;
     justify-content: flex-start;
 }
@@ -18,9 +16,7 @@
     border-radius: 5px;
 }
 
-
 .messageFromContainer{ 
-    /* overflow: hidden;   */
     display: flex;
     justify-content: flex-end;    
 }
@@ -31,10 +27,8 @@
     padding: 0.5rem;    
     max-width: 66%;
     background-color: thistle;
-    
     border-radius:  5px;
 }
-
 
 .input-message{
     min-width: 300px;
@@ -45,7 +39,6 @@ input.input-message{
     padding-bottom: 6px!important;
 }
 
-
 .align-center{
     vertical-align: middle;
 }
@@ -53,57 +46,54 @@ input.input-message{
 
 .example-viewport {
     height: 250px;    
-    /* max-width: 535px!important;    */
-  }
+}
   
-  .example-item {
+.example-item {
     min-height: 30px;
     margin-bottom: 15px;
-  }
+}
 
-  .textarea-message{
+.textarea-message{
     padding-top:6px!important;
     padding-bottom: 6px!important;
-  }
+}
 
+.messageArea{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-  .messageArea{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-  }
-
-  @keyframes typingAnimation {
+@keyframes typingAnimation {
 
     20%{
         background-color: white; bottom: 8px;
-       
+        
     }
 
     40%{
-         bottom: 12px;
+            bottom: 12px;
     }
 
     60%{
-         bottom: 16px;
+            bottom: 16px;
     }
 
     80%{
-         bottom: 12px;  
+            bottom: 12px;  
     }
 
     100%{
         background-color: grey; bottom: 8px;  
     }
 
+}
 
-  }
-
-  .usertypingdot{
-      position: relative;
-      width: 48px;
-      height: 25px;
-  }
+.usertypingdot{
+    position: relative;
+    width: 48px;
+    height: 25px;
+}
 
 
 .usertypingdot span{
@@ -117,7 +107,6 @@ input.input-message{
     background-color: gray;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-
 }
 
 .usertypingdot span:nth-child(1){  

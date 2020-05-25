@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { Advert } from 'src/app/Models/Advert';
-import { AdvertService } from '../Repositories/advert.service';
+import { AdvertService } from '../Data/advert.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { BrandService } from 'src/app/services/Repositories/brand.service';
+import { BrandService } from 'src/app/services/Data/brand.service';
 import { Brand } from 'src/app/Models/brand';
 import { ToastrService } from 'ngx-toastr';
 import { Category } from 'src/app/Models/Category';
@@ -64,5 +64,4 @@ export class CheckboxUpdateModalComponent implements OnInit {
   conditionMaxLength() {
     return this.allSelectOptions.length === this.temporarySelection.length;
   }
-
 }

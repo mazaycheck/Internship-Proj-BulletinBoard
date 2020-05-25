@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { AdvertService } from 'src/app/services/Repositories/advert.service';
+import { AdvertService } from 'src/app/services/Data/advert.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CatService } from 'src/app/services/Repositories/cat.service';
+import { CatService } from 'src/app/services/Data/cat.service';
 import { Category } from 'src/app/Models/Category';
 import { ToastrService } from 'ngx-toastr';
 import { Advert } from 'src/app/Models/advert';
 import { environment } from 'src/environments/environment';
 import { BrandCategory } from 'src/app/Models/BrandCategory';
-import { BrandCategoryService } from 'src/app/services/Repositories/brandCategory.service';
+import { BrandCategoryService } from 'src/app/services/Data/brandCategory.service';
 
 @Component({
   selector: 'app-adupdate',
@@ -65,8 +65,6 @@ export class AdupdateComponent implements OnInit {
       });
     });
   }
-
-
 
   replacePlaceHolderImagesWithRealImages(images: string[]) {
     for (let i = 0; i < images.length; i++) {

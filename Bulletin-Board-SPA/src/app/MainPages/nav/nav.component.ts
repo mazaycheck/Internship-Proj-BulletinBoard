@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { RegistrationComponent } from '../registration/registration.component';
-import { MessagesService } from 'src/app/services/Repositories/messages.service';
+import { MessagesService } from 'src/app/services/Data/messages.service';
 import * as signalR from '@aspnet/signalr';
 import { environment } from 'src/environments/environment';
-import { EventEmitterService } from 'src/app/services/Repositories/event-emitter.service';
+import { EventEmitterService } from 'src/app/services/Data/event-emitter.service';
 
 @Component({
   selector: 'app-nav',
@@ -22,6 +21,8 @@ export class NavComponent implements OnInit {
   name: string;
   userId: number;
   newMessages = 0;
+  loggedIn = false;
+  loadedInfo = false;
 
   hubconnection: signalR.HubConnection;
   baseUrl = environment.baseUrl;
@@ -30,29 +31,40 @@ export class NavComponent implements OnInit {
   constructor(public authService: AuthService, private toast: ToastrService,
               private router: Router, private dialog: MatDialog, private messageService: MessagesService,
               private eventEmitterService: EventEmitterService) { }
-  
 
   ngOnInit() {
-    if (this.isLoggedIn()) {
+    if (!this.isLoggedIn()) {
+      this.subscribeToLoginEvent();
+    } else {
       this.afterLoggedIn();
-      this.subscribeToMessageEvent();
     }
   }
 
   afterLoggedIn() {
-    this.name = this.authService.getCurrentUserName();
-    this.userId = this.authService.gettCurrentUserId();
-    this.userToken = this.authService.getToken();
+    this.updateUser();
     this.startConnection();
     this.addDataListening();
     this.updateMessages();
+    this.subscribeToMessageEvent();
+  }
+
+  updateUser() {
+    this.name = this.authService.getCurrentUserName();
+    this.userId = this.authService.gettCurrentUserId();
+    this.userToken = this.authService.getToken();
   }
 
   subscribeToMessageEvent() {
-    console.log("test");
     if (this.eventEmitterService.subVar == undefined) {
       this.eventEmitterService.subVar = this.eventEmitterService.invokeFirstComponentFunction
-      .subscribe(event => {this.updateMessages(); console.log("EVENT") } );
+        .subscribe(event => { this.updateMessages(); });
+    }
+  }
+
+  subscribeToLoginEvent() {
+    if (this.eventEmitterService.subLogin == undefined) {
+      this.eventEmitterService.subLogin = this.eventEmitterService.invokeLogin
+        .subscribe(event => { this.afterLoggedIn(); });
     }
   }
 
@@ -75,22 +87,19 @@ export class NavComponent implements OnInit {
     });
   }
 
-
   hasRequiredAccess(roles: string[]) {
     return this.authService.hasRequiredRoles(roles);
   }
 
   login() {
-
     this.authService.login(this.loginData).subscribe(
       response => {
         if (response) {
-          localStorage.setItem('token' , response.token);
+          localStorage.setItem('token', response.token);
           this.name = this.authService.getCurrentUserName();
           this.toast.success('Logged in');
           this.router.navigateByUrl('/ads');
           this.afterLoggedIn();
-          
         }
       }, error => {
         this.toast.error(error);
@@ -103,8 +112,12 @@ export class NavComponent implements OnInit {
     this.router.navigateByUrl('/');
     this.toast.warning('Logged out');
   }
+
   isLoggedIn() {
-     return  this.authService.isLoggedIn();
+    if (this.authService.isLoggedIn()) {
+      return true;
+    }
+    return false;
   }
 
   onRegister() {
@@ -113,5 +126,4 @@ export class NavComponent implements OnInit {
     config.minWidth = '460px';
     this.dialog.open(RegistrationComponent, config);
   }
-
 }
